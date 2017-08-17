@@ -1,13 +1,24 @@
-class MySchema(Schema):
-    hello = StringField(default='world')
+from .fields import Field
+from .nodes import Node
+from .schema import Schema
 
 
-def test_execute_query(schema):
-    query_str = '''
+class WorldField(Field):
+    def get_value(self, arguments=None, fields=None):
+        return 'World'
+
+
+class QueryNode(Node):
+    hello = WorldField()
+
+
+def test_execute_query():
+    document = '''
     {
         hello
     }
     '''
-    assert MySchema().execute(query_str) == {'hello': 'world'}
-
-
+    schema = Schema(
+        query_node=QueryNode(),
+    )
+    assert schema.execute(document) == {'hello': 'World'}
