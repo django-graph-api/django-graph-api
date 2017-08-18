@@ -13,3 +13,8 @@ class Field(object):
     def bind(self, name, node):
         self.name = name
         self.node = node
+
+
+class CharField(Field):
+    def get_value(self, **kwargs):
+        pass
