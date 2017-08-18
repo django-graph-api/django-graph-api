@@ -9,3 +9,5 @@ __pycache__
 *~
 .DS_Store
 .cache
+.project
+.pydevproject
