@@ -1,6 +1,7 @@
+from collections import OrderedDict
 import copy
 
-from collections import OrderedDict
+from django.db.models import Manager
 
 from .schema import schema
 
@@ -36,8 +37,19 @@ class Field(object):
         self.creation_counter = Field.creation_counter
         Field.creation_counter += 1
 
-    def get_value(self):
-        return self.obj.kwargs.get(self.name)
+    def get_value(self, ast):
+        data = self.obj.data
+        try:
+            return getattr(data, self.name)
+        except AttributeError:
+            pass
+
+        try:
+            return data.get(self.name)
+        except (AttributeError, KeyError):
+            pass
+
+        return None
 
     def bind(self, name, obj):
         self.name = name
@@ -81,6 +93,17 @@ class Boolean(Scalar):
         return bool(value)
 
 
+@schema.register_type
+class List(object):
+    kind = LIST
+
+    def __init__(self, type_):
+        self.type_ = type_
+
+    def coerce_result(self, values):
+        return list(values)
+
+
 class ObjectMetaclass(type):
     def __new__(mcs, name, bases, attrs):
         # This fields implementation is similar to Django's form fields
@@ -100,8 +123,9 @@ class ObjectMetaclass(type):
 class Object(object, metaclass=ObjectMetaclass):
     kind = OBJECT
 
-    def __init__(self, **kwargs):
-        self.kwargs = kwargs
+    def __init__(self, ast, data):
+        self.ast = ast
+        self.data = data
 
     @property
     def fields(self):
@@ -116,13 +140,10 @@ class Object(object, metaclass=ObjectMetaclass):
         return self._fields
 
     def serialize(self):
-        ret = {}
-
-        for name, field in self.fields.items():
-            value = field.get_value()
-            ret[name] = value
-
-        return ret
+        return {
+            name: field.get_value(self.ast)
+            for name, field in self.fields.items()
+        }
 
 
 class CharField(Field):
@@ -145,13 +166,35 @@ class BooleanField(Field):
     type_ = Boolean
 
 
-class ObjectField(Field):
+class RelatedField(Field):
     type_ = Object
 
     def __init__(self, object_type):
         self.object_type = object_type
 
-    def get_value(self):
-        get_data = getattr(self.obj, 'get_{}'.format(self.name))
-        obj_instance = self.object_type(**get_data())
+    def _serialize_value(self, value, ast):
+        obj_instance = self.object_type(
+            ast=ast,
+            data=value,
+        )
         return obj_instance.serialize()
+
+    def get_value(self, ast):
+        value = super(RelatedField, self).get_value(ast)
+        return self._serialize_value(value, ast)
+
+
+class ManyRelatedField(Field):
+    type_ = List(Object)
+
+    def __init__(self, object_type):
+        self.object_type = object_type
+
+    def get_value(self, ast):
+        values = super(RelatedField, self).get_value(ast)
+        if isinstance(values, Manager):
+            values = values.all()
+        return [
+            self._serialize_value(value, ast)
+            for value in values
+        ]
