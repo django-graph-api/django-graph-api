@@ -1,6 +1,6 @@
-from .fields import Field
-from .nodes import Node
-from .schema import Schema
+from django_graph_api.graphql.fields import Field
+from django_graph_api.graphql.nodes import Node
+from django_graph_api.graphql.schema import Schema
 
 
 class WorldField(Field):
