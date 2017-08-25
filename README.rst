@@ -33,6 +33,8 @@ Once you're done writing code, you will need to open a pull request with your ch
 
 If you need help with something, that's totally fine. Do what you can and then ask for what you need! Just be aware that there may be a delay before someone comes along who has time to provide it.
 
+Once your pull request is complete, one of the core contributors will review it and give feedback or merge as appropriate.
+
 Code of conduct
 ---------------
 
