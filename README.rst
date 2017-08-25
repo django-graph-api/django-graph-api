@@ -33,8 +33,6 @@ Once you're done writing code, you will need to open a pull request with your ch
 
 If you need help with something, that's totally fine. Do what you can and then ask for what you need! Just be aware that there may be a delay before someone comes along who has time to provide it.
 
-If you'd like to chat about django graph api, join us on slack! <slack channel url>
-
 Code of conduct
 ---------------
 
@@ -45,4 +43,6 @@ This project adheres to and supports the `Django Code of Conduct`_.
 Style guide
 -----------
 
-This project uses the Django style guide, with the exception of allowing longer lines if it makes the code more readable.
+This project uses the `Django coding style guide`_.
+
+.. _Django coding style guide: https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/
