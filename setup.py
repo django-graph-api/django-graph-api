@@ -23,6 +23,7 @@ setup(
     ),
     tests_require=(
         'pytest',
+        'pytest-django',
     ),
     classifiers=(
         'Development Status :: 1 - Planning',

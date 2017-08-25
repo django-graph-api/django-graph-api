@@ -30,7 +30,7 @@ class Schema(object):
         parser = GraphQLParser()
         ast = parser.parse(document)
         return {
-            'data': self.query_root().serialize(),
+            'data': self.query_root(ast.definitions[0], None).serialize(),
         }
 
 

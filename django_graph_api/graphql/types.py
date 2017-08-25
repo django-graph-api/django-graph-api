@@ -37,7 +37,10 @@ class Field(object):
         self.creation_counter = Field.creation_counter
         Field.creation_counter += 1
 
-    def get_value(self, ast):
+    def get_value(self):
+        if hasattr(self.obj, 'get_{}'.format(self.name)):
+            return getattr(self.obj, 'get_{}'.format(self.name))()
+
         data = self.obj.data
         try:
             return getattr(data, self.name)
@@ -51,8 +54,9 @@ class Field(object):
 
         return None
 
-    def bind(self, name, obj):
-        self.name = name
+    def bind(self, selection, obj):
+        self.selection = selection
+        self.name = selection.name
         self.obj = obj
 
 
@@ -133,15 +137,16 @@ class Object(object, metaclass=ObjectMetaclass):
             self._fields = OrderedDict()
             # Copy the field instances so that obj instances have
             # isolated field instances that they can modify safely.
-            declared_fields = copy.deepcopy(self._declared_fields)
-            for name, field in declared_fields.items():
-                self._fields[name] = field
-                field.bind(name=name, obj=self)
+            # Only copy field instances that are selected.
+            for selection in self.ast.selections:
+                field = copy.deepcopy(self._declared_fields[selection.name])
+                self._fields[selection.name] = field
+                field.bind(selection=selection, obj=self)
         return self._fields
 
     def serialize(self):
         return {
-            name: field.get_value(self.ast)
+            name: field.get_value()
             for name, field in self.fields.items()
         }
 
@@ -172,29 +177,34 @@ class RelatedField(Field):
     def __init__(self, object_type):
         self.object_type = object_type
 
-    def _serialize_value(self, value, ast):
+    def _serialize_value(self, value):
         obj_instance = self.object_type(
-            ast=ast,
+            ast=self.selection,
             data=value,
         )
         return obj_instance.serialize()
 
-    def get_value(self, ast):
-        value = super(RelatedField, self).get_value(ast)
-        return self._serialize_value(value, ast)
+    def get_value(self):
+        value = super(RelatedField, self).get_value()
+        return self._serialize_value(value)
 
 
-class ManyRelatedField(Field):
+class ManyRelatedField(RelatedField):
     type_ = List(Object)
 
     def __init__(self, object_type):
         self.object_type = object_type
 
-    def get_value(self, ast):
-        values = super(RelatedField, self).get_value(ast)
+    def bind(self, selection, obj):
+        super(ManyRelatedField, self).bind(selection, obj)
+        if self.object_type == 'self':
+            self.object_type = obj.__class__
+
+    def get_value(self):
+        values = super(RelatedField, self).get_value()
         if isinstance(values, Manager):
             values = values.all()
         return [
-            self._serialize_value(value, ast)
+            self._serialize_value(value)
             for value in values
         ]
