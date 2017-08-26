@@ -4,8 +4,9 @@ python:
   - "3.5"
   - "3.6"
 install:
-  - pip install . --no-deps
-  - pip install flake8
+  - pip install --no-deps .
+  - pip install --no-deps -r requirements.txt
+  - pip install --no-deps -r requirements-test.txt
 before_script:
   - flake8 django_graph_api
 script:
