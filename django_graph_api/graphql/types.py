@@ -2,6 +2,7 @@ from collections import OrderedDict
 import copy
 
 from django.db.models import Manager
+from django.utils import six
 
 from .schema import schema
 
@@ -124,7 +125,7 @@ class ObjectMetaclass(type):
 
 
 @schema.register_type
-class Object(object, metaclass=ObjectMetaclass):
+class Object(six.with_metaclass(ObjectMetaclass)):
     kind = OBJECT
 
     def __init__(self, ast, data):
