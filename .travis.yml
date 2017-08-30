@@ -1,0 +1,14 @@
+language: python
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+install:
+  - pip install --no-deps .
+  - pip install --no-deps -r requirements.txt
+  - pip install --no-deps -r requirements-test.txt
+before_script:
+  - flake8 --version
+  - flake8 django_graph_api
+script:
+  - pytest .
