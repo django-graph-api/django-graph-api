@@ -39,17 +39,27 @@ class Field(object):
         Field.creation_counter += 1
 
     def get_value(self):
-        if hasattr(self.obj, 'get_{}'.format(self.name)):
-            return getattr(self.obj, 'get_{}'.format(self.name))()
+        raw_value = self.get_raw_value()
+        type = self.type_
+        if hasattr(type, 'coerce_result'):
+            try:
+                return type.coerce_result(raw_value)
+            except ValueError:
+                return None
+        return raw_value
+
+    def get_raw_value(self):
+        if hasattr(self.obj, 'get_{}'.format(self.selection_name)):
+            return getattr(self.obj, 'get_{}'.format(self.selection_name))()
 
         data = self.obj.data
         try:
-            return getattr(data, self.name)
+            return getattr(data, self.selection_name)
         except AttributeError:
             pass
 
         try:
-            return data.get(self.name)
+            return data.get(self.selection_name)
         except (AttributeError, KeyError):
             pass
 
@@ -57,8 +67,16 @@ class Field(object):
 
     def bind(self, selection, obj):
         self.selection = selection
-        self.name = selection.name
+        self.selection_name = selection.name
         self.obj = obj
+
+    @property
+    def name(self):
+        return self.__class__.__name__
+
+    @property
+    def type_(self):
+        raise NotImplementedError('Specific type ({}) should define a type_ field'.format(self.name))
 
 
 class Scalar(object):
@@ -71,19 +89,22 @@ class Scalar(object):
 
 @schema.register_type
 class Int(Scalar):
-    def coerce_result(self, value):
+    @classmethod
+    def coerce_result(cls, value):
         return int(value)
 
 
 @schema.register_type
 class Float(Scalar):
-    def coerce_result(self, value):
+    @classmethod
+    def coerce_result(cls, value):
         return float(value)
 
 
 @schema.register_type
 class String(Scalar):
-    def coerce_result(self, value):
+    @classmethod
+    def coerce_result(cls, value):
         return str(value)
 
 
@@ -94,7 +115,8 @@ class Id(String):
 
 @schema.register_type
 class Boolean(Scalar):
-    def coerce_result(self, value):
+    @classmethod
+    def coerce_result(cls, value):
         return bool(value)
 
 
@@ -105,7 +127,10 @@ class List(object):
     def __init__(self, type_):
         self.type_ = type_
 
-    def coerce_result(self, values):
+    @classmethod
+    def coerce_result(cls, values):
+        if isinstance(values, Manager):
+            values = values.all()
         return list(values)
 
 
@@ -167,10 +192,8 @@ class FloatField(Field):
 class IntegerField(Field):
     type_ = Int
 
-
 class BooleanField(Field):
     type_ = Boolean
-
 
 class RelatedField(Field):
     type_ = Object
