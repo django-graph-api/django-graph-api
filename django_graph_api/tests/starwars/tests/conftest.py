@@ -3,7 +3,8 @@ import pytest
 from ..models import (
     Droid,
     Episode,
-    Human,)
+    Human,
+)
 
 
 @pytest.fixture(autouse=True)
