@@ -40,26 +40,25 @@ class Field(object):
 
     def get_value(self):
         raw_value = self.get_raw_value()
-        type = self.type_
-        if hasattr(type, 'coerce_result'):
+        if hasattr(self.type_, 'coerce_result'):
             try:
-                return type.coerce_result(raw_value)
+                return self.type_.coerce_result(raw_value)
             except ValueError:
                 return None
         return raw_value
 
     def get_raw_value(self):
-        if hasattr(self.obj, 'get_{}'.format(self.selection_name)):
-            return getattr(self.obj, 'get_{}'.format(self.selection_name))()
+        if hasattr(self.obj, 'get_{}'.format(self.name)):
+            return getattr(self.obj, 'get_{}'.format(self.name))()
 
         data = self.obj.data
         try:
-            return getattr(data, self.selection_name)
+            return getattr(data, self.name)
         except AttributeError:
             pass
 
         try:
-            return data.get(self.selection_name)
+            return data.get(self.name)
         except (AttributeError, KeyError):
             pass
 
@@ -67,16 +66,12 @@ class Field(object):
 
     def bind(self, selection, obj):
         self.selection = selection
-        self.selection_name = selection.name
+        self.name = selection.name
         self.obj = obj
 
     @property
-    def name(self):
-        return self.__class__.__name__
-
-    @property
     def type_(self):
-        raise NotImplementedError('Specific type ({}) should define a type_ field'.format(self.name))
+        raise NotImplementedError('Specific type ({}) should define a type_ field'.format(self.__class__.__name__))
 
 
 class Scalar(object):
