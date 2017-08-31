@@ -2,10 +2,8 @@ import pytest
 
 from unittest import mock
 
-from django.db.models import Manager
-
 from django_graph_api.graphql.schema import Schema
-from django_graph_api.graphql.types import Boolean, Float, Field, Int, List, String
+from django_graph_api.graphql.types import Boolean, Float, Field, Int, String
 
 schema = Schema()
 
@@ -47,10 +45,3 @@ def test_string_coerce():
     assert String.coerce_result(True) == 'True'
     assert String.coerce_result(4.9) == '4.9'
     assert String.coerce_result(None) is None
-
-
-def test_list_coerce():
-    manager = mock.Mock(spec=Manager)
-    manager.all.return_value = ['x', 'y', 'z']
-    assert List.coerce_result(manager) == ['x', 'y', 'z']
-    assert List.coerce_result((1, 2, 3)) == [1, 2, 3]

@@ -78,32 +78,26 @@ class Scalar(object):
     def name(self):
         return self.__class__.__name__
 
-    @classmethod
-    def coerce_result(cls, value):
-        if value is None:
-            return None
-        return cls.coerce_value(value)
-
 
 @schema.register_type
 class Int(Scalar):
     @classmethod
-    def coerce_value(cls, value):
-        return int(value)
+    def coerce_result(cls, value):
+        return None if value is None else int(value)
 
 
 @schema.register_type
 class Float(Scalar):
     @classmethod
-    def coerce_value(cls, value):
-        return float(value)
+    def coerce_result(cls, value):
+        return None if value is None else float(value)
 
 
 @schema.register_type
 class String(Scalar):
     @classmethod
-    def coerce_value(cls, value):
-        return str(value)
+    def coerce_result(cls, value):
+        return None if value is None else str(value)
 
 
 @schema.register_type
@@ -114,8 +108,8 @@ class Id(String):
 @schema.register_type
 class Boolean(Scalar):
     @classmethod
-    def coerce_value(cls, value):
-        return bool(value)
+    def coerce_result(cls, value):
+        return None if value is None else bool(value)
 
 
 @schema.register_type
