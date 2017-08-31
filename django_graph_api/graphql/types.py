@@ -1,5 +1,6 @@
-from collections import OrderedDict
 import copy
+
+from collections import OrderedDict
 
 from django.db.models import Manager
 from django.utils import six
@@ -69,10 +70,6 @@ class Field(object):
         self.name = selection.name
         self.obj = obj
 
-    @property
-    def type_(self):
-        raise NotImplementedError('Specific type ({}) should define a type_ field'.format(self.__class__.__name__))
-
 
 class Scalar(object):
     kind = SCALAR
@@ -81,25 +78,31 @@ class Scalar(object):
     def name(self):
         return self.__class__.__name__
 
+    @classmethod
+    def coerce_result(cls, value):
+        if value is None:
+            return None
+        return cls.coerce_value(value)
+
 
 @schema.register_type
 class Int(Scalar):
     @classmethod
-    def coerce_result(cls, value):
+    def coerce_value(cls, value):
         return int(value)
 
 
 @schema.register_type
 class Float(Scalar):
     @classmethod
-    def coerce_result(cls, value):
+    def coerce_value(cls, value):
         return float(value)
 
 
 @schema.register_type
 class String(Scalar):
     @classmethod
-    def coerce_result(cls, value):
+    def coerce_value(cls, value):
         return str(value)
 
 
@@ -111,7 +114,7 @@ class Id(String):
 @schema.register_type
 class Boolean(Scalar):
     @classmethod
-    def coerce_result(cls, value):
+    def coerce_value(cls, value):
         return bool(value)
 
 
@@ -187,8 +190,10 @@ class FloatField(Field):
 class IntegerField(Field):
     type_ = Int
 
+
 class BooleanField(Field):
     type_ = Boolean
+
 
 class RelatedField(Field):
     type_ = Object
