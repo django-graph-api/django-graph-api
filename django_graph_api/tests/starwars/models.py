@@ -3,7 +3,7 @@ from django.db import models
 
 class Episode(models.Model):
     name = models.CharField(max_length=255)
-    number = models.IntegerField(max_length=1)
+    number = models.IntegerField()
 
 
 class Starship(models.Model):
