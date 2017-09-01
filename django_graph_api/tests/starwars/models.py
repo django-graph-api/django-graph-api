@@ -12,8 +12,11 @@ class Starship(models.Model):
 
 class Character(models.Model):
     name = models.CharField(max_length=255)
-    friends = models.ManyToManyField('self')
-    appears_in = models.ManyToManyField(Episode)
+    friends = models.ManyToManyField('self', blank=True)
+    appears_in = models.ManyToManyField(Episode, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Human(Character):
