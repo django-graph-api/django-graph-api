@@ -50,3 +50,28 @@ def test_hero_name_and_friends_names():
             },
         }
     }
+
+
+def test_hero_name_and_episodes():
+    document = '''
+    {
+        hero {
+            name
+            appears_in {
+                name
+                number
+            }
+        }
+    }
+    '''
+    assert schema.execute(document) == {
+        'data': {
+            'hero': {
+                'name': 'R2-D2',
+                'appears_in': [{
+                    'name': 'A New Hope',
+                    'number': 4
+                }]
+            },
+        }
+    }
