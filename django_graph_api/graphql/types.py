@@ -1,5 +1,6 @@
-from collections import OrderedDict
 import copy
+
+from collections import OrderedDict
 
 from django.db.models import Manager
 from django.utils import six
@@ -39,6 +40,15 @@ class Field(object):
         Field.creation_counter += 1
 
     def get_value(self):
+        raw_value = self.get_raw_value()
+        if hasattr(self.type_, 'coerce_result'):
+            try:
+                return self.type_.coerce_result(raw_value)
+            except ValueError:
+                return None
+        return raw_value
+
+    def get_raw_value(self):
         if hasattr(self.obj, 'get_{}'.format(self.name)):
             return getattr(self.obj, 'get_{}'.format(self.name))()
 
@@ -71,20 +81,23 @@ class Scalar(object):
 
 @schema.register_type
 class Int(Scalar):
-    def coerce_result(self, value):
-        return int(value)
+    @classmethod
+    def coerce_result(cls, value):
+        return None if value is None else int(value)
 
 
 @schema.register_type
 class Float(Scalar):
-    def coerce_result(self, value):
-        return float(value)
+    @classmethod
+    def coerce_result(cls, value):
+        return None if value is None else float(value)
 
 
 @schema.register_type
 class String(Scalar):
-    def coerce_result(self, value):
-        return str(value)
+    @classmethod
+    def coerce_result(cls, value):
+        return None if value is None else str(value)
 
 
 @schema.register_type
@@ -94,8 +107,9 @@ class Id(String):
 
 @schema.register_type
 class Boolean(Scalar):
-    def coerce_result(self, value):
-        return bool(value)
+    @classmethod
+    def coerce_result(cls, value):
+        return None if value is None else bool(value)
 
 
 @schema.register_type
@@ -105,7 +119,10 @@ class List(object):
     def __init__(self, type_):
         self.type_ = type_
 
-    def coerce_result(self, values):
+    @classmethod
+    def coerce_result(cls, values):
+        if isinstance(values, Manager):
+            values = values.all()
         return list(values)
 
 
