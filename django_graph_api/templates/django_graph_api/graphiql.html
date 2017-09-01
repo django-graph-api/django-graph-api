@@ -19,22 +19,19 @@
 		<script src="//cdn.jsdelivr.net/react/15.4.2/react-dom.min.js"></script>
 
 		<!-- GraphiQL libraries -->
-		<link href="//cdn.jsdelivr.net/graphiql/{{graphiql_version}}/graphiql.css" rel="stylesheet" />
-		<script src="//cdn.jsdelivr.net/graphiql/{{graphiql_version}}/graphiql.min.js"></script>
+		<link href="//cdn.jsdelivr.net/npm/graphiql@{{graphiql_version}}/graphiql.css" rel="stylesheet" />
+		<script src="//cdn.jsdelivr.net/npm/graphiql@{{graphiql_version}}/graphiql.min.js"></script>
 
 	</head>
 	<body>
 		<div id="graphiql">Loading...</div>
 		<script>
-
-			/**
-			 * This GraphiQL example illustrates how to use some of GraphiQL's props
-			 * in order to enable reading and updating the URL parameters, making
-			 * link sharing of queries a little bit easier.
-			 *
-			 * This is only one example of this kind of feature, GraphiQL exposes
-			 * various React params to enable interesting integrations.
-			 */
+			// Parse the cookie value for a CSRF token
+			var csrftoken;
+			var cookies = ('; ' + document.cookie).split('; csrftoken=');
+			if (cookies.length == 2) {
+				csrftoken = cookies.pop().split(';').shift();
+			}
 
 			// Parse the search string to get url parameters.
 			var search = window.location.search;
@@ -85,17 +82,16 @@
 				history.replaceState(null, null, newSearch);
 			}
 
-			// Defines a GraphQL fetcher using the fetch API. You're not required to
-			// use fetch, and could instead implement graphQLFetcher however you like,
-			// as long as it returns a Promise or Observable.
+			// Defines a GraphQL fetcher using the fetch API.
 			function graphQLFetcher(graphQLParams) {
 				// This example expects a GraphQL server at the path /graphql.
 				// Change this to point wherever you host your GraphQL server.
-				return fetch('/graphql', {
+				return fetch('{{ graphql_url }}', {
 					method: 'post',
 					headers: {
 						'Accept': 'application/json',
 						'Content-Type': 'application/json',
+						'X-CSRFToken': csrftoken,
 					},
 					body: JSON.stringify(graphQLParams),
 					credentials: 'include',
