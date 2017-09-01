@@ -5,6 +5,9 @@ class Episode(models.Model):
     name = models.CharField(max_length=255)
     number = models.IntegerField()
 
+    def __str__(self):
+        return '{}: {}'.format(self.number, self.name)
+
 
 class Starship(models.Model):
     name = models.CharField(max_length=255)
