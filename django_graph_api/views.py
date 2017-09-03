@@ -2,9 +2,15 @@ import json
 
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import (
+    csrf_protect,
+    ensure_csrf_cookie,
+)
 from django.views.generic import View
 
 
+@method_decorator([ensure_csrf_cookie, csrf_protect], name='dispatch')
 class GraphQLView(View):
     graphiql_version = '0.11.3'
     graphql_url = '/graphql'
