@@ -17,7 +17,7 @@ class GraphQLView(View):
             template=[self.template_name],
             context={
                 'graphiql_version': self.graphiql_version,
-                'graphql_url': '/graphql',
+                'graphql_url': self.graphql_url,
             },
         )
 
