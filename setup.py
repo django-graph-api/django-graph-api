@@ -18,9 +18,6 @@ setup(
     install_requires=(
         'graphql-py>=0.6',
     ),
-    setup_requires=(
-        'pytest-runner',
-    ),
     tests_require=(
         'pytest',
         'pytest-django',
