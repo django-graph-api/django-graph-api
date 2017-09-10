@@ -121,6 +121,8 @@ class List(object):
 
     @classmethod
     def coerce_result(cls, values):
+        if values is None:
+            return None
         if isinstance(values, Manager):
             values = values.all()
         return list(values)
