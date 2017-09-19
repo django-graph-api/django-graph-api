@@ -3,7 +3,7 @@ import pytest
 from unittest import mock
 
 from django_graph_api.graphql.schema import Schema
-from django_graph_api.graphql.types import Boolean, Float, Field, Int, String
+from django_graph_api.graphql.types import Boolean, Float, Field, Int, List, String
 
 schema = Schema()
 
@@ -45,3 +45,9 @@ def test_string_coerce():
     assert String.coerce_result(True) == 'True'
     assert String.coerce_result(4.9) == '4.9'
     assert String.coerce_result(None) is None
+
+
+def test_list_coerce():
+    assert List.coerce_result({True}) == [True]
+    assert List.coerce_result((1, 2, 3)) == [1, 2, 3]
+    assert List.coerce_result(None) is None

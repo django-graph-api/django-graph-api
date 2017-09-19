@@ -28,9 +28,12 @@ class GraphQLView(View):
         )
 
     def post(self, request, *args, **kwargs):
-        request_data = self.get_request_data()
-        response_data = self.schema.execute(request_data['query'])
-        return JsonResponse(response_data)
+        try:
+            request_data = self.get_request_data()
+            response_data = self.schema.execute(request_data['query'])
+            return JsonResponse(response_data)
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
 
     def get_request_data(self):
         """
