@@ -15,13 +15,11 @@ from .models import (
 schema = Schema()
 
 
-@schema.register_type
 class Episode(Object):
     name = CharField()
     number = IntegerField()
 
 
-@schema.register_type
 class Character(Object):
     name = CharField()
     friends = ManyRelatedField('self')
@@ -29,7 +27,6 @@ class Character(Object):
 
 
 @schema.register_query_root
-@schema.register_type
 class QueryRoot(Object):
     hero = RelatedField(Character)
 
