@@ -5,8 +5,6 @@ from collections import OrderedDict
 from django.db.models import Manager
 from django.utils import six
 
-from .schema import schema
-
 
 SCALAR = 'SCALAR'
 OBJECT = 'OBJECT'
@@ -16,15 +14,6 @@ ENUM = 'ENUM'
 INPUT_OBJECT = 'INPUT_OBJECT'
 LIST = 'LIST'
 NON_NULL = 'NON_NULL'
-
-schema.register_type_kind(SCALAR)
-schema.register_type_kind(OBJECT)
-schema.register_type_kind(INTERFACE)
-schema.register_type_kind(UNION)
-schema.register_type_kind(ENUM)
-schema.register_type_kind(INPUT_OBJECT)
-schema.register_type_kind(LIST)
-schema.register_type_kind(NON_NULL)
 
 
 class Field(object):
@@ -79,40 +68,34 @@ class Scalar(object):
         return self.__class__.__name__
 
 
-@schema.register_type
 class Int(Scalar):
     @classmethod
     def coerce_result(cls, value):
         return None if value is None else int(value)
 
 
-@schema.register_type
 class Float(Scalar):
     @classmethod
     def coerce_result(cls, value):
         return None if value is None else float(value)
 
 
-@schema.register_type
 class String(Scalar):
     @classmethod
     def coerce_result(cls, value):
         return None if value is None else str(value)
 
 
-@schema.register_type
 class Id(String):
     name = 'ID'
 
 
-@schema.register_type
 class Boolean(Scalar):
     @classmethod
     def coerce_result(cls, value):
         return None if value is None else bool(value)
 
 
-@schema.register_type
 class List(object):
     kind = LIST
 
@@ -143,7 +126,6 @@ class ObjectMetaclass(type):
         return super(ObjectMetaclass, mcs).__new__(mcs, name, bases, attrs)
 
 
-@schema.register_type
 class Object(six.with_metaclass(ObjectMetaclass)):
     kind = OBJECT
 
