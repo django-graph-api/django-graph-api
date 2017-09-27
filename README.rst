@@ -7,7 +7,7 @@ Django_ web framework. The project began at `DjangoCon US 2017`_.
 Why Not Graphene?
 -----------------
 
-Graphene_ is the standard Python implmentation of GraphQL, and it is far more
+Graphene_ is the standard Python implementation of GraphQL, and it is far more
 mature than Django Graph API. So why should you use this project instead of
 Graphene?
 
@@ -34,6 +34,13 @@ Once you're done writing code, you will need to open a pull request with your ch
 If you need help with something, that's totally fine. Do what you can and then ask for what you need! Just be aware that there may be a delay before someone comes along who has time to provide it.
 
 Once your pull request is complete, one of the core contributors will review it and give feedback or merge as appropriate.
+
+Documentation
+^^^^^^^^^^^^^
+
+To create the docs locally, go to the ``docs`` directory, install the requirements, and run ``make html``.
+
+The resulting ``index.html`` file will be in ``_build/html/``.
 
 Code of conduct
 ---------------
