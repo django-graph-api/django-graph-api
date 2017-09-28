@@ -1,9 +1,12 @@
-Django Graph API
-================
+Django Graph API |travis| |gitter|
+==================================
 
-.. image:: https://badges.gitter.im/django-graph-api/Lobby.svg
+.. |gitter| image:: https://badges.gitter.im/django-graph-api/Lobby.svg
    :alt: Join the chat at https://gitter.im/django-graph-api/Lobby
    :target: https://gitter.im/django-graph-api/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+.. |travis| image:: https://travis-ci.org/melinath/django-graph-api.svg?branch=master
+   :alt: Build status on travis-ci
+   :target: https://travis-ci.org/melinath/django-graph-api
 
 This is an implementation of GraphQL_ in Python_, designed to work with the
 Django_ web framework. The project began at `DjangoCon US 2017`_.
