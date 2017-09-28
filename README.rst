@@ -35,6 +35,12 @@ If you need help with something, that's totally fine. Do what you can and then a
 
 Once your pull request is complete, one of the core contributors will review it and give feedback or merge as appropriate.
 
+To run the tests, run ``pytest``.
+
+If you have any questions or want to start contributing, chat with us on gitter_.
+
+.. _gitter: https://gitter.im/django-graph-api/Lobby
+
 Documentation
 ^^^^^^^^^^^^^
 
