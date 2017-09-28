@@ -3,33 +3,22 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to django-graph-api's documentation!
+Django Graph API documentation
 ============================================
 
-**Django Graph API** is an implementation of GraphQL in Python, designed to work with the Django web framework.
+.. image:: https://badges.gitter.im/django-graph-api/Lobby.svg
+   :alt: Join the chat at https://gitter.im/django-graph-api/Lobby
+   :target: https://gitter.im/django-graph-api/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
+
+**Django Graph API** is an implementation of a GraphQL server in Python, designed to work with the Django web framework.
 
 The project began at DjangoCon US 2017.
-
-Why Not Graphene?
-++++++++++++++++++++++++++++++++++++++++++++
-
-Graphene is the standard Python implmentation of GraphQL, and it is far more mature than Django Graph API. So why should you use this project instead of Graphene?
-
-* Django Graph API is Pythonic, while Graphene was ported over from Node.js and follows Javascript idioms.
-
 
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   tutorial
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   getting_started
+   define_nodes
