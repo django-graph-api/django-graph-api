@@ -14,10 +14,11 @@ Django Graph API documentation
    :alt: Build status on travis-ci
    :target: https://travis-ci.org/melinath/django-graph-api
 
-**Django Graph API** is an implementation of a GraphQL server in Python, designed to work with the Django web framework.
+**Django Graph API** lets you build a GraphQL API quickly and is designed to work with the Django web framework.
 
-The project began at DjangoCon US 2017.
+For an introduction to GraphQL, you can read the official documentation_.
 
+.. _documentation: http://graphql.org/learn/
 
 .. toctree::
    :maxdepth: 2

@@ -1,13 +1,20 @@
-Defining nodes
+Filling out your schema
 ===========================================
 
-Define some nodes
+While that setup was certainly quick and easy, it is not very useful yet. Next you will want to create a graph-like schema that maps to your business logic so you can query against it.
+
+Using the Star Wars example from the GraphQL documentation, let's assume we have a Django app with the following model structure:
+Characters are friends with other Characters and appear in Episodes.
+
+Adding nodes
+_______________________
+
+Create a node for each of your models
 ::
     from django_graph_api.graphql.types import (
         Object,
         CharField,
         IntegerField,
-        ManyRelatedField,
     )
 
     class Episode(Object):
@@ -16,15 +23,27 @@ Define some nodes
 
     class Character(Object):
         name = CharField()
+
+Adding edges
+____________
+
+Create connections between your models
+::
+    from django_graph_api.graphql.types import ManyRelatedField
+
+    class Character(Object):
+        name = CharField()
         friends = ManyRelatedField('self')
         appears_in = ManyRelatedField(Episode)
 
-Create at least one query root
+
+Define query roots
+__________________
+
+By defining query roots, you can control how the user can access the schema.
 ::
     from django_graph_api.types import RelatedField
-    from .models import (
-        Character as CharacterModel,
-    )
+    from .models import Character as CharacterModel
 
     @schema.register_query_root
     class QueryRoot(Object):
@@ -33,3 +52,19 @@ Create at least one query root
         def get_hero(self):
             return CharacterModel.objects.get(name='R2-D2')
 
+Sample queries
+______________
+
+You should now be able to create more complicated queries and make use of GraphQL's nested object feature.
+::
+    {
+        hero {
+            friends {
+                name
+            }
+            appears_in {
+                name
+                number
+            }
+        }
+    }
