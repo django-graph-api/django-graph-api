@@ -14,11 +14,58 @@ Django Graph API documentation
    :alt: Build status on travis-ci
    :target: https://travis-ci.org/melinath/django-graph-api
 
-**Django Graph API** lets you build a GraphQL API quickly and is designed to work with the Django web framework.
+**Django Graph API** lets you quickly build GraphQL_ APIs in Python_. It is designed to work with the Django_ web framework.
 
-For an introduction to GraphQL, you can read the official documentation_.
+What is GraphQL?
+++++++++++++++++
 
+GraphQL is an API query language created by Facebook in 2012 and open-sourced in 2015. Some of its benefits over REST are:
+- getting the data you need and nothing more
+- getting nested fields without extra requests
+- strong typing
+
+For example, if you wanted to get your name and birthday, and the names and birthdays of all of your friends:
+In REST you might have two requests:
+::
+   GET http://myapp/api/user/me
+   GET http://myapp/api/user/me/friends
+
+In GraphQL:
+::
+   POST http://myapp/graphql
+   {
+       me {
+           name
+           birthday
+           friends {
+               name
+               birthday
+           }
+       }
+   }
+
+For an full introduction to GraphQL, you can read the official documentation_.
+
+If you have a Github account, you can try out their GraphQL API explorer_.
+
+Why Django Graph API?
++++++++++++++++++++++
+
+We see GraphQL as a promising alternative to REST. Unfortunately, the Python community is a little behind on adopting it.
+
+We wanted to create a library that embraces all of the things we love about Python:
+
+- simple, readable, and elegant
+- great documentation
+- supportive open-source community
+
+If you'd like to help contribute, read our contributing guidelines.
+
+.. _GraphQL: http://graphql.org/
 .. _documentation: http://graphql.org/learn/
+.. _Django: https://www.djangoproject.com/
+.. _Python: https://www.python.org/
+.. _explorer: https://developer.github.com/v4/explorer/
 
 .. toctree::
    :maxdepth: 2
