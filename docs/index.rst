@@ -67,9 +67,9 @@ If you have a Github account, you can try out their `GraphQL API explorer`_.
 Why Django Graph API?
 +++++++++++++++++++++
 
-We see GraphQL as a promising alternative to REST. Unfortunately, the Python community is a little behind on adopting it.
+We see GraphQL as a promising alternative to REST.
 
-We wanted to create a library that embraces all of the things we love about Python:
+In order to increase its usage amongst Python developers, we are trying to create a library that stays up to date with the GraphQL specs and that embraces all of the things we love about Python:
 
 - simple, readable, and elegant
 - great documentation
@@ -88,8 +88,18 @@ If you'd like to help contribute_, read our contributing guidelines and chat wit
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: User Guide
 
    getting_started
    define_nodes
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Reference Documentation
+   
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Developer Documentation
+
    contribute
