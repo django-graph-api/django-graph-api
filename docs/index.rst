@@ -14,26 +14,22 @@ Django Graph API documentation
    :alt: Build status on travis-ci
    :target: https://travis-ci.org/melinath/django-graph-api
 
-**Django Graph API** lets you quickly build GraphQL_ APIs in Python_. It is designed to work with the Django_ web framework.
+`**Django Graph API**`_ lets you quickly build GraphQL_ APIs in Python_. It is designed to work with the Django_ web framework.
 
 What is GraphQL?
 ++++++++++++++++
 
 GraphQL is an API query language created by Facebook in 2012 and open-sourced in 2015. Some of its benefits over REST are:
+
 - getting the data you need and nothing more
 - getting nested fields without extra requests
 - strong typing
 
-For example, if you wanted to get your name and birthday, and the names and birthdays of all of your friends:
-In REST you might have two requests:
+For example, if you wanted to get your name and birthday, and the names and birthdays of all of your friends, you could query an API like this:
 ::
-   GET http://myapp/api/user/me
-   GET http://myapp/api/user/me/friends
 
-In GraphQL:
-::
    POST http://myapp/graphql
-   {
+   "{
        me {
            name
            birthday
@@ -42,11 +38,31 @@ In GraphQL:
                birthday
            }
        }
+   }"
+
+And an example JSON response would be:
+::
+
+   {
+      "me": {
+         "name": "Buffy Summers",
+         "birthday": "1981-01-19",
+         "friends": [
+            {
+               "name": "Willow Rosenberg",
+               "birthday": "1981-08-01"
+            },
+            {
+               "name": "Xander Harris",
+               "birthday": null
+            }
+         ]
+      }
    }
 
-For an full introduction to GraphQL, you can read the official documentation_.
+For an full introduction to GraphQL, you can read the `official documentation`_.
 
-If you have a Github account, you can try out their GraphQL API explorer_.
+If you have a Github account, you can try out their `GraphQL API explorer`_.
 
 Why Django Graph API?
 +++++++++++++++++++++
@@ -59,13 +75,16 @@ We wanted to create a library that embraces all of the things we love about Pyth
 - great documentation
 - supportive open-source community
 
-If you'd like to help contribute, read our contributing guidelines.
+If you'd like to help contribute_, read our contributing guidelines and chat with us on Gitter_.
 
 .. _GraphQL: http://graphql.org/
-.. _documentation: http://graphql.org/learn/
+.. _official documentation: http://graphql.org/learn/
 .. _Django: https://www.djangoproject.com/
 .. _Python: https://www.python.org/
-.. _explorer: https://developer.github.com/v4/explorer/
+.. _GraphQL API explorer: https://developer.github.com/v4/explorer/
+.. _Gitter: https://gitter.im/django-graph-api/Lobby
+.. _contribute: contribute.html
+.. _**Django Graph API**: https://github.com/melinath/django-graph-api
 
 .. toctree::
    :maxdepth: 2
@@ -73,3 +92,4 @@ If you'd like to help contribute, read our contributing guidelines.
 
    getting_started
    define_nodes
+   contribute
