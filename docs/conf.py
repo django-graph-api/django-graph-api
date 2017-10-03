@@ -19,7 +19,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../django_graph_api'))
+sys.path.insert(0, os.path.abspath('../django_graph_api/graphql'))
 
 
 # -- General configuration ------------------------------------------------

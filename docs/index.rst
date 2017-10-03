@@ -97,9 +97,14 @@ If you'd like to help contribute_, read our contributing guidelines and chat wit
    :maxdepth: 2
    :caption: Reference Documentation
 
+   api
 
 .. toctree::
    :maxdepth: 1
    :caption: Developer Documentation
 
    contribute
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
