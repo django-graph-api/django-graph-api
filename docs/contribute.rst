@@ -1,5 +1,5 @@
-Contributing
-============
+Contributing Guidelines
+=======================
 
 We welcome contributions! We use `Github projects`_ to organize our ticket workflow. If there's a particular issue you would like to work on and it isn't already assigned, feel free to assign it to yourself and start work! If you just want to lend a hand, check out the current project and choose one of the tickets from the backlog.
 
@@ -9,13 +9,74 @@ Once you're done writing code, you will need to open a pull request with your ch
 - All tests must be passing.
 - Any relevant documentation has been updated.
 
-If you need help with something, that's totally fine. Do what you can and then ask for what you need! Just be aware that there may be a delay before someone comes along who has time to provide it.
+If you need help with something, that's totally fine. Do what you can and then ask for what you need, either through your PR or on gitter_. Just be aware that there may be a delay before someone comes along who has time to provide it.
 
 Once your pull request is complete, one of the core contributors will review it and give feedback or merge as appropriate.
 
-To run the tests, run ``pytest``.
-
-If you have any questions or want to start contributing, chat with us on gitter_.
+If you have any questions or just want to discuss the project, chat with us on gitter_.
 
 .. _gitter: https://gitter.im/django-graph-api/Lobby
 .. _Github projects: https://github.com/melinath/django-graph-api/projects
+
+Code of conduct
+---------------
+
+This project adheres to and supports the `Django Code of Conduct`_.
+
+.. _Django Code of Conduct: https://www.djangoproject.com/conduct/
+
+Style guide
+-----------
+
+This project uses the `Django coding style guide`_.
+
+.. _Django coding style guide: https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/
+
+
+Start developing
+================
+
+Clone the Github_ repo
+::
+
+    git clone https://github.com/melinath/django-graph-api/
+
+Create and activate a virtualenv for the project.
+
+Install the project and test requirements
+::
+
+    pip install -r requirements.txt
+    pip install -r requirements-test.txt
+
+To run the sample Star Wars project, run
+::
+
+    python django_graph_api/tests/starwars/manage.py runserver
+
+You should be able to see the GraphiQL app and run queries by navigating to ``localhost:8000/graphql``.
+
+To run the tests, run
+::
+
+    pytest
+
+.. _Github: https://github.com/melinath/django-graph-api/
+
+
+Build the docs
+--------------
+
+Navigate to the ``docs`` directory.
+
+Install the docs requirements
+::
+
+    pip install -r requirements.txt
+
+Build the docs html files
+::
+
+    make html
+
+View the docs by opening ``_build/html/index.html`` in your browser.

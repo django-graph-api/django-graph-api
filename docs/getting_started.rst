@@ -2,7 +2,7 @@ Getting started
 ============================================
 
 Install
-+++++++
+-------
 
 Download or clone the repo_ and navigate to the directory.
 ::
@@ -11,7 +11,7 @@ Download or clone the repo_ and navigate to the directory.
 *Note:* once the project is up on PyPI you can run ``pip install django-graph-api``
 
 Create a basic schema
-+++++++++++++++++++++
+---------------------
 
 GraphQL APIs require a graph-like schema and at least one entry-point (query root) to the graph.
 
@@ -30,7 +30,7 @@ Here is an example of a schema with a single node.
             return 'World'
 
 Set up a url to access the schema
-+++++++++++++++++++++++++++++++++
+---------------------------------
 
 GraphQL APIs use a single url endpoint to access the schema.
 ::

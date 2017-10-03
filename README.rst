@@ -41,13 +41,6 @@ If you have any questions or want to start contributing, chat with us on gitter_
 
 .. _gitter: https://gitter.im/django-graph-api/Lobby
 
-Documentation
-^^^^^^^^^^^^^
-
-To create the docs locally, go to the ``docs`` directory, install the requirements, and run ``make html``.
-
-The resulting ``index.html`` file will be in ``_build/html/``.
-
 Code of conduct
 ---------------
 
@@ -61,3 +54,10 @@ Style guide
 This project uses the `Django coding style guide`_.
 
 .. _Django coding style guide: https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/
+
+Documentation
+^^^^^^^^^^^^^
+
+To create the docs locally, go to the ``docs`` directory, install the requirements, and run ``make html``.
+
+The resulting ``index.html`` file will be in ``_build/html/``.

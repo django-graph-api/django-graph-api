@@ -17,7 +17,7 @@ Django Graph API documentation
 `**Django Graph API**`_ lets you quickly build GraphQL_ APIs in Python_. It is designed to work with the Django_ web framework.
 
 What is GraphQL?
-++++++++++++++++
+----------------
 
 GraphQL is an API query language created by Facebook in 2012 and open-sourced in 2015. Some of its benefits over REST are:
 
@@ -65,7 +65,7 @@ For an full introduction to GraphQL, you can read the `official documentation`_.
 If you have a Github account, you can try out their `GraphQL API explorer`_.
 
 Why Django Graph API?
-+++++++++++++++++++++
+---------------------
 
 We see GraphQL as a promising alternative to REST.
 
@@ -96,7 +96,7 @@ If you'd like to help contribute_, read our contributing guidelines and chat wit
 .. toctree::
    :maxdepth: 2
    :caption: Reference Documentation
-   
+
 
 .. toctree::
    :maxdepth: 1
