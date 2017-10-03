@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Django Graph API documentation
+Django Graph API
 ============================================
 |travis| |gitter|
 
@@ -14,7 +14,7 @@ Django Graph API documentation
    :alt: Build status on travis-ci
    :target: https://travis-ci.org/melinath/django-graph-api
 
-`**Django Graph API**`_ lets you quickly build GraphQL_ APIs in Python_. It is designed to work with the Django_ web framework.
+**Django Graph API** lets you quickly build GraphQL_ APIs in Python_. It is designed to work with the Django_ web framework.
 
 What is GraphQL?
 ----------------
@@ -75,7 +75,7 @@ In order to increase its usage amongst Python developers, we are trying to creat
 - great documentation
 - supportive open-source community
 
-If you'd like to help contribute_, read our contributing guidelines and chat with us on Gitter_.
+If you'd like to help contribute, read our `contributing guidelines`_ and chat with us on Gitter_.
 
 .. _GraphQL: http://graphql.org/
 .. _official documentation: http://graphql.org/learn/
@@ -83,8 +83,7 @@ If you'd like to help contribute_, read our contributing guidelines and chat wit
 .. _Python: https://www.python.org/
 .. _GraphQL API explorer: https://developer.github.com/v4/explorer/
 .. _Gitter: https://gitter.im/django-graph-api/Lobby
-.. _contribute: contribute.html
-.. _**Django Graph API**: https://github.com/melinath/django-graph-api
+.. _contributing guidelines: contribute.html
 
 .. toctree::
    :maxdepth: 2
@@ -99,12 +98,10 @@ If you'd like to help contribute_, read our contributing guidelines and chat wit
 
    api
 
+* :ref:`modindex`
+
 .. toctree::
    :maxdepth: 1
    :caption: Developer Documentation
 
    contribute
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

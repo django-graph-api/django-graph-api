@@ -114,7 +114,7 @@ html_sidebars = {
 }
 
 # If true, links to the reST sources are added to the pages.
-html_show_sourcelink = False
+# html_show_sourcelink = False
 
 
 # -- Options for HTMLHelp output ------------------------------------------

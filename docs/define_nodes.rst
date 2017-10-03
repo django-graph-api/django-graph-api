@@ -37,21 +37,26 @@ Create connections between your models
         appears_in = ManyRelatedField(Episode)
 
 
-Define query roots
-------------------
+Defining query roots
+--------------------
 
 By defining query roots, you can control how the user can access the schema.
 ::
 
     from django_graph_api.types import RelatedField
     from .models import Character as CharacterModel
+    from .models import Episode as EpisodeModel
 
     @schema.register_query_root
     class QueryRoot(Object):
         hero = RelatedField(Character)
+        episodes = ManyRelatedField(Episode)
 
         def get_hero(self):
             return CharacterModel.objects.get(name='R2-D2')
+
+        def get_episodes(self):
+            return EpisodeModel.objects.all()
 
 Sample queries
 --------------
