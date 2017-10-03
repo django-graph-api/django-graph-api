@@ -75,6 +75,8 @@ In order to increase its usage amongst Python developers, we are trying to creat
 - great documentation
 - supportive open-source community
 
+Django Graph API is still a young project and doesn't yet support many of the key GraphQL features, such as filtering and mutations. See a list of `supported and unsupported features`_.
+
 If you'd like to help contribute, read our `contributing guidelines`_ and chat with us on Gitter_.
 
 .. _GraphQL: http://graphql.org/
@@ -84,6 +86,7 @@ If you'd like to help contribute, read our `contributing guidelines`_ and chat w
 .. _GraphQL API explorer: https://developer.github.com/v4/explorer/
 .. _Gitter: https://gitter.im/django-graph-api/Lobby
 .. _contributing guidelines: contribute.html
+.. _supported and unsupported features: features.html
 
 .. toctree::
    :maxdepth: 2
@@ -105,3 +108,4 @@ If you'd like to help contribute, read our `contributing guidelines`_ and chat w
    :caption: Developer Documentation
 
    contribute
+   features
