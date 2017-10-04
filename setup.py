@@ -55,6 +55,8 @@ setup(
     version=django_graph_api.__version__,
     description='A Python implementation of GraphQL designed for use with Django',
     long_description=open('README.rst', 'r').read(),
+    author='Stephen Burrows',
+    author_email='stephen.r.burrows@gmail.com',
     license=open('LICENSE', 'r').read(),
     url='https://github.com/melinath/django-graph-api',
     zip_safe=False,
