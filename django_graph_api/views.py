@@ -33,6 +33,10 @@ class GraphQLView(View):
             response_data = self.schema.execute(request_data['query'])
             return JsonResponse(response_data)
         except Exception as e:
+            if isinstance(e, KeyError) and str(e) == "'__schema'":
+                return JsonResponse({
+                    'error': 'This version of django-graph-api does not support introspection',
+                })
             return JsonResponse({'error': str(e)})
 
     def get_request_data(self):

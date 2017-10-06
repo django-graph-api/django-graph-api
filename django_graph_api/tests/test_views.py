@@ -52,3 +52,19 @@ def test_post__csrf_required(execute):
     )
     assert response.status_code == 403
     execute.assert_not_called()
+
+
+def test_post__introspection_error():
+    query = 'query IntrospectionQuery {__schema }'
+    client = Client()
+    response = client.post(
+        '/graphql',
+        json.dumps({
+            'query': query,
+        }),
+        content_type='application/json',
+        HTTP_ACCEPT='application/json',
+    )
+    assert isinstance(response, JsonResponse)
+    assert response.status_code == 200
+    assert response.json() == {'error': 'This version of django-graph-api does not support introspection'}
