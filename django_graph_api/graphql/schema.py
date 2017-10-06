@@ -12,8 +12,14 @@ class Schema(object):
     def execute(self, document):
         parser = GraphQLParser()
         ast = parser.parse(document)
+
+        query_ast = ast.definitions[0]
+
+        if any(selection.name == '__schema' for selection in query_ast.selections):
+            raise NotImplementedError('This version of django-graph-api does not support introspection')
+
         return {
-            'data': self.query_root(ast.definitions[0], None).serialize(),
+            'data': self.query_root(query_ast, None).serialize(),
         }
 
 
