@@ -1,7 +1,7 @@
-from ..schema import schema
+from test_app.schema import schema
 
 
-def test_hero_name():
+def test_hero_name(starwars_data):
     document = '''
     {
         hero {
@@ -18,7 +18,7 @@ def test_hero_name():
     }
 
 
-def test_hero_name_and_friends_names():
+def test_hero_name_and_friends_names(starwars_data):
     document = '''
     {
         hero {
@@ -52,7 +52,7 @@ def test_hero_name_and_friends_names():
     }
 
 
-def test_hero_name_and_episodes():
+def test_hero_name_and_episodes(starwars_data):
     document = '''
     {
         hero {
