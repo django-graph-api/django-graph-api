@@ -12,3 +12,13 @@ from .graphql.types import (
     RelatedField,
 )
 from .views import GraphQLView
+__all__ = ('Schema',
+           'BooleanField',
+           'CharField',
+           'FloatField',
+           'IdField',
+           'IntegerField',
+           'ManyRelatedField',
+           'Object',
+           'RelatedField',
+           'GraphQLView')
