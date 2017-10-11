@@ -1,13 +1,13 @@
 import pytest
 
-from ..models import (
+from test_app.models import (
     Droid,
     Episode,
     Human,
 )
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def starwars_data(transactional_db):
     luke = Human.objects.create(
         id=1000,

@@ -17,7 +17,7 @@ def test_get_request_graphiql():
     assert 'csrftoken' in response.cookies
 
 
-@mock.patch('django_graph_api.tests.urls.schema.execute')
+@mock.patch('test_project.urls.schema.execute')
 def test_post_request_executed(execute):
     execute.return_value = {}
     query = 'this is totally a query'
@@ -37,7 +37,7 @@ def test_post_request_executed(execute):
 
 
 @modify_settings(MIDDLEWARE={'remove': 'django.middleware.csrf.CsrfViewMiddleware'})
-@mock.patch('django_graph_api.tests.urls.schema.execute')
+@mock.patch('test_project.urls.schema.execute')
 def test_post__csrf_required(execute):
     execute.return_value = {}
     query = 'this is totally a query'
