@@ -30,19 +30,59 @@ and define their fields.
     class Character(Object):
         name = CharField()
 
+You can also override a Django model's field in the Graph API
+or create an additional field.
+::
+
+    class Episode(Object):
+        ...
+        long_name = CharField()
+
+    def get_long_name(self):
+        return 'Episode {}: {}'.format(
+            int_to_roman_numeral(self.number),
+            self.name)
+
 Adding edges - Relationships
 ----------------------------
 
-Define relationships between the objects.
+Define relationship fields between the objects.
+
+Many-to-many, 1-to-many relationships
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If querying on the relationship should return a **list**,
+use ``ManyRelatedField``.
 ::
 
     from django_graph_api import ManyRelatedField
 
     class Character(Object):
-        name = CharField()
+        ...
         friends = ManyRelatedField('self')
         appears_in = ManyRelatedField(Episode)
 
+
+1-to-1, many-to-1 relationships
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If querying on the relationship should return an **object**,
+use ``RelatedField``.
+::
+
+    from django_graph_api import RelatedField
+    from .models import Episode as EpisodeModel
+
+    class Episode(Object):
+        ...
+        previous = RelatedField('self')
+        next = RelatedField('self')
+
+        get_previous(self):
+            return EpisodeModel.objects.filter(number=self.number-1).first()
+
+        get_next(self):
+            return EpisodeModel.objects.filter(number=self.number+1).first()
 
 Defining query roots
 --------------------

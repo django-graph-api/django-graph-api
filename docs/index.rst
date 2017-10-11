@@ -93,7 +93,7 @@ If you'd like to help contribute, read our `contributing guidelines`_ and chat w
    :caption: User Guide
 
    getting_started
-   define_nodes
+   define_schema
 
 .. toctree::
    :maxdepth: 2
