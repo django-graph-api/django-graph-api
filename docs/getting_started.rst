@@ -9,6 +9,8 @@ Download or clone the repo_ and navigate to the directory.
 
     pip install django-graph-api
 
+.. _repo: https://github.com/melinath/django-graph-api
+
 Create a basic schema
 ---------------------
 
@@ -27,7 +29,7 @@ Here is an example of a schema with a single node.
         hello = CharField()
 
         def get_hello(self):
-            return 'World'
+            return 'world'
 
 Set up a url to access the schema
 ---------------------------------
@@ -42,8 +44,50 @@ GraphQL APIs use a single url endpoint to access the schema.
         url(r'^graphql$', GraphQLView.as_view(schema=schema)),
     ]
 
-This url will act as both the GraphQL endpoint to send AJAX requests too, and be the url that allows you to access the GraphiQL (graphical) application.
+This url does two things:
 
-GraphiQL allows you to run queries against your API and see the results immediately.
+1. Handles GraphQL AJAX requests
+2. Displays the GraphiQL (graphical) application
 
-.. _repo: https://github.com/melinath/django-graph-api
+Query the schema
+----------------
+
+GraphQL queries have a JSON-like structure and return JSON.
+
+You should now be able to run the following query:
+::
+
+   {
+      hello
+   }
+
+And receive the following response:
+::
+
+   {
+      "data": {
+         "hello": "world"
+      }
+   }
+
+Using GraphiQL
+^^^^^^^^^^^^^^
+
+GraphiQL allows you
+to run queries against your API
+and see the results immediately.
+
+In your browser,
+go to ``localhost:8000/graphql`` to view it.
+
+.. image:: images/graphiql_hello.png
+   :alt: alternate text
+   :align: center
+
+Using AJAX
+^^^^^^^^^^
+
+You can also query the schema
+by sending a POST request
+to the endpoint ``localhost:8000/graphql``
+with the GraphQL query as the body.
