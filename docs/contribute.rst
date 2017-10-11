@@ -67,16 +67,13 @@ To run the tests, run
 Build the docs
 --------------
 
-Navigate to the ``docs`` directory.
-
-Install the docs requirements
+Navigate to the ``docs`` directory,
+install the docs requirements,
+then build the docs files as html:
 ::
 
+    cd docs
     pip install -r requirements.txt
-
-Build the docs html files
-::
-
     make html
 
 View the docs by opening ``_build/html/index.html`` in your browser.

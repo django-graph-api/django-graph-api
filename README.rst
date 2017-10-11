@@ -65,6 +65,14 @@ This project uses the `Django coding style guide`_.
 Documentation
 ^^^^^^^^^^^^^
 
-To create the docs locally, go to the ``docs`` directory, install the requirements, and run ``make html``.
+To create the docs locally,
+navigate to the ``docs`` directory,
+install the docs requirements,
+then build the docs files as html:
+::
+
+   cd docs
+   pip install -r requirements.txt
+   make html
 
 The resulting ``index.html`` file will be in ``_build/html/``.

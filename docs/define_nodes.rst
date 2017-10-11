@@ -1,17 +1,23 @@
-Create a full schema
-=======================
-While that setup was certainly quick and easy, it is not very useful yet. Next you will want to create a graph-like schema that maps to your business logic so you can query against it.
+Defining the schema
+===================
+GraphQL requires a graph-like schema to query against.
+The nodes and edges of the graph will be
+the objects and relationships in your API.
 
-Using the Star Wars example from the GraphQL documentation_, let's assume we have a Django app with the following model structure:
-Characters are friends with other Characters and appear in Episodes.
+Using the Star Wars example from the GraphQL documentation_,
+let's assume we have a Django app with the following model structure:
 
-Adding nodes
-------------
+- Characters appear in Episodes.
+- Characters are friends with other Characters.
 
-Create a node for each of your models
+Adding nodes - Objects
+----------------------
+
+Create an Object node for each of the models
+and define their fields.
 ::
 
-    from django_graph_api.graphql.types import (
+    from django_graph_api import (
         Object,
         CharField,
         IntegerField,
@@ -24,12 +30,13 @@ Create a node for each of your models
     class Character(Object):
         name = CharField()
 
-Adding edges
-------------
-Create connections between your models
+Adding edges - Relationships
+----------------------------
+
+Define relationships between the objects.
 ::
 
-    from django_graph_api.graphql.types import ManyRelatedField
+    from django_graph_api import ManyRelatedField
 
     class Character(Object):
         name = CharField()
@@ -43,7 +50,7 @@ Defining query roots
 By defining query roots, you can control how the user can access the schema.
 ::
 
-    from django_graph_api.types import RelatedField
+    from django_graph_api import RelatedField
     from .models import Character as CharacterModel
     from .models import Episode as EpisodeModel
 
@@ -61,7 +68,8 @@ By defining query roots, you can control how the user can access the schema.
 Sample queries
 --------------
 
-You should now be able to create more complicated queries and make use of GraphQL's nested object feature.
+You should now be able to create more complicated queries
+and make use of GraphQL's nested objects feature.
 ::
 
     {

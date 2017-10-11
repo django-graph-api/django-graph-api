@@ -6,9 +6,8 @@ Install
 
 Download or clone the repo_ and navigate to the directory.
 ::
-    pip install -e .
 
-*Note:* once the project is up on PyPI you can run ``pip install django-graph-api``
+    pip install django-graph-api
 
 Create a basic schema
 ---------------------
@@ -17,8 +16,9 @@ GraphQL APIs require a graph-like schema and at least one entry-point (query roo
 
 Here is an example of a schema with a single node.
 ::
-    from django_graph_api.graphql.schema import Schema
-    from django_graph_api.graphql.types import CharField
+
+    from django_graph_api import Schema
+    from django_graph_api import CharField
 
     schema = Schema()
 
@@ -34,7 +34,8 @@ Set up a url to access the schema
 
 GraphQL APIs use a single url endpoint to access the schema.
 ::
-    from django_graph_api.views import GraphQLView
+
+    from django_graph_api import GraphQLView
 
     urlpatterns = [
         ...
@@ -42,5 +43,7 @@ GraphQL APIs use a single url endpoint to access the schema.
     ]
 
 This url will act as both the GraphQL endpoint to send AJAX requests too, and be the url that allows you to access the GraphiQL (graphical) application.
+
+GraphiQL allows you to run queries against your API and see the results immediately.
 
 .. _repo: https://github.com/melinath/django-graph-api

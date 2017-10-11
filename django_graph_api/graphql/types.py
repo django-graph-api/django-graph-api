@@ -210,14 +210,14 @@ class BooleanField(Field):
 
 class RelatedField(Field):
     """
-    Defines a 1-to-1 related field.
+    Defines a many-to-1 or 1-to-1 related field.
 
     e.g.
     ::
 
         class Character(Object):
             name = CharField()
-            friends = RelatedField('self')
+            mother = RelatedField('self')
 
     Can be queried like
     ::
@@ -267,7 +267,7 @@ class ManyRelatedField(RelatedField):
 
         class Character(Object):
             name = CharField()
-            mother = RelatedField('self')
+            friends = RelatedField('self')
 
     Can be queried like
     ::
@@ -284,10 +284,10 @@ class ManyRelatedField(RelatedField):
     ::
 
         ...
-            "character": {
+        "character": {
             "friends": [
-                {"name": "Hermione Granger"},
-                {"name": "Ron Weasley"}
+                {"name": "Luke Skywalker"},
+                {"name": "Han Solo"}
             ]
         }
         ...
