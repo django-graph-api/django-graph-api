@@ -30,59 +30,27 @@ and define their fields.
     class Character(Object):
         name = CharField()
 
-You can also override a Django model's field in the Graph API
-or create an additional field.
-::
-
-    class Episode(Object):
-        ...
-        long_name = CharField()
-
-    def get_long_name(self):
-        return 'Episode {}: {}'.format(
-            int_to_roman_numeral(self.number),
-            self.name)
-
 Adding edges - Relationships
 ----------------------------
 
 Define relationship fields between the objects.
 
-Many-to-many, 1-to-many relationships
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If querying on the relationship should return a **list**,
+If querying on the relationship should return an **object**,
+use ``RelatedField``.
+If it should return a **list**,
 use ``ManyRelatedField``.
 ::
 
-    from django_graph_api import ManyRelatedField
+    from django_graph_api import (
+        ManyRelatedField,
+        RelatedField,
+    )
 
     class Character(Object):
         ...
         friends = ManyRelatedField('self')
+        best_friend = RelatedField('self')
         appears_in = ManyRelatedField(Episode)
-
-
-1-to-1, many-to-1 relationships
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If querying on the relationship should return an **object**,
-use ``RelatedField``.
-::
-
-    from django_graph_api import RelatedField
-    from .models import Episode as EpisodeModel
-
-    class Episode(Object):
-        ...
-        previous = RelatedField('self')
-        next = RelatedField('self')
-
-        get_previous(self):
-            return EpisodeModel.objects.filter(number=self.number-1).first()
-
-        get_next(self):
-            return EpisodeModel.objects.filter(number=self.number+1).first()
 
 Defining query roots
 --------------------
@@ -97,13 +65,9 @@ By defining query roots, you can control how the user can access the schema.
     @schema.register_query_root
     class QueryRoot(Object):
         hero = RelatedField(Character)
-        episodes = ManyRelatedField(Episode)
 
         def get_hero(self):
             return CharacterModel.objects.get(name='R2-D2')
-
-        def get_episodes(self):
-            return EpisodeModel.objects.all()
 
 Sample queries
 --------------
