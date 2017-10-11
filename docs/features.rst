@@ -1,14 +1,15 @@
 Django Graph API features
 =========================
 
-This is a rough guide and not an exhaustive list. Please update this list as you work on adding new features.
+This is a rough guide and not an exhaustive list.
+We will update this list as features are added to django-graph-api.
 
 Supported
 ---------
 
 Operations
 ^^^^^^^^^^
-- queries
+- queries (reading data)
 
 Types
 ^^^^^^^^
@@ -22,12 +23,11 @@ Unsupported
 
 Operations
 ^^^^^^^^^^
-- mutations
-- subscriptions
+- mutations (writing data)
+- subscriptions (push notifications)
 
 Types
 ^^^^^
-- list of scalars field
 - interfaces
 - unions
 - enums
