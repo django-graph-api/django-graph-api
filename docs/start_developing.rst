@@ -33,7 +33,7 @@ Run the tests
 Run the test project
 --------------------
 Django Graph API comes with a sample Django project
-based on the Star Wars examples from the GraphQL documentation.
+based on the Star Wars examples from the `GraphQL documentation`_.
 It is used for integration tests and to help with development.
 
 1. Install the local version of django-graph-api
@@ -57,6 +57,7 @@ by navigating to ``localhost:8000/graphql`` in your browser.
 
 .. _Github: https://github.com/melinath/django-graph-api/
 .. _pipenv: https://github.com/kennethreitz/pipenv/
+.. _GraphQL documentation: http://graphql.org/learn/
 
 Build the docs
 --------------

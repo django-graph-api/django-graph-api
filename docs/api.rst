@@ -8,10 +8,10 @@ Schema
 
 Types
 -----
-.. autoclass:: django_graph_api.Object
 
 Non-scalar field types
 ^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: django_graph_api.Object
 .. autoclass:: django_graph_api.RelatedField
 .. autoclass:: django_graph_api.ManyRelatedField
 

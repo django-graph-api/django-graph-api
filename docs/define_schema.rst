@@ -13,8 +13,20 @@ let's assume we have a Django app with the following model structure:
 Adding nodes - Objects
 ----------------------
 
-Create an Object node for each of the models
-and define their fields.
+Create an Object node for each of the models:
+::
+
+    from django_graph_api import (
+        Object,
+    )
+
+    class Episode(Object):
+        ...
+
+    class Character(Object):
+        ...
+
+Add scalar fields to each of the nodes:
 ::
 
     from django_graph_api import (
@@ -30,15 +42,38 @@ and define their fields.
     class Character(Object):
         name = CharField()
 
+You can define any field on the node (Object)
+that is also a **field** or **property** of the model
+that it represents.
+
+Scalar field types
+^^^^^^^^^^^^^^^^^^
+For scalar types,
+the type of the field determines how it will be returned by the API.
+
+For example, if a model's field is stored as an ``IntegerField`` on the Django model
+and defined as a ``CharField`` in the graph API,
+the model value will be coerced from an ``int`` to a ``str`` type
+when it is resolved.
+
+Supported scalar types can be found in the `API documentation`_ and `feature list`_.
+
+.. _API documentation: api.html#scalar-field-types
+.. _feature list: features.html#types
+
 Adding edges - Relationships
 ----------------------------
 
-Define relationship fields between the objects.
+In order to traverse the nodes in your graph schema
+you need to define relationships between them.
 
-If querying on the relationship should return an **object**,
-use ``RelatedField``.
-If it should return a **list**,
-use ``ManyRelatedField``.
+This is done by adding related fields to your Object nodes.
+These `non-scalar fields`_ will return
+other objects or a list of objects.
+
+- If the field should return an **object**, use ``RelatedField``
+- If the field should return a **list** of objects, use ``ManyRelatedField``
+
 ::
 
     from django_graph_api import (
@@ -48,9 +83,15 @@ use ``ManyRelatedField``.
 
     class Character(Object):
         ...
-        friends = ManyRelatedField('self')
         best_friend = RelatedField('self')
+
+        friends = ManyRelatedField('self')
         appears_in = ManyRelatedField(Episode)
+
+Related fields can be any field or property of the model
+that returns another model or a list of models.
+
+.. _non-scalar fields: api.html#non-scalar-field-types
 
 Defining query roots
 --------------------
