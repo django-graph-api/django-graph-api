@@ -1,4 +1,4 @@
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 from .graphql.schema import Schema
 from .graphql.types import (

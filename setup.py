@@ -60,7 +60,13 @@ setup(
     license=open('LICENSE', 'r').read(),
     url='https://github.com/melinath/django-graph-api',
     zip_safe=False,
-    packages=find_packages(exclude=('tests',)),
+    packages=find_packages(exclude=(
+        'test_app',
+        'test_app.*',
+        'test_project',
+        'test_project.*',
+    )),
+    include_package_data=True,
     install_requires=(
         'graphql-py>=0.6',
     ),
