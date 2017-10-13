@@ -14,9 +14,12 @@ Download or clone the repo_ and navigate to the directory.
 Create a basic schema
 ---------------------
 
-GraphQL APIs require a graph-like schema and at least one entry-point (query root) to the graph.
+GraphQL APIs require a graph-like schema
+and at least one entry-point (query root) to the graph.
 
 Here is an example of a schema with a single node.
+
+In a new file named ``schema.py``:
 ::
 
     from django_graph_api import Schema
@@ -35,9 +38,12 @@ Set up a url to access the schema
 ---------------------------------
 
 GraphQL APIs use a single url endpoint to access the schema.
+
+In your ``urls.py``:
 ::
 
     from django_graph_api import GraphQLView
+    from schema import schema
 
     urlpatterns = [
         ...
