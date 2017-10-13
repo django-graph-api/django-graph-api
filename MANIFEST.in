@@ -1,2 +1,1 @@
-include *.txt
-recursive-include docs *.txt
+recursive-include django_graph_api *.html
