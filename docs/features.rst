@@ -2,29 +2,29 @@ Django Graph API features
 =========================
 
 This is a rough guide and not an exhaustive list.
+
 We will update this list as features are added to django-graph-api.
 
-Supported
----------
+Supported 👍
+------------
 
 Operations
 ^^^^^^^^^^
-- queries (reading data)
+- queries (reading data: GET)
 
 Types
 ^^^^^^^^
-- objects
-- related field
-- many related field
-- bool, int, float, str, id scalar fields
+- objects (nodes)
+- relationships (edges)
+- scalar fields: bool, int, float, str, id
 
-Unsupported
------------
+Unsupported 🚫
+--------------
 
 Operations
 ^^^^^^^^^^
-- mutations (writing data)
-- subscriptions (push notifications)
+- mutations (writing data: POST, DELETE, PUT)
+- subscriptions (push notifications, websockets)
 
 Types
 ^^^^^
@@ -32,7 +32,8 @@ Types
 - unions
 - enums
 - non-null
-- inputs
+- inputs (for mutations)
+- scalar fields: datetime
 
 Querying
 ^^^^^^^^
