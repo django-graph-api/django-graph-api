@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 from django_graph_api.views import GraphQLView
-from .starwars.schema import schema
+from test_app.schema import schema
 
 
 urlpatterns = [
