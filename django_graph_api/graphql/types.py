@@ -127,6 +127,15 @@ class ObjectMetaclass(type):
 
 
 class Object(six.with_metaclass(ObjectMetaclass)):
+    """
+    Subclass this to define an object node in a schema.
+
+    e.g.
+    ::
+
+        class Character(Object):
+            name = CharField()
+    """
     kind = OBJECT
 
     def __init__(self, ast, data):
@@ -154,26 +163,84 @@ class Object(six.with_metaclass(ObjectMetaclass)):
 
 
 class CharField(Field):
+    """
+    Defines a string field.
+
+    Querying on this field will return a str or None.
+    """
     type_ = String
 
 
 class IdField(CharField):
+    """
+    Defines an id field.
+
+    Querying on this field will return a str or None.
+    """
+
     type_ = Id
 
 
 class FloatField(Field):
+    """
+    Defines a float field.
+
+    Querying on this field will return a float or None.
+    """
     type_ = Float
 
 
 class IntegerField(Field):
+    """
+    Defines an integer field.
+
+    Querying on this field will return an int or None.
+    """
     type_ = Int
 
 
 class BooleanField(Field):
+    """
+    Defines a boolean field.
+
+    Querying on this field will return a bool or None.
+    """
     type_ = Boolean
 
 
 class RelatedField(Field):
+    """
+    Defines a many-to-1 or 1-to-1 related field.
+
+    e.g.
+    ::
+
+        class Character(Object):
+            name = CharField()
+            mother = RelatedField('self')
+
+    Can be queried like
+    ::
+
+        ...
+        character {
+            mother {
+                name
+            }
+        }
+        ...
+
+    And would return
+    ::
+
+        ...
+        "character": {
+            "mother": {
+                "name": "Joyce Summers"
+            }
+        }
+        ...
+    """
     type_ = Object
 
     def __init__(self, object_type):
@@ -192,6 +259,39 @@ class RelatedField(Field):
 
 
 class ManyRelatedField(RelatedField):
+    """
+    Defines a 1-to-many or many-to-many related field.
+
+    e.g.
+    ::
+
+        class Character(Object):
+            name = CharField()
+            friends = RelatedField('self')
+
+    Can be queried like
+    ::
+
+        ...
+        character {
+            friends {
+                name
+            }
+        }
+        ...
+
+    And would return
+    ::
+
+        ...
+        "character": {
+            "friends": [
+                {"name": "Luke Skywalker"},
+                {"name": "Han Solo"}
+            ]
+        }
+        ...
+    """
     type_ = List(Object)
 
     def __init__(self, object_type):

@@ -12,6 +12,14 @@ from django.views.generic import View
 
 @method_decorator([ensure_csrf_cookie, csrf_protect], name='dispatch')
 class GraphQLView(View):
+    """
+    Django view handles Graph API queries.
+
+    ``GET`` returns the HTML for the GraphiQL API explorer.
+
+    ``POST`` accepts a body in the form of ``{'query': query, 'variables': null}`` and returns a JSON response with
+    either a "data" or "error" object.
+    """
     graphiql_version = '0.11.3'
     graphql_url = '/graphql'
     template_name = 'django_graph_api/graphiql.html'
