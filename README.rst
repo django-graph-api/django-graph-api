@@ -1,5 +1,5 @@
-Django Graph API |travis| |gitter|
-==================================
+Django Graph API |travis| |gitter| |rtd|
+========================================
 
 .. |gitter| image:: https://badges.gitter.im/django-graph-api/Lobby.svg
    :alt: Join the chat at https://gitter.im/django-graph-api/Lobby
@@ -7,25 +7,28 @@ Django Graph API |travis| |gitter|
 .. |travis| image:: https://travis-ci.org/melinath/django-graph-api.svg?branch=master
    :alt: Build status on travis-ci
    :target: https://travis-ci.org/melinath/django-graph-api
+.. |rtd| image:: https://readthedocs.org/projects/django-graph-api/badge/?version=latest
+   :alt: Docs status on readthedocs
+   :target: http://django-graph-api.readthedocs.io/
 
 This is an implementation of GraphQL_ in Python_, designed to work with the
 Django_ web framework. The project began at `DjangoCon US 2017`_.
 
-Why Not Graphene?
------------------
+Why Django Graph API?
+---------------------
 
-Graphene_ is the standard Python implementation of GraphQL, and it is far more
-mature than Django Graph API. So why should you use this project instead of
-Graphene?
+We see GraphQL as a promising alternative to REST.
 
-* Django Graph API is **Pythonic**, while Graphene was ported over from Node.js
-  and follows Javascript idioms.
+In order to increase its usage amongst Python developers, we are trying to create a library that stays up to date with the GraphQL specs and that embraces all of the things we love about Python:
+
+- simple, readable, and elegant
+- great documentation
+- supportive open-source community
 
 .. _GraphQL: http://graphql.org/
 .. _Python: https://www.python.org/
 .. _Django: https://www.djangoproject.com/
 .. _DjangoCon US 2017: https://2017.djangocon.us/
-.. _Graphene: http://graphene-python.org/
 
 Contributing
 ------------
@@ -64,6 +67,8 @@ This project uses the `Django coding style guide`_.
 
 Documentation
 ^^^^^^^^^^^^^
+
+You can find the `full documentation <https://django-graph-api.readthedocs.io>`_ for Django Graph API on ReadTheDocs.
 
 To create the docs locally,
 navigate to the ``docs`` directory,

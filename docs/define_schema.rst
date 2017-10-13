@@ -45,6 +45,19 @@ Add scalar fields to each of the nodes:
 You can define any field on the node (Object)
 that is also a **field** or **property** of the model
 that it represents.
+You can also define custom logic to get a field's value by adding a ``get_<field_name>`` method to the object.
+The current model instance will be available as ``self.data``.
+
+::
+
+    class Character(Object):
+        name = CharField()
+
+        def get_name(self):
+            return '{} {}'.format(
+                self.data.first_name,
+                self.data.last_name,
+            )
 
 Scalar field types
 ^^^^^^^^^^^^^^^^^^

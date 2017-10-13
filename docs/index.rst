@@ -3,9 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Django Graph API
+Django Graph API |travis| |gitter| |rtd|
 ============================================
-|travis| |gitter|
 
 .. |gitter| image:: https://badges.gitter.im/django-graph-api/Lobby.svg
    :alt: Join the chat at https://gitter.im/django-graph-api/Lobby
@@ -13,6 +12,9 @@ Django Graph API
 .. |travis| image:: https://travis-ci.org/melinath/django-graph-api.svg?branch=master
    :alt: Build status on travis-ci
    :target: https://travis-ci.org/melinath/django-graph-api
+.. |rtd| image:: https://readthedocs.org/projects/django-graph-api/badge/?version=latest
+   :alt: Docs status on readthedocs
+   :target: http://django-graph-api.readthedocs.io/
 
 **Django Graph API** lets you quickly build GraphQL_ APIs in Python_. It is designed to work with the Django_ web framework.
 
