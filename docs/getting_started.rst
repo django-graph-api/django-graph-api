@@ -11,6 +11,14 @@ Download or clone the repo_ and navigate to the directory.
 
 .. _repo: https://github.com/melinath/django-graph-api
 
+In `settings.py`, add it to INSTALLED_APPS:
+::
+
+   INSTALLED_APPS = [
+       ...
+       'django_graph_api',
+   ]
+
 Create a basic schema
 ---------------------
 
