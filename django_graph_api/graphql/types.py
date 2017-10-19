@@ -5,6 +5,7 @@ from collections import OrderedDict
 from django.db.models import Manager
 from django.utils import six
 
+from .helpers import is_lambda
 
 SCALAR = 'SCALAR'
 OBJECT = 'OBJECT'
@@ -246,6 +247,13 @@ class RelatedField(Field):
     def __init__(self, object_type):
         self.object_type = object_type
 
+    def bind(self, selection, obj):
+        super(RelatedField, self).bind(selection, obj)
+        if self.object_type == 'self':
+            self.object_type = obj.__class__
+        elif is_lambda(self.object_type):
+            self.object_type = self.object_type()
+
     def _serialize_value(self, value):
         obj_instance = self.object_type(
             ast=self.selection,
@@ -255,7 +263,8 @@ class RelatedField(Field):
 
     def get_value(self):
         value = super(RelatedField, self).get_value()
-        return self._serialize_value(value)
+        if value is not None:
+            return self._serialize_value(value)
 
 
 class ManyRelatedField(RelatedField):
@@ -293,14 +302,6 @@ class ManyRelatedField(RelatedField):
         ...
     """
     type_ = List(Object)
-
-    def __init__(self, object_type):
-        self.object_type = object_type
-
-    def bind(self, selection, obj):
-        super(ManyRelatedField, self).bind(selection, obj)
-        if self.object_type == 'self':
-            self.object_type = obj.__class__
 
     def get_value(self):
         values = super(RelatedField, self).get_value()

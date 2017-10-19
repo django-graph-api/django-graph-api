@@ -87,6 +87,35 @@ other objects or a list of objects.
 - If the field should return an **object**, use ``RelatedField``
 - If the field should return a **list** of objects, use ``ManyRelatedField``
 
+When defining the object type of the related field, you can use:
+
+- The class of the object, e.g. ``appears_in = ManyRelatedField(Episode)``
+- A lambda that returns the class of the object, e.g. ``characters = ManyRelatedField(lambda: Character)``
+- 'self', when you are referencing the current class, e.g. ``mother = RelatedField('self')``
+
+You can define any related field on the node (Object)
+that is also a **field** or **property** of the model
+that returns another model, list of models, or model manager.
+You can also define custom logic by adding a ``get_<field_name>`` method to the object.
+The current model instance will be available as ``self.data``.
+
+Examples
+^^^^^^^^
+
+Many-to-many relationship
+::
+
+    from django_graph_api import (
+        ManyRelatedField,
+    )
+
+    class Episode(Object):
+        characters = ManyRelatedField(lambda: Character)
+
+    class Character(Object):
+        appears_in = ManyRelatedField(Episode)
+
+Many-to-one relationship
 ::
 
     from django_graph_api import (
@@ -95,14 +124,29 @@ other objects or a list of objects.
     )
 
     class Character(Object):
-        ...
-        best_friend = RelatedField('self')
+        mother = RelatedField('self')
+        children = ManyRelatedField('self')
 
-        friends = ManyRelatedField('self')
-        appears_in = ManyRelatedField(Episode)
+One-to-one relationship
+::
 
-Related fields can be any field or property of the model
-that returns another model or a list of models.
+    from django_graph_api import (
+        RelatedField,
+    )
+
+    from .models import {
+        Episode as EpisodeModel
+    }
+
+    class Episode(Object):
+        next = RelatedField('self')
+        previous = RelatedField('self')
+
+        def get_next(self):
+            return EpisodeModel.objects.filter(number=self.data.number + 1).first()
+
+        def get_previous(self):
+            return EpisodeModel.objects.filter(number=self.data.number - 1).first()
 
 .. _non-scalar fields: api.html#non-scalar-field-types
 
