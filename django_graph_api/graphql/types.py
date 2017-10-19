@@ -30,9 +30,6 @@ class Field(object):
 
     def get_value(self):
         raw_value = self.get_raw_value()
-        if raw_value is None:
-            return raw_value
-
         if hasattr(self.type_, 'coerce_result'):
             try:
                 return self.type_.coerce_result(raw_value)
