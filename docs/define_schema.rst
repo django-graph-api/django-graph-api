@@ -90,7 +90,7 @@ other objects or a list of objects.
 When defining the object type of the related field, you can use:
 
 - The class of the object, e.g. ``appears_in = ManyRelatedField(Episode)``
-- A lambda that returns the class of the object, e.g. ``characters = ManyRelatedField(lambda: Character)``
+- A callable that returns the class of the object, e.g. ``characters = ManyRelatedField(lambda: Character)``
 - 'self', when you are referencing the current class, e.g. ``mother = RelatedField('self')``
 
 You can define any related field on the node (Object)
