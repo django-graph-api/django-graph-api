@@ -39,9 +39,11 @@ class Field(object):
         return raw_value
 
     def get_raw_value(self):
+        # Try user defined resolver
         if hasattr(self.obj, 'get_{}'.format(self.name)):
             return getattr(self.obj, 'get_{}'.format(self.name))()
 
+        # Try model attributes
         data = self.obj.data
         try:
             return getattr(data, self.name)

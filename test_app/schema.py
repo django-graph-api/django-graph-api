@@ -30,7 +30,11 @@ class Episode(Object):
 class Character(Object):
     name = CharField()
     friends = ManyRelatedField('self')
+    best_friend = RelatedField('self')
     appears_in = ManyRelatedField(Episode)
+
+    def get_best_friend(self):
+        return self.data.friends.order_by('pk').first()
 
 
 @schema.register_query_root
