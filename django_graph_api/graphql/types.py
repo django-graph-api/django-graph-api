@@ -5,8 +5,6 @@ from collections import OrderedDict
 from django.db.models import Manager
 from django.utils import six
 
-from .helpers import is_lambda
-
 SCALAR = 'SCALAR'
 OBJECT = 'OBJECT'
 INTERFACE = 'INTERFACE'
@@ -253,7 +251,7 @@ class RelatedField(Field):
         super(RelatedField, self).bind(selection, obj)
         if self.object_type == 'self':
             self.object_type = obj.__class__
-        elif is_lambda(self.object_type):
+        elif callable(self.object_type):
             self.object_type = self.object_type()
 
     def _serialize_value(self, value):
