@@ -2,10 +2,7 @@ import pytest
 
 from unittest import mock
 
-from django_graph_api.graphql.schema import Schema
 from django_graph_api.graphql.types import Boolean, Float, Field, Int, List, String
-
-schema = Schema()
 
 
 def test_field_get_value_calls_coerce():

@@ -38,9 +38,11 @@ class Field(object):
         return raw_value
 
     def get_raw_value(self):
+        # Try user defined resolver
         if hasattr(self.obj, 'get_{}'.format(self.name)):
             return getattr(self.obj, 'get_{}'.format(self.name))()
 
+        # Try model attributes
         data = self.obj.data
         try:
             return getattr(data, self.name)
@@ -246,6 +248,11 @@ class RelatedField(Field):
     def __init__(self, object_type):
         self.object_type = object_type
 
+    def bind(self, selection, obj):
+        super(RelatedField, self).bind(selection, obj)
+        if self.object_type == 'self':
+            self.object_type = obj.__class__
+
     def _serialize_value(self, value):
         obj_instance = self.object_type(
             ast=self.selection,
@@ -296,11 +303,6 @@ class ManyRelatedField(RelatedField):
 
     def __init__(self, object_type):
         self.object_type = object_type
-
-    def bind(self, selection, obj):
-        super(ManyRelatedField, self).bind(selection, obj)
-        if self.object_type == 'self':
-            self.object_type = obj.__class__
 
     def get_value(self):
         values = super(RelatedField, self).get_value()

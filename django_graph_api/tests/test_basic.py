@@ -26,6 +26,9 @@ def test_hero_name_and_friends_names(starwars_data):
             friends {
                 name
             }
+            best_friend {
+                name
+            }
         }
     }
     '''
@@ -47,6 +50,9 @@ def test_hero_name_and_friends_names(starwars_data):
                         'name': 'C-3PO',
                     },
                 ],
+                'best_friend': {
+                    'name': 'Luke Skywalker'
+                }
             },
         }
     }
