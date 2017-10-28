@@ -102,12 +102,12 @@ def test_episodes_and_characters(starwars_data):
                     'name': 'A New Hope',
                     'number': 4,
                     'characters': [
-                        {'name': 'C-3PO'},
-                        {'name': 'R2-D2'},
                         {'name': 'Luke Skywalker'},
                         {'name': 'Darth Vader'},
                         {'name': 'Han Solo'},
-                        {'name': 'Leia Organa'}
+                        {'name': 'Leia Organa'},
+                        {'name': 'C-3PO'},
+                        {'name': 'R2-D2'},
                     ]
                 },
             ]

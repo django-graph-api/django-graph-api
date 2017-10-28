@@ -8,6 +8,9 @@ class Episode(models.Model):
     def __str__(self):
         return '{}: {}'.format(self.number, self.name)
 
+    class Meta(object):
+        ordering = ['number']
+
 
 class Starship(models.Model):
     name = models.CharField(max_length=255)
@@ -25,6 +28,9 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta(object):
+        ordering = ['pk']
 
 
 class Human(Character):
