@@ -1,10 +1,10 @@
 import copy
 
 from collections import OrderedDict
+from inspect import isclass
 
 from django.db.models import Manager
 from django.utils import six
-
 
 SCALAR = 'SCALAR'
 OBJECT = 'OBJECT'
@@ -252,6 +252,8 @@ class RelatedField(Field):
         super(RelatedField, self).bind(selection, obj)
         if self.object_type == 'self':
             self.object_type = obj.__class__
+        elif callable(self.object_type) and not isclass(self.object_type):
+            self.object_type = self.object_type()
 
     def _serialize_value(self, value):
         obj_instance = self.object_type(
@@ -262,7 +264,8 @@ class RelatedField(Field):
 
     def get_value(self):
         value = super(RelatedField, self).get_value()
-        return self._serialize_value(value)
+        if value is not None:
+            return self._serialize_value(value)
 
 
 class ManyRelatedField(RelatedField):
@@ -300,9 +303,6 @@ class ManyRelatedField(RelatedField):
         ...
     """
     type_ = List(Object)
-
-    def __init__(self, object_type):
-        self.object_type = object_type
 
     def get_value(self):
         values = super(RelatedField, self).get_value()

@@ -81,3 +81,35 @@ def test_hero_name_and_episodes(starwars_data):
             },
         }
     }
+
+
+def test_episodes_and_characters(starwars_data):
+    document = '''
+        {
+            episodes {
+                name
+                number
+                characters {
+                    name
+                }
+            }
+        }
+        '''
+    assert schema.execute(document) == {
+        'data': {
+            'episodes': [
+                {
+                    'name': 'A New Hope',
+                    'number': 4,
+                    'characters': [
+                        {'name': 'Luke Skywalker'},
+                        {'name': 'Darth Vader'},
+                        {'name': 'Han Solo'},
+                        {'name': 'Leia Organa'},
+                        {'name': 'C-3PO'},
+                        {'name': 'R2-D2'},
+                    ]
+                },
+            ]
+        }
+    }
