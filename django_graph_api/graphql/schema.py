@@ -41,7 +41,11 @@ class TypeObject(Object):
     def get_fields(self):
         if self.data.kind != OBJECT:
             return None
-        return self.data._declared_fields.items()
+        # return self.data._declared_fields.items()
+        return sorted(
+            self.data._declared_fields.items(),
+            key=lambda item: item[0],
+        )
 
 
 class SchemaObject(Object):
@@ -67,8 +71,17 @@ class SchemaObject(Object):
                 types.add(field.type_)
         return types
 
+    def _type_key(self, type_):
+        object_name = getattr(type_, 'object_name', type_.__name__)
+        return (
+            object_name.startswith('__'),
+            type_.kind,
+            object_name,
+        )
+
     def get_types(self):
-        return list(self._collect_types(self.data))
+        types = self._collect_types(self.data)
+        return sorted(types, key=self._type_key)
 
     def get_queryType(self):
         return self.data
