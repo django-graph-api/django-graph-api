@@ -269,8 +269,9 @@ class RelatedField(Field):
 
     def get_value(self):
         value = super(RelatedField, self).get_value()
-        if value is not None:
-            return self._serialize_value(value)
+        if value is None:
+            return None
+        return self._serialize_value(value)
 
 
 class ManyRelatedField(RelatedField):
@@ -311,6 +312,8 @@ class ManyRelatedField(RelatedField):
 
     def get_value(self):
         values = super(RelatedField, self).get_value()
+        if values is None:
+            return None
         if isinstance(values, Manager):
             values = values.all()
         return [

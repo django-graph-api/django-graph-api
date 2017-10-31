@@ -63,6 +63,8 @@ class SchemaObject(Object):
                     continue
                 types.add(new_object_type)
                 self._collect_types(new_object_type, types)
+            elif field.type_:
+                types.add(field.type_)
         return types
 
     def get_types(self):
