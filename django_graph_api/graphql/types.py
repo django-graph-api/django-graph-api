@@ -248,12 +248,17 @@ class RelatedField(Field):
     def __init__(self, object_type):
         self.object_type = object_type
 
+    @classmethod
+    def resolve_object_type(cls, object_type):
+        if callable(object_type) and not isclass(object_type):
+            return object_type()
+        return object_type
+
     def bind(self, selection, obj):
         super(RelatedField, self).bind(selection, obj)
+        self.object_type = self.__class__.resolve_object_type(self.object_type)
         if self.object_type == 'self':
             self.object_type = obj.__class__
-        elif callable(self.object_type) and not isclass(self.object_type):
-            self.object_type = self.object_type()
 
     def _serialize_value(self, value):
         obj_instance = self.object_type(
@@ -264,8 +269,9 @@ class RelatedField(Field):
 
     def get_value(self):
         value = super(RelatedField, self).get_value()
-        if value is not None:
-            return self._serialize_value(value)
+        if value is None:
+            return None
+        return self._serialize_value(value)
 
 
 class ManyRelatedField(RelatedField):
@@ -306,6 +312,8 @@ class ManyRelatedField(RelatedField):
 
     def get_value(self):
         values = super(RelatedField, self).get_value()
+        if values is None:
+            return None
         if isinstance(values, Manager):
             values = values.all()
         return [

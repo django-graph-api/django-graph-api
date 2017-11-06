@@ -1,5 +1,7 @@
+from traceback import format_exc
 import json
 
+from django.conf import settings
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -41,7 +43,14 @@ class GraphQLView(View):
             response_data = self.schema.execute(request_data['query'])
             return JsonResponse(response_data)
         except Exception as e:
-            return JsonResponse({'error': str(e)})
+            error_data = {
+                'error': str(e),
+            }
+
+            if settings.DEBUG:
+                error_data['traceback'] = format_exc().split('\n')
+
+            return JsonResponse(error_data)
 
     def get_request_data(self):
         """
