@@ -40,7 +40,11 @@ class Field(object):
     def get_raw_value(self):
         # Try user defined resolver
         if hasattr(self.obj, 'get_{}'.format(self.name)):
-            return getattr(self.obj, 'get_{}'.format(self.name))()
+            arguments = self.get_arguments()
+            kwargs = {}
+            for arg in arguments:
+                kwargs[arg.name] = arg.value
+            return getattr(self.obj, 'get_{}'.format(self.name))(**kwargs)
 
         # Try model attributes
         data = self.obj.data
@@ -55,6 +59,13 @@ class Field(object):
             pass
 
         return None
+
+    def get_arguments(self):
+        selection = next((s for s in self.obj.ast.selections if s.name == self.name), None)
+        if not selection:
+            return {}
+
+        return selection.arguments
 
     def bind(self, selection, obj):
         self.selection = selection

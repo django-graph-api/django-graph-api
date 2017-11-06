@@ -9,8 +9,9 @@ def test_field_get_value_calls_coerce():
     field = Field()
     field.type_ = mock.Mock()
     field.name = 'foo'
-    field.obj = mock.Mock()
+    field.obj = mock.MagicMock()
     field.obj.get_foo.return_value = 'bar'
+    field.obj.ast.selections.return_value = []
 
     field.get_value()
     field.type_.coerce_result.assert_called_once_with('bar')

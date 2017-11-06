@@ -26,6 +26,9 @@ class Episode(Object):
     def get_next(self):
         return EpisodeModel.objects.filter(number=self.data.number + 1).first()
 
+    def get_characters(self, **kwargs):
+        return self.data.characters.filter(**kwargs)
+
 
 class Character(Object):
     name = CharField()
@@ -45,5 +48,5 @@ class QueryRoot(Object):
     def get_hero(self):
         return CharacterModel.objects.get(name='R2-D2')
 
-    def get_episodes(self):
-        return EpisodeModel.objects.order_by('number')
+    def get_episodes(self, **kwargs):
+        return EpisodeModel.objects.filter(**kwargs).order_by('number')
