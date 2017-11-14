@@ -4,8 +4,7 @@ from django_graph_api.graphql.types import (
     CharField,
     IntegerField,
     RelatedField,
-    ManyRelatedField,
-)
+    ManyRelatedField, Int)
 
 from .models import (
     Character as CharacterModel,
@@ -20,7 +19,6 @@ class Episode(Object):
     name = CharField()
     number = IntegerField()
     characters = ManyRelatedField(lambda: Character)
-
     next = RelatedField('self')
 
     def get_next(self):
@@ -43,10 +41,12 @@ class Character(Object):
 @schema.register_query_root
 class QueryRoot(Object):
     hero = RelatedField(Character)
-    episodes = ManyRelatedField(Episode)
+    episodes = ManyRelatedField(Episode, number=Int())
 
     def get_hero(self):
         return CharacterModel.objects.get(name='R2-D2')
 
     def get_episodes(self, **kwargs):
-        return EpisodeModel.objects.filter(**kwargs).order_by('number')
+        if kwargs.get('number'):
+            return EpisodeModel.objects.filter(number=kwargs['number']).order_by('number')
+        return EpisodeModel.objects.order_by('number').all()

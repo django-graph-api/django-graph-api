@@ -41,7 +41,6 @@ class TypeObject(Object):
     def get_fields(self):
         if self.data.kind != OBJECT:
             return None
-        # return self.data._declared_fields.items()
         return sorted(
             self.data._declared_fields.items(),
             key=lambda item: item[0],

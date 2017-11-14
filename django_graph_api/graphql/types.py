@@ -1,4 +1,5 @@
 import copy
+import pdb
 
 from collections import OrderedDict
 from inspect import isclass
@@ -16,14 +17,24 @@ LIST = 'LIST'
 NON_NULL = 'NON_NULL'
 
 
+def get_arguments_for_selection(ast, name):
+    selection = next((s for s in ast.selections if s.name == name), None)
+    if not selection:
+        return {}
+
+    return selection.arguments
+
+
 class Field(object):
     """
     Fields are used for schema definition and result coercion.
     """
     # Tracks each time a Field instance is created. Used to retain order.
     creation_counter = 0
+    _arguments = {}
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        self._arguments = kwargs
         # Increase the creation counter, and save our local copy.
         self.creation_counter = Field.creation_counter
         Field.creation_counter += 1
@@ -40,11 +51,9 @@ class Field(object):
     def get_raw_value(self):
         # Try user defined resolver
         if hasattr(self.obj, 'get_{}'.format(self.name)):
-            arguments = self.get_arguments()
-            kwargs = {}
-            for arg in arguments:
-                kwargs[arg.name] = arg.value
-            return getattr(self.obj, 'get_{}'.format(self.name))(**kwargs)
+            kwargs = self.get_resolver_args()
+            resolver = getattr(self.obj, 'get_{}'.format(self.name))
+            return resolver(**kwargs)
 
         # Try model attributes
         data = self.obj.data
@@ -60,12 +69,21 @@ class Field(object):
 
         return None
 
-    def get_arguments(self):
-        selection = next((s for s in self.obj.ast.selections if s.name == self.name), None)
-        if not selection:
-            return {}
-
-        return selection.arguments
+    def get_resolver_args(self):
+        arguments = {arg.name: arg.value for arg in get_arguments_for_selection(self.obj.ast, self.name)}
+        resolver_kwargs = {}
+        for key, value in self._arguments.items():
+            if key in arguments:
+                input_value = arguments[key]
+                try:
+                    arg_value = value.coerce_result(input_value)
+                except TypeError:
+                    error = 'Argument {} expected a {} but got a {}'.format(key, type(value), type(input_value))
+                    raise TypeError(error)
+                resolver_kwargs[key] = arg_value
+            else:
+                resolver_kwargs[key] = None
+        return resolver_kwargs
 
     def bind(self, selection, obj):
         self.selection = selection
@@ -256,8 +274,9 @@ class RelatedField(Field):
     """
     type_ = Object
 
-    def __init__(self, object_type):
+    def __init__(self, object_type, **kwargs):
         self.object_type = object_type
+        super(RelatedField, self).__init__(**kwargs)
 
     @classmethod
     def resolve_object_type(cls, object_type):
