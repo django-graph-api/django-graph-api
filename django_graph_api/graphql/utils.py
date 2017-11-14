@@ -18,7 +18,7 @@ def get_selections(selections, fragments, object_type):
         elif isinstance(selection, InlineFragment):
             fragment = selection
 
-        if fragment.type_condition.name != getattr(object_type, 'object_name', object_type.__name__):
+        if fragment.type_condition.name != object_type.object_name:
             continue
 
         _selections += get_selections(fragment.selections, fragments, object_type)

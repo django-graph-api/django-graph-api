@@ -40,7 +40,7 @@ class TypeObject(Object):
     fields = ManyRelatedField(FieldObject)
 
     def get_name(self):
-        return getattr(self.data, 'object_name', self.data.__name__)
+        return self.data.object_name
 
     def get_fields(self):
         if self.data.kind != OBJECT:
@@ -76,7 +76,7 @@ class SchemaObject(Object):
         return types
 
     def _type_key(self, type_):
-        object_name = getattr(type_, 'object_name', type_.__name__)
+        object_name = type_.object_name
         return (
             object_name.startswith('__'),
             type_.kind,

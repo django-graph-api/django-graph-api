@@ -18,6 +18,14 @@ LIST = 'LIST'
 NON_NULL = 'NON_NULL'
 
 
+class ObjectNameMetaclass(type):
+    def __new__(mcs, name, bases, attrs):
+        if 'object_name' not in attrs:
+            attrs['object_name'] = name
+
+        return super(ObjectNameMetaclass, mcs).__new__(mcs, name, bases, attrs)
+
+
 class Field(object):
     """
     Fields are used for schema definition and result coercion.
@@ -64,7 +72,7 @@ class Field(object):
         self.obj = obj
 
 
-class Scalar(object):
+class Scalar(six.with_metaclass(ObjectNameMetaclass)):
     kind = SCALAR
 
     @property
@@ -115,7 +123,7 @@ class List(object):
         return list(values)
 
 
-class ObjectMetaclass(type):
+class ObjectMetaclass(ObjectNameMetaclass):
     def __new__(mcs, name, bases, attrs):
         # This fields implementation is similar to Django's form fields
         # implementation. Currently we do not support inheritance of fields.
