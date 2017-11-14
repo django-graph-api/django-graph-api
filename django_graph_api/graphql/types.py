@@ -1,5 +1,4 @@
 import copy
-import pdb
 
 from collections import OrderedDict
 from inspect import isclass
@@ -71,19 +70,19 @@ class Field(object):
 
     def get_resolver_args(self):
         arguments = {arg.name: arg.value for arg in get_arguments_for_selection(self.obj.ast, self.name)}
-        resolver_kwargs = {}
+        resolver_args = {}
         for key, value in self._arguments.items():
             if key in arguments:
                 input_value = arguments[key]
                 try:
-                    arg_value = value.coerce_result(input_value)
+                    arg_value = value.coerce_input(input_value)
                 except TypeError:
                     error = 'Argument {} expected a {} but got a {}'.format(key, type(value), type(input_value))
                     raise TypeError(error)
-                resolver_kwargs[key] = arg_value
+                resolver_args[key] = arg_value
             else:
-                resolver_kwargs[key] = None
-        return resolver_kwargs
+                resolver_args[key] = None
+        return resolver_args
 
     def bind(self, selection, obj):
         self.selection = selection
@@ -104,16 +103,28 @@ class Int(Scalar):
     def coerce_result(cls, value):
         return None if value is None else int(value)
 
+    @classmethod
+    def coerce_input(cls, value):
+        return None if value is None else int(value)
+
 
 class Float(Scalar):
     @classmethod
     def coerce_result(cls, value):
         return None if value is None else float(value)
 
+    @classmethod
+    def coerce_input(cls, value):
+        return None if value is None else float(value)
+
 
 class String(Scalar):
     @classmethod
     def coerce_result(cls, value):
+        return None if value is None else str(value)
+
+    @classmethod
+    def coerce_input(cls, value):
         return None if value is None else str(value)
 
 
@@ -124,6 +135,10 @@ class Id(String):
 class Boolean(Scalar):
     @classmethod
     def coerce_result(cls, value):
+        return None if value is None else bool(value)
+
+    @classmethod
+    def coerce_input(cls, value):
         return None if value is None else bool(value)
 
 
@@ -139,6 +154,12 @@ class List(object):
             return None
         if isinstance(values, Manager):
             values = values.all()
+        return list(values)
+
+    @classmethod
+    def coerce_input(cls, values):
+        if values is None:
+            return None
         return list(values)
 
 
