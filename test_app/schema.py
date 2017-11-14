@@ -28,6 +28,7 @@ class Episode(Object):
 
 
 class Character(Object):
+    id = IntegerField()
     name = CharField()
     friends = ManyRelatedField('self')
     best_friend = RelatedField('self')

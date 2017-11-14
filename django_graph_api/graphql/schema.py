@@ -1,5 +1,9 @@
 import copy
 
+from graphql.ast import (
+    FragmentDefinition,
+    Query,
+)
 from graphql.parser import GraphQLParser
 from django_graph_api.graphql.types import (
     CharField,
@@ -164,10 +168,24 @@ class Schema(object):
         parser = GraphQLParser()
         ast = parser.parse(document)
 
-        query_ast = ast.definitions[0]
+        queries = [
+            definition for definition in ast.definitions
+            if isinstance(definition, Query)
+        ]
+        assert len(queries) == 1, "Exactly one query must be defined"
+
+        fragments = {
+            definition.name: definition
+            for definition in ast.definitions
+            if isinstance(definition, FragmentDefinition)
+        }
 
         return {
-            'data': self.query_root(query_ast, None).serialize(),
+            'data': self.query_root(
+                ast=queries[0],
+                data=None,
+                fragments=fragments,
+            ).serialize(),
         }
 
 

@@ -1,10 +1,12 @@
-import copy
-
 from collections import OrderedDict
 from inspect import isclass
+import copy
 
 from django.db.models import Manager
 from django.utils import six
+
+from django_graph_api.graphql.utils import get_selections
+
 
 SCALAR = 'SCALAR'
 OBJECT = 'OBJECT'
@@ -140,18 +142,26 @@ class Object(six.with_metaclass(ObjectMetaclass)):
     """
     kind = OBJECT
 
-    def __init__(self, ast, data):
+    def __init__(self, ast, data, fragments):
         self.ast = ast
         self.data = data
+        self.fragments = fragments
 
     @property
     def fields(self):
         if not hasattr(self, '_fields'):
             self._fields = OrderedDict()
+
+            selections = get_selections(
+                selections=self.ast.selections,
+                fragments=self.fragments,
+                object_type=self.__class__,
+            )
+
             # Copy the field instances so that obj instances have
             # isolated field instances that they can modify safely.
             # Only copy field instances that are selected.
-            for selection in self.ast.selections:
+            for selection in selections:
                 field = copy.deepcopy(self._declared_fields[selection.name])
                 self._fields[selection.name] = field
                 field.bind(selection=selection, obj=self)
@@ -264,6 +274,7 @@ class RelatedField(Field):
         obj_instance = self.object_type(
             ast=self.selection,
             data=value,
+            fragments=self.obj.fragments,
         )
         return obj_instance.serialize()
 
