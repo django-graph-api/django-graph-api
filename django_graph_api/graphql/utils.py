@@ -5,8 +5,11 @@ from graphql.ast import (
 )
 
 
-def get_selections(selections, fragments, object_type):
+def get_selections(selections, fragments, object_type, seen_fragments=None):
     _selections = []
+
+    if seen_fragments is None:
+        seen_fragments = set()
 
     for selection in selections:
         if isinstance(selection, Field):
@@ -21,6 +24,18 @@ def get_selections(selections, fragments, object_type):
         if fragment.type_condition.name != object_type.object_name:
             continue
 
-        _selections += get_selections(fragment.selections, fragments, object_type)
+        # Skip fragments we've already seen to avoid recursion issues.
+        if hasattr(fragment, 'name'):
+            if fragment.name in seen_fragments:
+                continue
+            else:
+                seen_fragments.add(fragment.name)
+
+        _selections += get_selections(
+            selections=fragment.selections,
+            fragments=fragments,
+            object_type=object_type,
+            seen_fragments=seen_fragments,
+        )
 
     return _selections

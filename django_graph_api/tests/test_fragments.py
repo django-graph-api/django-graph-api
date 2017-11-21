@@ -65,6 +65,34 @@ def test_fragments__nested(starwars_data):
     }
 
 
+def test_fragments__recursive(starwars_data):
+    document = '''
+    {
+        hero {
+            ...heroIdFragment
+        }
+    }
+
+    fragment heroIdFragment on Character {
+        id
+        ...heroNameFragment
+    }
+
+    fragment heroNameFragment on Character {
+        name
+        ...heroIdFragment
+    }
+    '''
+    assert schema.execute(document) == {
+        'data': {
+            'hero': {
+                'name': 'R2-D2',
+                'id': 2001,
+            },
+        },
+    }
+
+
 def test_fragments__inline(starwars_data):
     document = '''
     {
