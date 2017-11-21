@@ -21,6 +21,10 @@ def get_selections(selections, fragments, object_type, seen_fragments=None):
         elif isinstance(selection, InlineFragment):
             fragment = selection
 
+        # If the fragment doesn't apply to the current object, don't
+        # add its selections. This could happen for example if this is
+        # a union of different object types with different fields for
+        # each type.
         if fragment.type_condition.name != object_type.object_name:
             continue
 
