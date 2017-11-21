@@ -25,7 +25,7 @@ class Episode(Object):
         return EpisodeModel.objects.filter(number=self.data.number + 1).first()
 
     def get_characters(self, **kwargs):
-        return self.data.characters.filter(**kwargs)
+        return self.data.characters.filter(**kwargs).order_by('pk')
 
 
 class Character(Object):
@@ -41,12 +41,15 @@ class Character(Object):
 @schema.register_query_root
 class QueryRoot(Object):
     hero = RelatedField(Character)
-    episodes = ManyRelatedField(Episode, number=Int())
+    episodes = ManyRelatedField(Episode)
+    episode = RelatedField(Episode, number=Int())
 
     def get_hero(self):
         return CharacterModel.objects.get(name='R2-D2')
 
-    def get_episodes(self, **kwargs):
-        if kwargs.get('number'):
-            return EpisodeModel.objects.filter(number=kwargs['number']).order_by('number')
+    def get_episodes(self):
         return EpisodeModel.objects.order_by('number').all()
+
+    def get_episode(self, number):
+        print(number)
+        return EpisodeModel.objects.get(number=number)

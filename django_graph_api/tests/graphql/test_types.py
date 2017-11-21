@@ -1,20 +1,23 @@
+from unittest.mock import patch
+
 import pytest
 
 from unittest import mock
 
-from django_graph_api.graphql.types import Boolean, Float, Field, Int, List, String
+from django_graph_api.graphql.types import Boolean, Float, Field, Int, List, String, CharField, BooleanField
 
 
-def test_field_get_value_calls_coerce():
-    field = Field()
-    field.type_ = mock.Mock()
-    field.name = 'foo'
-    field.obj = mock.MagicMock()
-    field.obj.get_foo.return_value = 'bar'
-    field.obj.ast.selections.return_value = []
+@patch('django_graph_api.graphql.types.Boolean.coerce_result')
+def test_field_get_value_calls_coerce(coerce_result_mock):
+    field = BooleanField()
+    selection = mock.MagicMock()
+    selection.name = 'foo'
+    obj = mock.MagicMock()
+    obj.get_foo.return_value = 'bar'
+    field.bind(selection, obj)
 
     field.get_value()
-    field.type_.coerce_result.assert_called_once_with('bar')
+    coerce_result_mock.assert_called_once_with('bar')
 
 
 def test_boolean_coerce():

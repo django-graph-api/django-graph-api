@@ -30,10 +30,10 @@ class Field(object):
     """
     # Tracks each time a Field instance is created. Used to retain order.
     creation_counter = 0
-    _arguments = {}
+    arguments = {}
 
     def __init__(self, **kwargs):
-        self._arguments = kwargs
+        self.arguments = kwargs
         # Increase the creation counter, and save our local copy.
         self.creation_counter = Field.creation_counter
         Field.creation_counter += 1
@@ -69,9 +69,9 @@ class Field(object):
         return None
 
     def get_resolver_args(self):
-        arguments = {arg.name: arg.value for arg in get_arguments_for_selection(self.obj.ast, self.name)}
+        arguments = {arg.name: arg.value for arg in self.selection.arguments}
         resolver_args = {}
-        for key, value in self._arguments.items():
+        for key, value in self.arguments.items():
             if key in arguments:
                 input_value = arguments[key]
                 try:
