@@ -32,6 +32,9 @@ def test_introspect_types_and_fields():
                                 "name": "friends"
                             },
                             {
+                                'name': 'id',
+                            },
+                            {
                                 "name": "name"
                             },
                         ],
