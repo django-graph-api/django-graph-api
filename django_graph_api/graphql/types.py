@@ -1,6 +1,9 @@
 import copy
 
-from collections import OrderedDict
+from collections import (
+    OrderedDict,
+    Iterable
+)
 from inspect import isclass
 
 from django.db.models import Manager
@@ -14,14 +17,6 @@ ENUM = 'ENUM'
 INPUT_OBJECT = 'INPUT_OBJECT'
 LIST = 'LIST'
 NON_NULL = 'NON_NULL'
-
-
-def get_arguments_for_selection(ast, name):
-    selection = next((s for s in ast.selections if s.name == name), None)
-    if not selection:
-        return {}
-
-    return selection.arguments
 
 
 class Field(object):
@@ -148,19 +143,23 @@ class List(object):
     def __init__(self, type_):
         self.type_ = type_
 
-    @classmethod
-    def coerce_result(cls, values):
+    def coerce_result(self, values):
         if values is None:
             return None
         if isinstance(values, Manager):
             values = values.all()
+        elif isinstance(values, six.string_types):
+            values = [values]
+        if issubclass(self.type_, Scalar):
+            return [self.type_.coerce_result(value) for value in list(values)]
         return list(values)
 
-    @classmethod
-    def coerce_input(cls, values):
+    def coerce_input(self, values):
         if values is None:
             return None
-        return list(values)
+        if not isinstance(values, Iterable) or isinstance(values, six.string_types):
+            values = [values]
+        return [self.type_.coerce_input(value) for value in values]
 
 
 class ObjectMetaclass(type):
