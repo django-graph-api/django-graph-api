@@ -1,10 +1,16 @@
+from django.db.models import Q
+
 from django_graph_api.graphql.schema import Schema
 from django_graph_api.graphql.types import (
     Object,
     CharField,
     IntegerField,
     RelatedField,
-    ManyRelatedField, Int)
+    ManyRelatedField,
+    Int,
+    List,
+    String
+)
 
 from .models import (
     Character as CharacterModel,
@@ -18,14 +24,20 @@ schema = Schema()
 class Episode(Object):
     name = CharField()
     number = IntegerField()
-    characters = ManyRelatedField(lambda: Character)
+    characters = ManyRelatedField(lambda: Character, types=List(String))
     next = RelatedField('self')
 
     def get_next(self):
         return EpisodeModel.objects.filter(number=self.data.number + 1).first()
 
-    def get_characters(self, **kwargs):
-        return self.data.characters.filter(**kwargs).order_by('pk')
+    def get_characters(self, types):
+        q = Q()
+        if types is not None:
+            if 'human' not in types:
+                q &= Q(human=None)
+            if 'droid' not in types:
+                q &= Q(droid=None)
+        return self.data.characters.filter(q).order_by('pk')
 
 
 class Character(Object):
@@ -48,8 +60,7 @@ class QueryRoot(Object):
         return CharacterModel.objects.get(name='R2-D2')
 
     def get_episodes(self):
-        return EpisodeModel.objects.order_by('number').all()
+        return EpisodeModel.objects.order_by('number')
 
     def get_episode(self, number):
-        print(number)
         return EpisodeModel.objects.get(number=number)
