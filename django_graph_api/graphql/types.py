@@ -110,7 +110,15 @@ class Int(Scalar):
 
     @classmethod
     def coerce_input(cls, value):
-        return None if value is None else int(value)
+        if value is None:
+            return None
+        if not isinstance(value, int) or isinstance(value, bool):
+            raise ValueError('Expected int input type, got {}'.format(type(value)))
+        min_value = -2 ^ 31
+        max_value = 2 ^ 31
+        if value < min_value or value >= max_value:
+            raise ValueError('Value must be -2^31 <= value < 2^31 ({} <= value < {})'.format(min_value, max_value))
+        return value
 
 
 class Float(Scalar):

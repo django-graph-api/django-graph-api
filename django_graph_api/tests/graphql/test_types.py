@@ -88,12 +88,28 @@ def test_boolean_coerce_input():
 
 
 def test_int_coerce_input():
-    assert Int.coerce_input(True) is 1
-    assert Int.coerce_input(4.9) is 4
+    assert Int.coerce_input(-12) == -12
     assert Int.coerce_input(None) is None
 
     with pytest.raises(ValueError):
-        Int.coerce_input('2.0')
+        Int.coerce_input('2')
+
+    with pytest.raises(ValueError):
+        Int.coerce_input(True)
+
+    with pytest.raises(ValueError):
+        Int.coerce_input(2.0)
+
+    max_int = (2 ^ 31) - 1
+    assert Int.coerce_input(max_int) == max_int
+
+    with pytest.raises(ValueError):
+        Int.coerce_input(max_int + 1)
+
+    min_int = -2 ^ 31
+    assert Int.coerce_input(min_int) == min_int
+    with pytest.raises(ValueError):
+        Int.coerce_input(min_int - 1)
 
 
 def test_float_coerce_input():
@@ -113,7 +129,10 @@ def test_string_coerce_input():
 def test_list_coerce_input():
     assert List(Int).coerce_input([]) == []
     assert List(Boolean).coerce_input({True}) == [True]
-    assert List(Int).coerce_input((1, 2, 3, '12')) == [1, 2, 3, 12]
-    assert List(Int).coerce_input('123') == [123]
+    assert List(Int).coerce_input((1, 2, 3)) == [1, 2, 3]
+    assert List(String).coerce_input('123') == ['123']
     assert List(String).coerce_input(True) == ['True']
     assert List(Int).coerce_input(None) is None
+
+    with pytest.raises(ValueError):
+        List(Int).coerce_input(['1', '2'])
