@@ -1,3 +1,4 @@
+import numbers
 from collections import (
     OrderedDict,
     Iterable
@@ -113,11 +114,12 @@ class Int(Scalar):
         if value is None:
             return None
         if not isinstance(value, int) or isinstance(value, bool):
-            raise ValueError('Expected int input type, got {}'.format(type(value)))
-        min_value = -2 ^ 31
-        max_value = 2 ^ 31
-        if value < min_value or value >= max_value:
-            raise ValueError('Value must be -2^31 <= value < 2^31 ({} <= value < {})'.format(min_value, max_value))
+            raise ValueError('Expected an int type, got {}'.format(type(value)))
+        min_value = -2147483648  # -2**31
+        max_value = 2147483647  # 2**31 - 1
+        if value < min_value or value > max_value:
+            raise ValueError('Value must be between {} and {} (inclusive). Got {}'.format(
+                min_value, max_value, value))
         return value
 
 
@@ -128,17 +130,25 @@ class Float(Scalar):
 
     @classmethod
     def coerce_input(cls, value):
+        if value is None:
+            return None
+        if not isinstance(value, (float, int)) or isinstance(value, bool):
+            raise ValueError('Expected a float type, got {}'.format(type(value)))
         return None if value is None else float(value)
 
 
 class String(Scalar):
     @classmethod
     def coerce_result(cls, value):
-        return None if value is None else str(value)
+        return None if value is None else six.text_type(value)
 
     @classmethod
     def coerce_input(cls, value):
-        return None if value is None else str(value)
+        if value is None:
+            return None
+        if not isinstance(value, six.text_type):
+            raise ValueError('Expected a string/unicode type, got {}'.format(type(value)))
+        return None if value is None else six.text_type(value)
 
 
 class Id(String):
@@ -152,7 +162,11 @@ class Boolean(Scalar):
 
     @classmethod
     def coerce_input(cls, value):
-        return None if value is None else bool(value)
+        if value is None:
+            return None
+        if not isinstance(value, bool):
+            raise ValueError('Expected a bool type, got {}'.format(type(value)))
+        return value
 
 
 class List(object):
