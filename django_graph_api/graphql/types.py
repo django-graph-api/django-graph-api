@@ -145,7 +145,7 @@ class String(Scalar):
     def coerce_input(cls, value):
         if value is None:
             return None
-        if not isinstance(value, six.text_type):
+        if not isinstance(value, six.string_types):
             raise ValueError('Expected a string/unicode type, got {}'.format(type(value)))
         return None if value is None else six.text_type(value)
 
