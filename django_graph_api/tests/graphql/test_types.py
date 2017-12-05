@@ -107,7 +107,7 @@ def test_string_coerce_result():
 def test_string_coerce_input():
     assert String.coerce_input(None) is None
     assert String.coerce_input('abc') is 'abc'
-    assert String.coerce_input('äbc🐍') is 'äbc🐍'
+    assert String.coerce_input(u'äbc🐍') is u'äbc🐍'
 
     with pytest.raises(ValueError):
         String.coerce_input(True)
