@@ -20,6 +20,17 @@ INPUT_OBJECT = 'INPUT_OBJECT'
 LIST = 'LIST'
 NON_NULL = 'NON_NULL'
 
+TYPE_KINDS_VALUES = (
+    SCALAR,
+    OBJECT,
+    INTERFACE,
+    UNION,
+    ENUM,
+    INPUT_OBJECT,
+    LIST,
+    NON_NULL,
+)
+
 
 class ObjectNameMetaclass(type):
     def __new__(mcs, name, bases, attrs):
@@ -100,7 +111,7 @@ class Scalar(six.with_metaclass(ObjectNameMetaclass)):
 
     @property
     def name(self):
-        return self.__class__.__name__
+        return self.object_name
 
 
 class Int(Scalar):
@@ -166,6 +177,11 @@ class Boolean(Scalar):
         if not isinstance(value, bool):
             raise ValueError('Expected a bool type, got {}'.format(type(value)))
         return value
+
+
+class Enum(Scalar):
+    kind = ENUM
+    values = ()
 
 
 class List(object):
@@ -298,6 +314,19 @@ class BooleanField(Field):
     type_ = Boolean
 
 
+class EnumField(CharField):
+    type_ = Enum
+
+    def __init__(self, enum):
+        super(EnumField, self).__init__()
+
+        self.enum = enum
+
+
+class ManyEnumField(EnumField):
+    type_ = List
+
+
 class RelatedField(Field):
     """
     Defines a many-to-1 or 1-to-1 related field.
@@ -398,7 +427,7 @@ class ManyRelatedField(RelatedField):
         }
         ...
     """
-    type_ = List(Object)
+    type_ = List
 
     def get_value(self):
         values = super(RelatedField, self).get_value()

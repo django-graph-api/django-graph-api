@@ -6,12 +6,135 @@ from graphql.ast import (
 )
 from graphql.parser import GraphQLParser
 from django_graph_api.graphql.types import (
+    BooleanField,
     CharField,
+    Enum,
+    ENUM,
+    EnumField,
+    INPUT_OBJECT,
+    INTERFACE,
+    LIST,
+    ManyEnumField,
     ManyRelatedField,
+    NON_NULL,
     Object,
     OBJECT,
     RelatedField,
+    SCALAR,
+    UNION,
 )
+
+
+class DirectiveLocationEnum(Enum):
+    object_name = '__DirectiveLocation'
+    values = (
+        {
+            'name': 'QUERY',
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': 'MUTATION',
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': 'FIELD',
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': 'FRAGMENT_DEFINITION',
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': 'FRAGMENT_SPREAD',
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': 'INLINE_FRAGMENT',
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+    )
+
+
+class TypeKindEnum(Enum):
+    object_name = '__TypeKind'
+    values = (
+        {
+            'name': SCALAR,
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': OBJECT,
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': INTERFACE,
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': UNION,
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': ENUM,
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': INPUT_OBJECT,
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': LIST,
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+        {
+            'name': NON_NULL,
+            'description': None,
+            'isDeprecated': False,
+            'deprecationReason': None,
+        },
+    )
+
+
+class InputValueObject(Object):
+    object_name = '__InputValue'
+    name = CharField()
+    description = CharField()
+    type = RelatedField(lambda: TypeObject)
+    defaultValue = CharField()
+
+
+class DirectiveObject(Object):
+    object_name = '__Directive'
+    name = CharField()
+    description = CharField()
+    locations = ManyEnumField(DirectiveLocationEnum)
+    args = ManyRelatedField(InputValueObject)
 
 
 class FieldObject(Object):
@@ -31,13 +154,24 @@ class FieldObject(Object):
         return self.data[1].type_
 
 
+class EnumValueObject(Object):
+    object_name = '__EnumValue'
+    name = CharField()
+    description = CharField()
+    isDeprecated = BooleanField()
+    deprecationReason = CharField()
+
+
 class TypeObject(Object):
     # self.data will be an object or scalar
     object_name = '__Type'
-    kind = CharField()
+    kind = EnumField(TypeKindEnum)
     name = CharField()
     description = CharField()
     fields = ManyRelatedField(FieldObject)
+    inputFields = ManyRelatedField(InputValueObject)
+    interfaces = ManyRelatedField('self')
+    enumValues = ManyRelatedField(EnumValueObject)
 
     def get_name(self):
         return self.data.object_name
@@ -50,6 +184,18 @@ class TypeObject(Object):
             key=lambda item: item[0],
         )
 
+    def get_inputFields(self):
+        return []
+
+    def get_interfaces(self):
+        return None
+
+    def get_enumValues(self):
+        if self.data.kind != ENUM:
+            return None
+
+        return self.data.values
+
 
 class SchemaObject(Object):
     # self.data will be the query_root.
@@ -57,6 +203,7 @@ class SchemaObject(Object):
     types = ManyRelatedField(TypeObject)
     queryType = RelatedField(TypeObject)
     mutationType = RelatedField(TypeObject)
+    directives = ManyRelatedField(DirectiveObject)
 
     def _collect_types(self, object_type, types=None):
         if types is None:
@@ -91,6 +238,9 @@ class SchemaObject(Object):
 
     def get_mutationType(self):
         return None
+
+    def get_directives(self):
+        return []
 
 
 class Schema(object):

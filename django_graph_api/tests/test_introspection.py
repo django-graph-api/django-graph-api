@@ -19,103 +19,251 @@ def test_introspect_types_and_fields():
             '__schema': {
                 'types': [
                     {
-                        "name": "Character",
-                        "kind": "OBJECT",
-                        "fields": [
+                        'name': 'Character',
+                        'kind': 'OBJECT',
+                        'fields': [
                             {
-                                "name": "appears_in"
+                                'name': 'appears_in'
                             },
                             {
-                                "name": "best_friend"
+                                'name': 'best_friend'
                             },
                             {
-                                "name": "friends"
+                                'name': 'friends'
                             },
                             {
                                 'name': 'id',
                             },
                             {
-                                "name": "name"
+                                'name': 'name'
                             },
                         ],
                     },
                     {
-                        "name": "Episode",
-                        "kind": "OBJECT",
-                        "fields": [
+                        'name': 'Episode',
+                        'kind': 'OBJECT',
+                        'fields': [
                             {
-                                "name": "characters"
+                                'name': 'characters'
                             },
                             {
-                                "name": "name"
+                                'name': 'name'
                             },
                             {
-                                "name": "next"
+                                'name': 'next'
                             },
                             {
-                                "name": "number"
-                            },
-                        ],
-                    },
-                    {
-                        "name": "Int",
-                        "kind": "SCALAR",
-                        "fields": None,
-                    },
-                    {
-                        "name": "String",
-                        "kind": "SCALAR",
-                        "fields": None,
-                    },
-                    {
-                        "name": "__Field",
-                        "kind": "OBJECT",
-                        "fields": [
-                            {
-                                "name": "description"
-                            },
-                            {
-                                "name": "name"
-                            },
-                            {
-                                "name": "type"
+                                'name': 'number'
                             },
                         ],
                     },
                     {
-                        "name": "__Schema",
-                        "kind": "OBJECT",
-                        "fields": [
+                        'name': 'Boolean',
+                        'kind': 'SCALAR',
+                        'fields': None,
+                    },
+                    {
+                        'name': 'Int',
+                        'kind': 'SCALAR',
+                        'fields': None,
+                    },
+                    {
+                        'name': 'String',
+                        'kind': 'SCALAR',
+                        'fields': None,
+                    },
+                    {
+                        'name': '__Directive',
+                        'kind': 'OBJECT',
+                        'fields': [
                             {
-                                "name": "mutationType"
+                                'name': 'args',
                             },
                             {
-                                "name": "queryType"
+                                'name': 'description',
                             },
                             {
-                                "name": "types"
+                                'name': 'locations',
+                            },
+                            {
+                                'name': 'name',
                             },
                         ],
                     },
                     {
-                        "name": "__Type",
-                        "kind": "OBJECT",
-                        "fields": [
+                        'name': '__DirectiveLocation',
+                        'kind': 'ENUM',
+                        'fields': [
                             {
-                                "name": "description"
+                                'name': 'description',
                             },
                             {
-                                "name": "fields"
+                                'name': 'enumValues',
                             },
                             {
-                                "name": "kind"
+                                'name': 'fields',
                             },
                             {
-                                "name": "name"
+                                'name': 'inputFields',
+                            },
+                            {
+                                'name': 'interfaces',
+                            },
+                            {
+                                'name': 'kind',
+                            },
+                            {
+                                'name': 'name',
+                            },
+                        ],
+                    },
+                    {
+                        'name': '__EnumValue',
+                        'kind': 'OBJECT',
+                        'fields': [
+                            {
+                                'name': 'description',
+                            },
+                            {
+                                'name': 'name',
+                            },
+                            {
+                                'name': 'isDeprecated',
+                            },
+                            {
+                                'name': 'deprecationReason',
+                            },
+                        ],
+                    },
+                    {
+                        'name': '__Field',
+                        'kind': 'OBJECT',
+                        'fields': [
+                            {
+                                'name': 'description'
+                            },
+                            {
+                                'name': 'name'
+                            },
+                            {
+                                'name': 'type'
+                            },
+                        ],
+                    },
+                    {
+                        'name': '__InputValue',
+                        'kind': 'OBJECT',
+                        'fields': [
+                            {
+                                'name': 'defaultValue',
+                            },
+                            {
+                                'name': 'description',
+                            },
+                            {
+                                'name': 'name',
+                            },
+                            {
+                                'name': 'type',
+                            },
+                        ],
+                    },
+                    {
+                        'name': '__Schema',
+                        'kind': 'OBJECT',
+                        'fields': [
+                            {
+                                'name': 'directives',
+                            },
+                            {
+                                'name': 'mutationType',
+                            },
+                            {
+                                'name': 'queryType',
+                            },
+                            {
+                                'name': 'types',
+                            },
+                        ],
+                    },
+                    {
+                        'name': '__Type',
+                        'kind': 'OBJECT',
+                        'fields': [
+                            {
+                                'name': 'description',
+                            },
+                            {
+                                'name': 'enumValues',
+                            },
+                            {
+                                'name': 'fields',
+                            },
+                            {
+                                'name': 'inputFields',
+                            },
+                            {
+                                'name': 'interfaces',
+                            },
+                            {
+                                'name': 'kind',
+                            },
+                            {
+                                'name': 'name',
+                            },
+                        ],
+                    },
+                    {
+                        'name': '__Type',
+                        'kind': 'ENUM',
+                        'fields': [
+                            {
+                                'name': 'description',
+                            },
+                            {
+                                'name': 'enumValues',
+                            },
+                            {
+                                'name': 'fields',
+                            },
+                            {
+                                'name': 'inputFields',
+                            },
+                            {
+                                'name': 'interfaces',
+                            },
+                            {
+                                'name': 'kind',
+                            },
+                            {
+                                'name': 'name',
                             },
                         ],
                     },
                 ],
+            },
+        },
+    }
+
+
+def test_introspect_directives():
+    document = '''{
+        __schema {
+            directives {
+                name
+                description
+                locations
+                args {
+                    ...InputValue
+                }
+            }
+        }
+    }
+    '''
+    assert schema.execute(document) == {
+        'data': {
+            '__schema': {
+                'directives': [],
             },
         },
     }
