@@ -1,4 +1,7 @@
-from collections import OrderedDict
+from collections import (
+    OrderedDict,
+    Iterable
+)
 from inspect import isclass
 import copy
 
@@ -32,8 +35,10 @@ class Field(object):
     """
     # Tracks each time a Field instance is created. Used to retain order.
     creation_counter = 0
+    arguments = {}
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        self.arguments = kwargs
         # Increase the creation counter, and save our local copy.
         self.creation_counter = Field.creation_counter
         Field.creation_counter += 1
@@ -50,7 +55,9 @@ class Field(object):
     def get_raw_value(self):
         # Try user defined resolver
         if hasattr(self.obj, 'get_{}'.format(self.name)):
-            return getattr(self.obj, 'get_{}'.format(self.name))()
+            kwargs = self.get_resolver_args()
+            resolver = getattr(self.obj, 'get_{}'.format(self.name))
+            return resolver(**kwargs)
 
         # Try model attributes
         data = self.obj.data
@@ -65,6 +72,22 @@ class Field(object):
             pass
 
         return None
+
+    def get_resolver_args(self):
+        arguments = {arg.name: arg.value for arg in self.selection.arguments}
+        resolver_args = {}
+        for key, value in self.arguments.items():
+            if key in arguments:
+                input_value = arguments[key]
+                try:
+                    arg_value = value.coerce_input(input_value)
+                except TypeError:
+                    error = 'Argument {} expected a {} but got a {}'.format(key, type(value), type(input_value))
+                    raise TypeError(error)
+                resolver_args[key] = arg_value
+            else:
+                resolver_args[key] = None
+        return resolver_args
 
     def bind(self, selection, obj):
         self.selection = selection
@@ -85,17 +108,46 @@ class Int(Scalar):
     def coerce_result(cls, value):
         return None if value is None else int(value)
 
+    @classmethod
+    def coerce_input(cls, value):
+        if value is None:
+            return None
+        if not isinstance(value, int) or isinstance(value, bool):
+            raise ValueError('Expected an int type, got {}'.format(type(value)))
+        min_value = -2147483648  # -2**31
+        max_value = 2147483647  # 2**31 - 1
+        if value < min_value or value > max_value:
+            raise ValueError('Value must be between {} and {} (inclusive). Got {}'.format(
+                min_value, max_value, value))
+        return value
+
 
 class Float(Scalar):
     @classmethod
     def coerce_result(cls, value):
         return None if value is None else float(value)
 
+    @classmethod
+    def coerce_input(cls, value):
+        if value is None:
+            return None
+        if not isinstance(value, (float, int)) or isinstance(value, bool):
+            raise ValueError('Expected a float type, got {}'.format(type(value)))
+        return None if value is None else float(value)
+
 
 class String(Scalar):
     @classmethod
     def coerce_result(cls, value):
-        return None if value is None else str(value)
+        return None if value is None else six.text_type(value)
+
+    @classmethod
+    def coerce_input(cls, value):
+        if value is None:
+            return None
+        if not isinstance(value, six.string_types):
+            raise ValueError('Expected a string/unicode type, got {}'.format(type(value)))
+        return None if value is None else six.text_type(value)
 
 
 class Id(String):
@@ -107,6 +159,14 @@ class Boolean(Scalar):
     def coerce_result(cls, value):
         return None if value is None else bool(value)
 
+    @classmethod
+    def coerce_input(cls, value):
+        if value is None:
+            return None
+        if not isinstance(value, bool):
+            raise ValueError('Expected a bool type, got {}'.format(type(value)))
+        return value
+
 
 class List(object):
     kind = LIST
@@ -114,13 +174,23 @@ class List(object):
     def __init__(self, type_):
         self.type_ = type_
 
-    @classmethod
-    def coerce_result(cls, values):
+    def coerce_result(self, values):
         if values is None:
             return None
         if isinstance(values, Manager):
             values = values.all()
+        elif isinstance(values, six.string_types):
+            values = [values]
+        if issubclass(self.type_, Scalar):
+            return [self.type_.coerce_result(value) for value in list(values)]
         return list(values)
+
+    def coerce_input(self, values):
+        if values is None:
+            return None
+        if not isinstance(values, Iterable) or isinstance(values, six.string_types):
+            values = [values]
+        return [self.type_.coerce_input(value) for value in values]
 
 
 class ObjectMetaclass(ObjectNameMetaclass):
@@ -263,8 +333,9 @@ class RelatedField(Field):
     """
     type_ = Object
 
-    def __init__(self, object_type):
+    def __init__(self, object_type, **kwargs):
         self.object_type = object_type
+        super(RelatedField, self).__init__(**kwargs)
 
     @classmethod
     def resolve_object_type(cls, object_type):

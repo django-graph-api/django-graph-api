@@ -50,3 +50,11 @@ def starwars_data(transactional_db):
     )
 
     a_new_hope.characters = [luke, han, leia, c3po, r2d2, darth_vader]
+
+    empire_strikes_back = Episode.objects.create(
+        id=2,
+        name='The Empire Strikes Back',
+        number=5
+    )
+
+    empire_strikes_back.characters = [luke, han, leia, c3po, r2d2, darth_vader]

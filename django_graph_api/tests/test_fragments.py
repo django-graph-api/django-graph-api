@@ -29,6 +29,10 @@ def test_fragments(starwars_data):
                     'name': 'A New Hope',
                     'number': 4,
                 },
+                {
+                    'name': 'The Empire Strikes Back',
+                    'number': 5,
+                },
             ],
             'hero': {
                 'name': 'R2-D2',
@@ -116,6 +120,10 @@ def test_fragments__inline(starwars_data):
                 {
                     'name': 'A New Hope',
                     'number': 4,
+                },
+                {
+                    'name': 'The Empire Strikes Back',
+                    'number': 5,
                 },
             ],
             'hero': {
