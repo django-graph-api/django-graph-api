@@ -172,6 +172,7 @@ class TypeObject(Object):
     fields = ManyRelatedField(FieldObject)
     inputFields = ManyRelatedField(InputValueObject)
     interfaces = ManyRelatedField('self')
+    possibleTypes = ManyRelatedField('self')
     enumValues = ManyRelatedField(EnumValueObject)
 
     def get_name(self):
@@ -195,6 +196,9 @@ class TypeObject(Object):
         if self.data.kind != OBJECT:
             return None
         return []
+
+    def get_possibleTypes(self):
+        return None
 
     def get_enumValues(self):
         if self.data.kind != ENUM:

@@ -57,6 +57,11 @@ def test_type__scalar__get_interfaces():
     assert type_object.get_interfaces() is None
 
 
+def test_type__scalar__get_possibleTypes():
+    type_object = TypeObject(None, Boolean, None)
+    assert type_object.get_possibleTypes() is None
+
+
 def test_type__scalar__get_enumValues():
     type_object = TypeObject(None, Boolean, None)
     assert type_object.get_enumValues() is None
@@ -92,6 +97,11 @@ def test_type__object__get_interfaces():
     assert type_object.get_interfaces() == []
 
 
+def test_type__object__get_possibleTypes():
+    type_object = TypeObject(None, TypeObject, None)
+    assert type_object.get_possibleTypes() is None
+
+
 def test_type__object__get_enumValues():
     type_object = TypeObject(None, TypeObject, None)
     assert type_object.get_enumValues() is None
@@ -110,6 +120,11 @@ def test_type__enum__get_inputFields():
 def test_type__enum__get_interfaces():
     type_object = TypeObject(None, TypeKindEnum, None)
     assert type_object.get_interfaces() is None
+
+
+def test_type__enum__get_possibleTypes():
+    type_object = TypeObject(None, TypeKindEnum, None)
+    assert type_object.get_possibleTypes() is None
 
 
 def test_type__enum__get_enumValues():
