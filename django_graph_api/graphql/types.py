@@ -427,7 +427,7 @@ class ManyRelatedField(RelatedField):
         }
         ...
     """
-    type_ = List
+    type_ = List(Object)
 
     def get_value(self):
         values = super(RelatedField, self).get_value()
