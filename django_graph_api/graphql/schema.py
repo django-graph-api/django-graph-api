@@ -186,10 +186,15 @@ class TypeObject(Object):
         )
 
     def get_inputFields(self):
+        if self.data.kind != INPUT_OBJECT:
+            return None
+
         return []
 
     def get_interfaces(self):
-        return None
+        if self.data.kind != OBJECT:
+            return None
+        return []
 
     def get_enumValues(self):
         if self.data.kind != ENUM:
@@ -218,17 +223,23 @@ class SchemaObject(Object):
                     continue
                 types.add(new_object_type)
                 self._collect_types(new_object_type, types)
+            elif isinstance(field, EnumField):
+                enum_type = field.enum
+                if enum_type in types:
+                    continue
+                types.add(enum_type)
             elif isinstance(field.type_, List):
-                types.add(field.type_.type_)
+                field = field.type_
             elif field.type_:
                 types.add(field.type_)
         return types
 
     def _type_key(self, type_):
         object_name = type_.object_name
+        # Sort: defined types, introspection types, scalars, and then by name.
         return (
+            type_.kind == SCALAR,
             object_name.startswith('__'),
-            type_.kind,
             object_name,
         )
 
