@@ -324,7 +324,7 @@ class EnumField(CharField):
 
 
 class ManyEnumField(EnumField):
-    type_ = List
+    type_ = List(String)
 
 
 class RelatedField(Field):

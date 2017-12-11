@@ -13,6 +13,7 @@ from django_graph_api.graphql.types import (
     EnumField,
     INPUT_OBJECT,
     INTERFACE,
+    List,
     LIST,
     ManyEnumField,
     ManyRelatedField,
@@ -217,6 +218,8 @@ class SchemaObject(Object):
                     continue
                 types.add(new_object_type)
                 self._collect_types(new_object_type, types)
+            elif isinstance(field.type_, List):
+                types.add(field.type_.type_)
             elif field.type_:
                 types.add(field.type_)
         return types
