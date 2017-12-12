@@ -200,6 +200,27 @@ def test_field__get_args():
     assert field_object.get_args() == (('types', Int()),)
 
 
+def test_inputvalue__get_name():
+    inputvalue_object = InputValueObject(None, (
+        'argname',
+        String(),
+    ), None)
+    assert inputvalue_object.get_name() == 'argname'
+
+
+def test_inputvalue__get_type():
+    inputvalue_object = InputValueObject(None, (
+        'name',
+        String(),
+    ), None)
+    assert inputvalue_object.get_type() == String
+    inputvalue_object = InputValueObject(None, (
+        'names',
+        List(String),
+    ), None)
+    assert inputvalue_object.get_type() == List(String)
+
+
 def test_execute__introspect_directives():
     document = '''{
         __schema {

@@ -133,7 +133,10 @@ class InputValueObject(Object):
         return self.data[0]
 
     def get_type(self):
-        return self.data[1].__class__
+        type_ = self.data[1]
+        if isinstance(type_, List):
+            return type_
+        return type_.__class__
 
 
 class DirectiveObject(Object):
