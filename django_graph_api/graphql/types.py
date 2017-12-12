@@ -109,6 +109,11 @@ class Field(object):
 class Scalar(six.with_metaclass(ObjectNameMetaclass)):
     kind = SCALAR
 
+    def __eq__(self, other):
+        if self.__class__ == other.__class__:
+            return True
+        return False
+
     @property
     def name(self):
         return self.object_name
@@ -189,6 +194,9 @@ class List(object):
 
     def __init__(self, type_):
         self.type_ = type_
+
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and self.type_ == other.type_
 
     def coerce_result(self, values):
         if values is None:

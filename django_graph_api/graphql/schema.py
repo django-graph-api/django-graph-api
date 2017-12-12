@@ -129,6 +129,12 @@ class InputValueObject(Object):
     type = RelatedField(lambda: TypeObject)
     defaultValue = CharField()
 
+    def get_name(self):
+        return self.data[0]
+
+    def get_type(self):
+        return self.data[1].__class__
+
 
 class DirectiveObject(Object):
     object_name = '__Directive'
@@ -144,6 +150,7 @@ class FieldObject(Object):
     name = CharField()
     description = CharField()
     type = RelatedField(lambda: TypeObject)
+    args = ManyRelatedField(InputValueObject)
 
     def get_name(self):
         return self.data[0]
@@ -153,6 +160,9 @@ class FieldObject(Object):
 
     def get_type(self):
         return self.data[1].type_
+
+    def get_args(self):
+        return tuple(self.data[1].arguments.items())
 
 
 class EnumValueObject(Object):

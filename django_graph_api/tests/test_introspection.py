@@ -10,7 +10,9 @@ from django_graph_api.graphql.schema import (
 )
 from django_graph_api.graphql.types import (
     Boolean,
+    ManyRelatedField,
     Int,
+    List,
     String,
 )
 
@@ -84,6 +86,7 @@ def test_type__object__get_fields():
         ('interfaces', type_object._declared_fields['interfaces']),
         ('kind', type_object._declared_fields['kind']),
         ('name', type_object._declared_fields['name']),
+        ('possibleTypes', type_object._declared_fields['possibleTypes']),
     ]
 
 
@@ -130,6 +133,19 @@ def test_type__enum__get_possibleTypes():
 def test_type__enum__get_enumValues():
     type_object = TypeObject(None, TypeKindEnum, None)
     assert type_object.get_enumValues() == TypeKindEnum.values
+
+
+def test_field__get_args():
+    field_object = FieldObject(None, (
+        'characters',
+        ManyRelatedField(Character, types=List(String)),
+    ), None)
+    assert field_object.get_args() == (('types', List(String)),)
+    field_object = FieldObject(None, (
+        'characters',
+        ManyRelatedField(Episode, types=Int()),
+    ), None)
+    assert field_object.get_args() == (('types', Int()),)
 
 
 def test_execute__introspect_directives():
