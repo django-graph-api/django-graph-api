@@ -10,9 +10,11 @@ from django_graph_api.graphql.schema import (
 )
 from django_graph_api.graphql.types import (
     Boolean,
-    ManyRelatedField,
+    CharField,
     Int,
     List,
+    ManyRelatedField,
+    RelatedField,
     String,
 )
 
@@ -185,6 +187,24 @@ def test_type__list__get_enumValues():
 def test_type__list__get_ofType():
     type_object = TypeObject(None, List(Character), None)
     assert type_object.get_ofType() is Character
+
+
+def test_field__get_type():
+    field_object = FieldObject(None, (
+        'name',
+        CharField(),
+    ), None)
+    assert field_object.get_type() == String
+    field_object = FieldObject(None, (
+        'characters',
+        RelatedField(Character),
+    ), None)
+    assert field_object.get_type() == Character
+    field_object = FieldObject(None, (
+        'characters',
+        ManyRelatedField(Character),
+    ), None)
+    assert field_object.get_type() == List(Character)
 
 
 def test_field__get_args():

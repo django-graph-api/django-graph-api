@@ -164,7 +164,14 @@ class FieldObject(Object):
         return getattr(self.data[1], 'description', None)
 
     def get_type(self):
-        return self.data[1].type_
+        field = self.data[1]
+        if isinstance(field, RelatedField):
+            type_ = field.object_type
+            if isinstance(field.type_, List):
+                type_ = List(type_)
+        else:
+            type_ = field.type_
+        return type_
 
     def get_args(self):
         return tuple(self.data[1].arguments.items())
