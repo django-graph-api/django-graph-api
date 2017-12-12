@@ -30,6 +30,7 @@ def test_schema__get_types():
     assert types == [
         Character,
         Episode,
+        schema.query_root,
         DirectiveObject,
         DirectiveLocationEnum,
         EnumValueObject,

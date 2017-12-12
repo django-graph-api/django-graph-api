@@ -237,7 +237,7 @@ class SchemaObject(Object):
 
     def _collect_types(self, object_type, types=None):
         if types is None:
-            types = set()
+            types = set((object_type,))
         for field in object_type._declared_fields.values():
             if isinstance(field, RelatedField):
                 new_object_type = field.resolve_object_type(field.object_type)
