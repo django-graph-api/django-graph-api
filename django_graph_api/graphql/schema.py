@@ -151,6 +151,8 @@ class FieldObject(Object):
     description = CharField()
     type = RelatedField(lambda: TypeObject)
     args = ManyRelatedField(InputValueObject)
+    isDeprecated = BooleanField()
+    deprecationReason = CharField()
 
     def get_name(self):
         return self.data[0]
