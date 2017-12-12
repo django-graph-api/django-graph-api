@@ -53,6 +53,9 @@ class Field(object):
         # Increase the creation counter, and save our local copy.
         self.creation_counter = Field.creation_counter
         Field.creation_counter += 1
+        # This is so that a field can be introspected to see if it
+        # has been bound.
+        self._bound = False
 
     def get_value(self):
         raw_value = self.get_raw_value()
@@ -104,6 +107,7 @@ class Field(object):
         self.selection = selection
         self.name = selection.name
         self.obj = obj
+        self._bound = True
 
 
 class Scalar(six.with_metaclass(ObjectNameMetaclass)):
@@ -229,7 +233,12 @@ class ObjectMetaclass(ObjectNameMetaclass):
         current_fields.sort(key=lambda x: x[1].creation_counter)
         attrs['_declared_fields'] = OrderedDict(current_fields)
 
-        return super(ObjectMetaclass, mcs).__new__(mcs, name, bases, attrs)
+        cls = super(ObjectMetaclass, mcs).__new__(mcs, name, bases, attrs)
+
+        for name, field in current_fields:
+            field._self_object_type = cls
+
+        return cls
 
 
 class Object(six.with_metaclass(ObjectMetaclass)):
@@ -371,20 +380,17 @@ class RelatedField(Field):
     type_ = Object
 
     def __init__(self, object_type, **kwargs):
-        self.object_type = object_type
+        self._object_type = object_type
         super(RelatedField, self).__init__(**kwargs)
 
-    @classmethod
-    def resolve_object_type(cls, object_type):
-        if callable(object_type) and not isclass(object_type):
-            return object_type()
-        return object_type
-
-    def bind(self, selection, obj):
-        super(RelatedField, self).bind(selection, obj)
-        self.object_type = self.__class__.resolve_object_type(self.object_type)
-        if self.object_type == 'self':
-            self.object_type = obj.__class__
+    @property
+    def object_type(self):
+        if not isclass(self._object_type):
+            if callable(self._object_type):
+                self._object_type = self._object_type()
+            if self._object_type == 'self':
+                self._object_type = self._self_object_type
+        return self._object_type
 
     def _serialize_value(self, value):
         obj_instance = self.object_type(

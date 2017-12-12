@@ -197,6 +197,12 @@ def test_field__get_type():
     assert field_object.get_type() == String
     field_object = FieldObject(None, (
         'characters',
+        RelatedField('self'),
+    ), None)
+    field_object.data[1]._self_object_type = Character
+    assert field_object.get_type() == Character
+    field_object = FieldObject(None, (
+        'characters',
         RelatedField(Character),
     ), None)
     assert field_object.get_type() == Character

@@ -250,13 +250,11 @@ class SchemaObject(Object):
             types = set((object_type,))
         for field in object_type._declared_fields.values():
             if isinstance(field, RelatedField):
-                new_object_type = field.resolve_object_type(field.object_type)
-                if new_object_type == 'self':
+                object_type = field.object_type
+                if object_type in types:
                     continue
-                if new_object_type in types:
-                    continue
-                types.add(new_object_type)
-                self._collect_types(new_object_type, types)
+                types.add(object_type)
+                self._collect_types(object_type, types)
             elif isinstance(field, EnumField):
                 enum_type = field.enum
                 if enum_type in types:
