@@ -87,15 +87,22 @@ def test_type__object__get_name():
 def test_type__object__get_fields():
     type_object = TypeObject(None, TypeObject, None)
     assert type_object.get_fields() == [
-        ('description', type_object._declared_fields['description']),
-        ('enumValues', type_object._declared_fields['enumValues']),
-        ('fields', type_object._declared_fields['fields']),
-        ('inputFields', type_object._declared_fields['inputFields']),
-        ('interfaces', type_object._declared_fields['interfaces']),
-        ('kind', type_object._declared_fields['kind']),
-        ('name', type_object._declared_fields['name']),
-        ('ofType', type_object._declared_fields['ofType']),
-        ('possibleTypes', type_object._declared_fields['possibleTypes']),
+        ('description', TypeObject._declared_fields['description']),
+        ('enumValues', TypeObject._declared_fields['enumValues']),
+        ('fields', TypeObject._declared_fields['fields']),
+        ('inputFields', TypeObject._declared_fields['inputFields']),
+        ('interfaces', TypeObject._declared_fields['interfaces']),
+        ('kind', TypeObject._declared_fields['kind']),
+        ('name', TypeObject._declared_fields['name']),
+        ('ofType', TypeObject._declared_fields['ofType']),
+        ('possibleTypes', TypeObject._declared_fields['possibleTypes']),
+    ]
+    # Schema fields should be ignored.
+    type_object = TypeObject(None, schema.query_root, None)
+    assert type_object.get_fields() == [
+        ('episode', schema.query_root._declared_fields['episode']),
+        ('episodes', schema.query_root._declared_fields['episodes']),
+        ('hero', schema.query_root._declared_fields['hero']),
     ]
 
 

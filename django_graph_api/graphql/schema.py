@@ -207,7 +207,11 @@ class TypeObject(Object):
         if self.data.kind != OBJECT:
             return None
         return sorted(
-            self.data._declared_fields.items(),
+            (
+                (name, field)
+                for name, field in self.data._declared_fields.items()
+                if name[:2] != '__'
+            ),
             key=lambda item: item[0],
         )
 
