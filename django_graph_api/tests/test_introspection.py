@@ -69,6 +69,11 @@ def test_type__scalar__get_enumValues():
     assert type_object.get_enumValues() is None
 
 
+def test_type__scalar__get_ofType():
+    type_object = TypeObject(None, Boolean, None)
+    assert type_object.get_ofType() is None
+
+
 def test_type__object__get_name():
     type_object = TypeObject(None, Character, None)
     assert type_object.get_name() == 'Character'
@@ -86,6 +91,7 @@ def test_type__object__get_fields():
         ('interfaces', type_object._declared_fields['interfaces']),
         ('kind', type_object._declared_fields['kind']),
         ('name', type_object._declared_fields['name']),
+        ('ofType', type_object._declared_fields['ofType']),
         ('possibleTypes', type_object._declared_fields['possibleTypes']),
     ]
 
@@ -108,6 +114,11 @@ def test_type__object__get_possibleTypes():
 def test_type__object__get_enumValues():
     type_object = TypeObject(None, TypeObject, None)
     assert type_object.get_enumValues() is None
+
+
+def test_type__object__get_ofType():
+    type_object = TypeObject(None, TypeObject, None)
+    assert type_object.get_ofType() is None
 
 
 def test_type__enum__get_fields():
@@ -133,6 +144,46 @@ def test_type__enum__get_possibleTypes():
 def test_type__enum__get_enumValues():
     type_object = TypeObject(None, TypeKindEnum, None)
     assert type_object.get_enumValues() == TypeKindEnum.values
+
+
+def test_type__enum__get_ofType():
+    type_object = TypeObject(None, TypeKindEnum, None)
+    assert type_object.get_ofType() is None
+
+
+def test_type__list__get_name():
+    type_object = TypeObject(None, List(Character), None)
+    assert type_object.get_name() is None
+
+
+def test_type__list__get_fields():
+    type_object = TypeObject(None, List(Character), None)
+    assert type_object.get_fields() is None
+
+
+def test_type__list__get_inputFields():
+    type_object = TypeObject(None, List(Character), None)
+    assert type_object.get_inputFields() is None
+
+
+def test_type__list__get_interfaces():
+    type_object = TypeObject(None, List(Character), None)
+    assert type_object.get_interfaces() is None
+
+
+def test_type__list__get_possibleTypes():
+    type_object = TypeObject(None, List(Character), None)
+    assert type_object.get_possibleTypes() is None
+
+
+def test_type__list__get_enumValues():
+    type_object = TypeObject(None, List(Character), None)
+    assert type_object.get_enumValues() is None
+
+
+def test_type__list__get_ofType():
+    type_object = TypeObject(None, List(Character), None)
+    assert type_object.get_ofType() is Character
 
 
 def test_field__get_args():

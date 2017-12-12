@@ -186,8 +186,11 @@ class TypeObject(Object):
     interfaces = ManyRelatedField('self')
     possibleTypes = ManyRelatedField('self')
     enumValues = ManyRelatedField(EnumValueObject)
+    ofType = RelatedField('self')
 
     def get_name(self):
+        if self.data.kind == LIST:
+            return None
         return self.data.object_name
 
     def get_fields(self):
@@ -217,6 +220,11 @@ class TypeObject(Object):
             return None
 
         return self.data.values
+
+    def get_ofType(self):
+        if self.data.kind == LIST:
+            return self.data.type_
+        return None
 
 
 class SchemaObject(Object):
