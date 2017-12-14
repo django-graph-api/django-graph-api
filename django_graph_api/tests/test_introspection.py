@@ -263,6 +263,34 @@ def test_inputvalue__get_type():
     assert inputvalue_object.get_type() == List(String)
 
 
+def test_execute__filter_type():
+    document = '''{
+        __type (name: Character) {
+            name
+            kind
+            fields {
+                name
+            }
+        }
+    }
+    '''
+    assert schema.execute(document) == {
+        'data': {
+            '__type': {
+                'name': 'Character',
+                'kind': 'OBJECT',
+                'fields': [
+                    {'name': 'appears_in'},
+                    {'name': 'best_friend'},
+                    {'name': 'friends'},
+                    {'name': 'id'},
+                    {'name': 'name'},
+                ],
+            }
+        }
+    }
+
+
 def test_execute__introspect_directives():
     document = '''{
         __schema {

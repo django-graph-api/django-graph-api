@@ -22,6 +22,7 @@ from django_graph_api.graphql.types import (
     OBJECT,
     RelatedField,
     SCALAR,
+    String,
     UNION,
 )
 
@@ -326,8 +327,16 @@ class Schema(object):
         class QueryRoot(BaseQueryRoot):
             def get___schema(self):
                 return self.__class__
+
+            def get___type(self, name):
+                schema = SchemaObject(None, self.__class__, None)
+                for type_ in schema.get_types():
+                    if type_.object_name == name:
+                        return type_
+                return None
         QueryRoot._declared_fields = copy.deepcopy(BaseQueryRoot._declared_fields)
         QueryRoot._declared_fields['__schema'] = RelatedField(SchemaObject)
+        QueryRoot._declared_fields['__type'] = RelatedField(TypeObject, name=String())
 
         self.query_root = QueryRoot
         return QueryRoot
