@@ -197,60 +197,69 @@ def test_type__list__get_ofType():
 
 
 def test_field__get_type():
-    field_object = FieldObject(None, (
-        'name',
-        CharField(),
-    ), None)
+    field_object = FieldObject(
+        None,
+        ('name', CharField()),
+        None,
+    )
     assert field_object.get_type() == String
-    field_object = FieldObject(None, (
-        'characters',
-        RelatedField('self'),
-    ), None)
+    field_object = FieldObject(
+        None,
+        ('characters', RelatedField('self')),
+        None,
+    )
     field_object.data[1]._self_object_type = Character
     assert field_object.get_type() == Character
-    field_object = FieldObject(None, (
-        'characters',
-        RelatedField(Character),
-    ), None)
+    field_object = FieldObject(
+        None,
+        ('characters', RelatedField(Character)),
+        None,
+    )
     assert field_object.get_type() == Character
-    field_object = FieldObject(None, (
-        'characters',
-        ManyRelatedField(Character),
-    ), None)
+    field_object = FieldObject(
+        None,
+        ('characters', ManyRelatedField(Character)),
+        None,
+    )
     assert field_object.get_type() == List(Character)
 
 
 def test_field__get_args():
-    field_object = FieldObject(None, (
-        'characters',
-        ManyRelatedField(Character, types=List(String)),
-    ), None)
+    field_object = FieldObject(
+        None,
+        ('characters', ManyRelatedField(Character, types=List(String))),
+        None,
+    )
     assert field_object.get_args() == (('types', List(String)),)
-    field_object = FieldObject(None, (
-        'characters',
-        ManyRelatedField(Episode, types=Int()),
-    ), None)
+    field_object = FieldObject(
+        None,
+        ('characters', ManyRelatedField(Episode, types=Int())),
+        None,
+    )
     assert field_object.get_args() == (('types', Int()),)
 
 
 def test_inputvalue__get_name():
-    inputvalue_object = InputValueObject(None, (
-        'argname',
-        String(),
-    ), None)
+    inputvalue_object = InputValueObject(
+        None,
+        ('argname', String()),
+        None,
+    )
     assert inputvalue_object.get_name() == 'argname'
 
 
 def test_inputvalue__get_type():
-    inputvalue_object = InputValueObject(None, (
-        'name',
-        String(),
-    ), None)
+    inputvalue_object = InputValueObject(
+        None,
+        ('name', String()),
+        None,
+    )
     assert inputvalue_object.get_type() == String
-    inputvalue_object = InputValueObject(None, (
-        'names',
-        List(String),
-    ), None)
+    inputvalue_object = InputValueObject(
+        None,
+        ('names', List(String)),
+        None,
+    )
     assert inputvalue_object.get_type() == List(String)
 
 
