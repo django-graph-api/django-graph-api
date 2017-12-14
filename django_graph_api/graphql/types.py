@@ -171,7 +171,7 @@ class String(Scalar):
 
 
 class Id(String):
-    name = 'ID'
+    object_name = 'ID'
 
 
 class Boolean(Scalar):
