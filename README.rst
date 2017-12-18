@@ -1,9 +1,9 @@
-Django Graph API |travis| |gitter| |rtd|
+Django Graph API |travis| |slack| |rtd|
 ========================================
 
-.. |gitter| image:: https://badges.gitter.im/django-graph-api/Lobby.svg
-   :alt: Join the chat at https://gitter.im/django-graph-api/Lobby
-   :target: https://gitter.im/django-graph-api/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+.. |slack| image:: https://slack-djangographapi.now.sh/badge.svg
+   :alt: Join us on slack at https://slack-djangographapi.now.sh
+   :target: https://slack-djangographapi.now.sh
 .. |travis| image:: https://travis-ci.org/melinath/django-graph-api.svg?branch=master
    :alt: Build status on travis-ci
    :target: https://travis-ci.org/melinath/django-graph-api
@@ -47,9 +47,9 @@ Once your pull request is complete, one of the core contributors will review it 
 
 To run the tests, run ``pytest``.
 
-If you have any questions or want to start contributing, chat with us on gitter_.
+If you have any questions or want to start contributing, chat with us on Slack_.
 
-.. _gitter: https://gitter.im/django-graph-api/Lobby
+.. _Slack: https://slack-djangographapi.now.sh/
 
 Code of conduct
 ---------------

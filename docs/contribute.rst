@@ -9,13 +9,13 @@ Once you're done writing code, you will need to open a pull request with your ch
 - All tests must be passing.
 - Any relevant documentation has been updated.
 
-If you need help with something, that's totally fine. Do what you can and then ask for what you need, either through your PR or on gitter_. Just be aware that there may be a delay before someone comes along who has time to provide it.
+If you need help with something, that's totally fine. Do what you can and then ask for what you need, either through your PR or on Slack_. Just be aware that there may be a delay before someone comes along who has time to provide it.
 
 Once your pull request is complete, one of the core contributors will review it and give feedback or merge as appropriate.
 
-If you have any questions or just want to discuss the project, chat with us on gitter_.
+If you have any questions or just want to discuss the project, chat with us on Slack_.
 
-.. _gitter: https://gitter.im/django-graph-api/Lobby
+.. _Slack: https://slack-djangographapi.now.sh/
 .. _Github projects: https://github.com/melinath/django-graph-api/projects
 
 Code of conduct
