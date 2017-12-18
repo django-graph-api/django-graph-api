@@ -3,12 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Django Graph API |travis| |gitter| |rtd|
+Django Graph API |travis| |slack| |rtd|
 ============================================
 
-.. |gitter| image:: https://badges.gitter.im/django-graph-api/Lobby.svg
-   :alt: Join the chat at https://gitter.im/django-graph-api/Lobby
-   :target: https://gitter.im/django-graph-api/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+.. |slack| image:: https://slack-djangographapi.now.sh/badge.svg
+   :alt: Join us on slack at https://slack-djangographapi.now.sh
+   :target: https://slack-djangographapi.now.sh
 .. |travis| image:: https://travis-ci.org/melinath/django-graph-api.svg?branch=master
    :alt: Build status on travis-ci
    :target: https://travis-ci.org/melinath/django-graph-api
@@ -79,14 +79,14 @@ In order to increase its usage amongst Python developers, we are trying to creat
 
 Django Graph API is still a young project and doesn't yet support many of the key GraphQL features, such as filtering and mutations. See a list of `supported and unsupported features`_.
 
-If you'd like to help contribute, read our `contributing guidelines`_ and chat with us on Gitter_.
+If you'd like to help contribute, read our `contributing guidelines`_ and chat with us on Slack_.
 
 .. _GraphQL: http://graphql.org/
 .. _official documentation: http://graphql.org/learn/
 .. _Django: https://www.djangoproject.com/
 .. _Python: https://www.python.org/
 .. _GraphQL API explorer: https://developer.github.com/v4/explorer/
-.. _Gitter: https://gitter.im/django-graph-api/Lobby
+.. _Slack: https://slack-djangographapi.now.sh/
 .. _contributing guidelines: contribute.html
 .. _supported and unsupported features: features.html
 
