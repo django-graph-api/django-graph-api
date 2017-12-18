@@ -20,6 +20,17 @@ INPUT_OBJECT = 'INPUT_OBJECT'
 LIST = 'LIST'
 NON_NULL = 'NON_NULL'
 
+TYPE_KINDS_VALUES = (
+    SCALAR,
+    OBJECT,
+    INTERFACE,
+    UNION,
+    ENUM,
+    INPUT_OBJECT,
+    LIST,
+    NON_NULL,
+)
+
 
 class ObjectNameMetaclass(type):
     def __new__(mcs, name, bases, attrs):
@@ -42,6 +53,9 @@ class Field(object):
         # Increase the creation counter, and save our local copy.
         self.creation_counter = Field.creation_counter
         Field.creation_counter += 1
+        # This is so that a field can be introspected to see if it
+        # has been bound.
+        self._bound = False
 
     def get_value(self):
         raw_value = self.get_raw_value()
@@ -93,14 +107,20 @@ class Field(object):
         self.selection = selection
         self.name = selection.name
         self.obj = obj
+        self._bound = True
 
 
 class Scalar(six.with_metaclass(ObjectNameMetaclass)):
     kind = SCALAR
 
+    def __eq__(self, other):
+        if self.__class__ == other.__class__:
+            return True
+        return False
+
     @property
     def name(self):
-        return self.__class__.__name__
+        return self.object_name
 
 
 class Int(Scalar):
@@ -151,7 +171,7 @@ class String(Scalar):
 
 
 class Id(String):
-    name = 'ID'
+    object_name = 'ID'
 
 
 class Boolean(Scalar):
@@ -168,11 +188,19 @@ class Boolean(Scalar):
         return value
 
 
+class Enum(Scalar):
+    kind = ENUM
+    values = ()
+
+
 class List(object):
     kind = LIST
 
     def __init__(self, type_):
         self.type_ = type_
+
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and self.type_ == other.type_
 
     def coerce_result(self, values):
         if values is None:
@@ -205,7 +233,12 @@ class ObjectMetaclass(ObjectNameMetaclass):
         current_fields.sort(key=lambda x: x[1].creation_counter)
         attrs['_declared_fields'] = OrderedDict(current_fields)
 
-        return super(ObjectMetaclass, mcs).__new__(mcs, name, bases, attrs)
+        cls = super(ObjectMetaclass, mcs).__new__(mcs, name, bases, attrs)
+
+        for name, field in current_fields:
+            field._self_object_type = cls
+
+        return cls
 
 
 class Object(six.with_metaclass(ObjectMetaclass)):
@@ -298,6 +331,19 @@ class BooleanField(Field):
     type_ = Boolean
 
 
+class EnumField(CharField):
+    type_ = Enum
+
+    def __init__(self, enum):
+        super(EnumField, self).__init__()
+
+        self.enum = enum
+
+
+class ManyEnumField(EnumField):
+    type_ = List(String)
+
+
 class RelatedField(Field):
     """
     Defines a many-to-1 or 1-to-1 related field.
@@ -334,20 +380,17 @@ class RelatedField(Field):
     type_ = Object
 
     def __init__(self, object_type, **kwargs):
-        self.object_type = object_type
+        self._object_type = object_type
         super(RelatedField, self).__init__(**kwargs)
 
-    @classmethod
-    def resolve_object_type(cls, object_type):
-        if callable(object_type) and not isclass(object_type):
-            return object_type()
-        return object_type
-
-    def bind(self, selection, obj):
-        super(RelatedField, self).bind(selection, obj)
-        self.object_type = self.__class__.resolve_object_type(self.object_type)
-        if self.object_type == 'self':
-            self.object_type = obj.__class__
+    @property
+    def object_type(self):
+        if not isclass(self._object_type):
+            if callable(self._object_type):
+                self._object_type = self._object_type()
+            if self._object_type == 'self':
+                self._object_type = self._self_object_type
+        return self._object_type
 
     def _serialize_value(self, value):
         obj_instance = self.object_type(
