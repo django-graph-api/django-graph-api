@@ -48,16 +48,23 @@ that it represents.
 You can also define custom logic to get a field's value by adding a ``get_<field_name>`` method to the object.
 The current model instance will be available as ``self.data``.
 
+Arguments can be defined for fields by passing in `<argname>=<graphql type instance>`.
+The value passed in a query will be available as a keyword argument to the field value method if there is one.
+
 ::
+    from django_graph_api.graphql.types import Boolean
 
     class Character(Object):
-        name = CharField()
+        name = CharField(upper=Boolean())
 
-        def get_name(self):
-            return '{} {}'.format(
+        def get_name(self, upper=False):
+            name = '{} {}'.format(
                 self.data.first_name,
                 self.data.last_name,
             )
+            if upper:
+                return name.upper()
+            return name
 
 Scalar field types
 ^^^^^^^^^^^^^^^^^^
@@ -73,6 +80,7 @@ Supported scalar types can be found in the `API documentation`_ and `feature lis
 
 .. _API documentation: api.html#scalar-field-types
 .. _feature list: features.html#types
+
 
 Adding edges - Relationships
 ----------------------------
@@ -149,6 +157,7 @@ One-to-one relationship
             return EpisodeModel.objects.filter(number=self.data.number - 1).first()
 
 .. _non-scalar fields: api.html#non-scalar-field-types
+
 
 Defining query roots
 --------------------
