@@ -35,6 +35,7 @@ def test_post_request_executed(execute):
     assert response.content == b'{}'
     execute.assert_called_once_with(query, None)
 
+
 @mock.patch('test_project.urls.schema.execute')
 def test_variables_sent_in_post(execute):
     execute.return_value = {}
