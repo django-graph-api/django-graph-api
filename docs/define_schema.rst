@@ -51,6 +51,7 @@ The current model instance will be available as ``self.data``.
 Arguments can be defined for fields by passing in ``<argname>=<graphql type instance>``.
 The value passed in a query will be available as a keyword argument to the field value method if there is one.
 ::
+
     from django_graph_api.graphql.types import Boolean
 
     class Character(Object):
@@ -67,6 +68,7 @@ The value passed in a query will be available as a keyword argument to the field
 
 You may also define descriptions for individual fields in the same way as the other keyword arguments.
 ::
+
     class Character(Object):
         name = CharField(description="The name of a character.")
 
