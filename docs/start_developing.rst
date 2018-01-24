@@ -50,9 +50,6 @@ in an active virtual environment:
     ./manage.py shell
     # Add some data
     # django_graph_api/tests/conftest.py has some code you can copy and paste
-    # or you can import all the sample data by running the following:
-    # >>> from django_graph_api.tests.conftest import starwars_data
-    # >>> starwars_data(None)
     ./manage.py runserver
 
 You should be able to see the GraphiQL app and run queries
