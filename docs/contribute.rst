@@ -6,6 +6,9 @@ If you want to lend a hand, check out the current project and choose one of the 
 If there's `a particular issue`_ you would like to work on and it isn't already assigned, leave a comment on that issue indicating your desire to work on it.
 Then, start working!
 
+.. _Github projects: https://github.com/melinath/django-graph-api/projects/4
+.. _a particular issue: https://github.com/melinath/django-graph-api/issues
+
 Start Developing
 ----------------
 
@@ -31,18 +34,65 @@ Create a ``pipenv`` virtual environment using Python 3.6.
     $ pipenv install $(< requirements-test.txt)
 
 Verify that the existing tests pass with ``pipenv run pytest``.
+Note that if you have already activated the environment, you can just run the ``pytest`` command on its own to run the tests.
 
-After you see that those tests pass, you can get to work!
-Activate the virtual environment that pipenv set up for you and apply the existing migrations.
+After you see that those tests pass, activate the virtual environment that pipenv set up for you and get to work!
+
+.. _pipenv: https://github.com/pypa/pipenv
+
+
+Running the Test Project
+------------------------
+
+Django Graph API comes with a sample Django project based on the Star Wars examples from `GraphQL documentation`_.
+It is used for integration tests and to help with development.
+
+If you have installed the local version of ``django-graph-api`` and have activated the virtual environment, then you should already have access to the source code that contains the test data.
+
+Applying the existing migrations will create a ``sqlite`` database in your repository root.
 
 .. code-block::
 
     $ pipenv shell # <-- activates the environment
     $ ./manage.py migrate
 
+Create the test data to fill the database
+
+.. code-block::
+
+    $ ./manage.py create_test_data
+
+Run the test server
+
+.. code-block::
+
+    $ ./manage.py runserver
+
 You should be able to see the GraphiQL app and run queries by navigating to ``localhost:8000/graphql`` in your browser.
 
 Continue to verify that the tests that you write for your code (as well as the existing tests) pass as you develop by simply typing ``pytest``.
+
+.. _GraphQL documentation: http://graphql.org/learn/
+
+
+Rebuilding the Docs
+-------------------
+
+Any change you make should correspond with a documentation update.
+
+1. Navigate to the ``docs`` directory
+#. Install the docs requirements
+#. Build the docs files as html
+
+.. code-block::
+
+    $ cd docs
+    $ pipenv install $(< requirements.txt) 
+    $ make html
+
+Note that the ``requirements.txt`` in the ``docs`` directory are different from the ones in the repository root.
+
+View the docs by opening ``_build/html/index.html`` in your browser.
 
 
 Integrating Your Changes
@@ -68,10 +118,8 @@ Be aware that there may be a delay before someone comes along who has time to pr
 
 If you have any questions or want to start contributing, chat with us on Slack_.
 
-.. _Github projects: https://github.com/melinath/django-graph-api/projects/4
-.. _a particular issue: https://github.com/melinath/django-graph-api/issues
-.. _pipenv: https://github.com/pypa/pipenv
 .. _Slack: https://slack-djangographapi.now.sh/
+
 
 Code of conduct
 ---------------
@@ -79,6 +127,7 @@ Code of conduct
 This project adheres to and supports the `Django Code of Conduct`_.
 
 .. _Django Code of Conduct: https://www.djangoproject.com/conduct/
+
 
 Style guide
 -----------

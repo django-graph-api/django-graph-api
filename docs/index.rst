@@ -114,5 +114,4 @@ If you'd like to help contribute, read our `contributing guidelines`_ and chat w
    :caption: Developer Documentation
 
    contribute
-   start_developing
    features
