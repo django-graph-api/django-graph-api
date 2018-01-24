@@ -391,7 +391,7 @@ class RelatedField(Field):
                 module = __import__(module_name, fromlist=(class_name,))
                 class_ = getattr(module, class_name)
                 return class_
-            except (ValueError, AttributeError, ModuleNotFoundError):
+            except (ValueError, AttributeError, ImportError):
                 return None
 
         if not isclass(self._object_type):
