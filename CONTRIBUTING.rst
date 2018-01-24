@@ -19,17 +19,30 @@ As soon as you finish cloning, navigate into the new directory and set the origi
 We're using `pipenv`_ as the package and environment manager for this project.
 If you don't yet have it, check the link above for instructions on how to get it on your machine.
 
-``pipenv`` install your forked repository.
-Then also ``pipenv`` the requirements for testing.
+Create a ``pipenv`` virtual environment using Python 3.6.
+**Note: any code that you write should be compatible with Python 2.7, but we recommend that you develop in Python 3.6.**
+``pipenv`` install the ``requirements.txt``, then ``pipenv`` the requirements for testing.
 
 .. code-block::
 
+    $ pipenv install --python 3.6
     $ pipenv install $(< requirements.txt)
     $ pipenv install $(< requirements-test.txt)
 
 Verify that the existing tests pass with ``pipenv run pytest``.
-After you see that those tests pass, get to work!
-Continue to verify that the tests that you write for your code (as well as the existing tests) pass as you develop.
+
+After you see that those tests pass, you can get to work!
+Activate the virtual environment that pipenv set up for you and apply the existing migrations.
+
+.. code-block::
+
+    $ pipenv shell # <-- activates the environment
+    $ ./manage.py migrate
+
+You should be able to see the GraphiQL app and run queries by navigating to ``localhost:8000/graphql`` in your browser.
+
+Continue to verify that the tests that you write for your code (as well as the existing tests) pass as you develop by simply typing ``pytest``.
+
 
 Integrating Your Changes
 ------------------------

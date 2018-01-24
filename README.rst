@@ -10,6 +10,9 @@ Django Graph API |travis| |slack| |rtd|
 .. |rtd| image:: https://readthedocs.org/projects/django-graph-api/badge/?version=latest
    :alt: Docs status on readthedocs
    :target: http://django-graph-api.readthedocs.io/
+.. |versions| image:: https://img.shields.io/pypi/pyversions/django-graph-api.svg
+   :alt: Python versions from PyPI
+   :target: https://pypi.python.org/pypi/django-graph-api
 
 This is an implementation of GraphQL_ in Python_, designed to work with the
 Django_ web framework. The project began at `DjangoCon US 2017`_.
