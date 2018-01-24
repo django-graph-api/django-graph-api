@@ -15,7 +15,7 @@ Start Developing
 To get started with your contribution, fork this project into your own GitHub profile and clone that forked repository to your machine.
 After cloning, navigate into the new directory and set the original project repository as the remote named ``upstream``.
 
-.. code-block::
+::
 
     $ cd django-graph-api
     $ git remote add upstream https://github.com/melinath/django-graph-api.git
@@ -27,7 +27,7 @@ Create a ``pipenv`` virtual environment using Python 3.6.
 **Note: any code that you write should be compatible with Python 2.7, but we recommend that you develop in Python 3.6.**
 ``pipenv`` install the ``requirements.txt``, then ``pipenv`` the requirements for testing.
 
-.. code-block::
+::
 
     $ pipenv install --python 3.6
     $ pipenv install $(< requirements.txt)
@@ -51,20 +51,20 @@ If you have installed the local version of ``django-graph-api`` and have activat
 
 Applying the existing migrations will create a ``sqlite`` database in your repository root.
 
-.. code-block::
+::
 
     $ pipenv shell # <-- activates the environment
     $ ./manage.py migrate
 
 Create the test data to fill the database
 
-.. code-block::
+::
 
     $ ./manage.py create_test_data
 
 Run the test server
 
-.. code-block::
+::
 
     $ ./manage.py runserver
 
@@ -84,7 +84,7 @@ Any change you make should correspond with a documentation update.
 #. Install the docs requirements
 #. Build the docs files as html
 
-.. code-block::
+::
 
     $ cd docs
     $ pipenv install $(< requirements.txt) 
