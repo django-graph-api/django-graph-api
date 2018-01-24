@@ -1,3 +1,5 @@
+import pytest
+
 from django_graph_api.graphql.schema import (
     DirectiveObject,
     DirectiveLocationEnum,
@@ -218,10 +220,33 @@ def test_field__get_type():
     assert field_object.get_type() == Character
     field_object = FieldObject(
         None,
+        ('characters', RelatedField('test_app.schema.Character')),
+        None,
+    )
+    assert field_object.get_type() == Character
+    field_object = FieldObject(
+        None,
         ('characters', ManyRelatedField(Character)),
         None,
     )
     assert field_object.get_type() == List(Character)
+
+
+def test_field__get_type_exceptions():
+    field_object = FieldObject(
+        None,
+        ('characters', RelatedField('test_app.schema.NonExistClass')),
+        None,
+    )
+    with pytest.raises(ValueError):
+        field_object.get_type()
+    field_object = FieldObject(
+        None,
+        ('characters', RelatedField('NonExistModule.NonExistClass')),
+        None,
+    )
+    with pytest.raises(ValueError):
+        field_object.get_type()
 
 
 def test_field__get_args():
