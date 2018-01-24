@@ -1,6 +1,108 @@
 from test_app.schema import schema
 
 
+def test_episode_name_field_description(starwars_data):
+    document = """
+   query IntrospectionQuery {
+     __schema {
+       queryType { name }
+       mutationType { name }
+       types {
+         ...FullType
+       }
+       directives {
+         name
+         description
+         locations
+         args {
+           ...InputValue
+         }
+       }
+     }
+   }
+ 
+   fragment FullType on __Type {
+     kind
+     name
+     description
+     fields(includeDeprecated: true) {
+       name
+       description
+       args {
+         ...InputValue
+       }
+       type {
+         ...TypeRef
+       }
+       isDeprecated
+       deprecationReason
+     }
+     inputFields {
+       ...InputValue
+     }
+     interfaces {
+       ...TypeRef
+     }
+     enumValues(includeDeprecated: true) {
+       name
+       description
+       isDeprecated
+       deprecationReason
+     }
+     possibleTypes {
+       ...TypeRef
+     }
+   }
+ 
+   fragment InputValue on __InputValue {
+     name
+     description
+     type { ...TypeRef }
+     defaultValue
+   }
+ 
+   fragment TypeRef on __Type {
+     kind
+     name
+     ofType {
+       kind
+       name
+       ofType {
+         kind
+         name
+         ofType {
+           kind
+           name
+           ofType {
+             kind
+             name
+             ofType {
+               kind
+               name
+               ofType {
+                 kind
+                 name
+                 ofType {
+                   kind
+                   name
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+   }"""
+    response = schema.execute(document)
+    types = response['data']['__schema']['types']
+    episodes = [type_ for type_ in types if type_['name'] == 'Episode'][0]
+    name_field = [
+        field for field in episodes['fields']
+        if field['name'] == 'name'
+    ][0]
+    assert name_field['description'] == 'The name of an episode'
+
+
 def test_episode_and_characters(starwars_data):
     document = '''
         {
