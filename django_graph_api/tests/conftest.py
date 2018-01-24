@@ -36,7 +36,7 @@ def starwars_data(transactional_db):
         primary_function='Astromech',
     )
 
-    luke.friends = [han, leia, c3po, r2d2]
+    luke.friends.set([han, leia, c3po, r2d2])
     han.friends.add(leia)
     han.friends.add(r2d2)
     leia.friends.add(c3po)
@@ -49,7 +49,7 @@ def starwars_data(transactional_db):
         number=4
     )
 
-    a_new_hope.characters = [luke, han, leia, c3po, r2d2, darth_vader]
+    a_new_hope.characters.set([luke, han, leia, c3po, r2d2, darth_vader])
 
     empire_strikes_back = Episode.objects.create(
         id=2,
@@ -57,4 +57,6 @@ def starwars_data(transactional_db):
         number=5
     )
 
-    empire_strikes_back.characters = [luke, han, leia, c3po, r2d2, darth_vader]
+    empire_strikes_back.characters.set(
+        [luke, han, leia, c3po, r2d2, darth_vader]
+    )
