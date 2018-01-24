@@ -36,6 +36,20 @@ def test_post_request_executed(execute):
     execute.assert_called_once_with(query)
 
 
+def test_post_request_with_error():
+    client = Client()
+    response = client.post(
+        '/graphql',
+        '',
+        content_type='application/json',
+        HTTP_ACCEPT='application/json',
+    )
+    assert isinstance(response, JsonResponse)
+    assert response.status_code == 200
+    # actual error changes depending on Python version
+    assert 'error' in response.json()
+
+
 @modify_settings(MIDDLEWARE={'remove': 'django.middleware.csrf.CsrfViewMiddleware'})
 @mock.patch('test_project.urls.schema.execute')
 def test_post__csrf_required(execute):
