@@ -17,6 +17,10 @@ If you are using pipenv_:
     cd django-graph-api
     pipenv install    # this will create your virtualenv and install the requirements
 
+(Note for Windows users: The py launcher cannot tell pipenv which Python version to use.
+The simplest fix is to add to your path only the desired Python folder and its Scripts subfolder,
+then use the commands as shown here without py.)
+
 Run the tests
 -------------
 
@@ -28,6 +32,7 @@ Run the tests
 
     pipenv shell
     pip install -r requirements-test.txt
+    pip install -r requirements.txt
     pytest
 
 Run the test project
