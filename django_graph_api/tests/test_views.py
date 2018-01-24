@@ -32,7 +32,7 @@ def test_post_request_executed(execute):
     )
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
-    assert response.json() == {}
+    assert response.content == b'{}'
     execute.assert_called_once_with(query)
 
 
