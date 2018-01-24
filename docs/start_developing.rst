@@ -48,8 +48,7 @@ in an active virtual environment:
     pip install .
     ./manage.py migrate
     ./manage.py shell
-    # Add some data
-    # django_graph_api/tests/conftest.py has some code you can copy and paste
+    ./manage.py create_test_data
     ./manage.py runserver
 
 You should be able to see the GraphiQL app and run queries
