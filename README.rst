@@ -1,15 +1,18 @@
-Django Graph API |travis| |slack| |rtd|
-========================================
+Django Graph API |travis| |slack| |rtd| |versions|
+==================================================
 
 .. |slack| image:: https://slack-djangographapi.now.sh/badge.svg
    :alt: Join us on slack at https://slack-djangographapi.now.sh
    :target: https://slack-djangographapi.now.sh
+
 .. |travis| image:: https://travis-ci.org/melinath/django-graph-api.svg?branch=master
    :alt: Build status on travis-ci
    :target: https://travis-ci.org/melinath/django-graph-api
+
 .. |rtd| image:: https://readthedocs.org/projects/django-graph-api/badge/?version=latest
    :alt: Docs status on readthedocs
    :target: http://django-graph-api.readthedocs.io/
+
 .. |versions| image:: https://img.shields.io/pypi/pyversions/django-graph-api.svg
    :alt: Python versions from PyPI
    :target: https://pypi.python.org/pypi/django-graph-api
