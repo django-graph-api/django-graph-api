@@ -1,7 +1,9 @@
-Contributing
-============
+Contribution Guidelines
+=======================
 
-We welcome contributions! We use Github projects to organize our ticket workflow. If there's a particular issue you would like to work on and it isn't already assigned, feel free to assign it to yourself and start work! If you just want to lend a hand, check out the current project and choose one of the tickets from the backlog!
+We use `Github projects <./projects/4>`_ to organize our ticket workflow.
+If there's a particular issue you would like to work on and it isn't already assigned, feel free to assign it to yourself and start work!
+If you just want to lend a hand, check out the current project and choose one of the tickets from the backlog!
 
 Once you're done writing code, you will need to open a pull request with your changes. In order to be merged, pull requests must fulfill the following requirements:
 
