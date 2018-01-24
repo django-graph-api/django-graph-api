@@ -50,7 +50,6 @@ The current model instance will be available as ``self.data``.
 
 Arguments can be defined for fields by passing in `<argname>=<graphql type instance>`.
 The value passed in a query will be available as a keyword argument to the field value method if there is one.
-
 ::
     from django_graph_api.graphql.types import Boolean
 
