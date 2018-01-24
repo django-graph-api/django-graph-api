@@ -10,7 +10,7 @@ Start Developing
 ----------------
 
 To get started with your contribution, fork this project into your own GitHub profile and clone that forked repository to your machine.
-As soon as you finish cloning, navigate into the new directory and set the original project repository as the remote name `upstream`.
+After cloning, navigate into the new directory and set the original project repository as the remote named ``upstream``.
 
 .. code-block::
 
