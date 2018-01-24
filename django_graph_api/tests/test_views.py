@@ -33,7 +33,28 @@ def test_post_request_executed(execute):
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
     assert response.content == b'{}'
-    execute.assert_called_once_with(query)
+    execute.assert_called_once_with(query, None)
+
+@mock.patch('test_project.urls.schema.execute')
+def test_variables_sent_in_post(execute):
+    execute.return_value = {}
+    query = 'this is totally a query'
+    client = Client()
+    response = client.post(
+        '/graphql',
+        json.dumps({
+            'query': query,
+            'variables': {
+                'level': 9001
+            }
+        }),
+        content_type='application/json',
+        HTTP_ACCEPT='application/json',
+    )
+    assert isinstance(response, JsonResponse)
+    assert response.status_code == 200
+    assert response.content == b'{}'
+    execute.assert_called_once_with(query, {'level': 9001})
 
 
 def test_post_request_with_error():
