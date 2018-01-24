@@ -220,6 +220,12 @@ def test_field__get_type():
     assert field_object.get_type() == Character
     field_object = FieldObject(
         None,
+        ('characters', RelatedField(lambda: Character)),
+        None,
+    )
+    assert field_object.get_type() == Character
+    field_object = FieldObject(
+        None,
         ('characters', RelatedField('test_app.schema.Character')),
         None,
     )
