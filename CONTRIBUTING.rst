@@ -2,8 +2,9 @@ Contribution Guidelines
 =======================
 
 We use `Github projects`_ to organize our ticket workflow.
-If there's `a particular issue`_ you would like to work on and it isn't already assigned, feel free to assign it to yourself and start work!
-If you just want to lend a hand, check out the current project and choose one of the tickets from the issues!
+If you want to lend a hand, check out the current project and choose one of the tickets from the issues!
+If there's `a particular issue`_ you would like to work on and it isn't already assigned, leave a comment on that issue indicating your desire to work on it.
+Then, start working!
 
 Start Developing
 ----------------
@@ -14,7 +15,7 @@ As soon as you finish cloning, navigate into the new directory and set the origi
 .. code-block::
 
     $ cd django-graph-api
-    $ git remote add origin upstream https://github.com/melinath/django-graph-api.git
+    $ git remote add upstream https://github.com/melinath/django-graph-api.git
 
 We're using `pipenv`_ as the package and environment manager for this project.
 If you don't yet have it, check the link above for instructions on how to get it on your machine.
