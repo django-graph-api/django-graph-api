@@ -50,6 +50,7 @@ def test_post_request_with_error():
     # showing the json serialization of exceptions.
     assert response.json() == {'error': 'Expecting value: line 1 column 1 (char 0)'}
 
+
 @modify_settings(MIDDLEWARE={'remove': 'django.middleware.csrf.CsrfViewMiddleware'})
 @mock.patch('test_project.urls.schema.execute')
 def test_post__csrf_required(execute):
