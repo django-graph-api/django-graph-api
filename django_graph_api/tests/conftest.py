@@ -9,28 +9,28 @@ from test_app.models import (
 
 @pytest.fixture
 def starwars_data(transactional_db):
-    luke = Human.objects.create(
+    luke, _ = Human.objects.get_or_create(
         id=1000,
         name='Luke Skywalker',
     )
-    darth_vader = Human.objects.create(
+    darth_vader, _ = Human.objects.get_or_create(
         id=1001,
         name='Darth Vader',
     )
-    han = Human.objects.create(
+    han, _ = Human.objects.get_or_create(
         id=1002,
         name='Han Solo',
     )
-    leia = Human.objects.create(
+    leia, _ = Human.objects.get_or_create(
         id=1003,
         name='Leia Organa',
     )
-    c3po = Droid.objects.create(
+    c3po, _ = Droid.objects.get_or_create(
         id=2000,
         name='C-3PO',
         primary_function='Protocol',
     )
-    r2d2 = Droid.objects.create(
+    r2d2, _ = Droid.objects.get_or_create(
         id=2001,
         name='R2-D2',
         primary_function='Astromech',
@@ -43,7 +43,7 @@ def starwars_data(transactional_db):
     leia.friends.add(r2d2)
     c3po.friends.add(r2d2)
 
-    a_new_hope = Episode.objects.create(
+    a_new_hope, _ = Episode.objects.get_or_create(
         id=1,
         name='A New Hope',
         number=4
@@ -51,7 +51,7 @@ def starwars_data(transactional_db):
 
     a_new_hope.characters = [luke, han, leia, c3po, r2d2, darth_vader]
 
-    empire_strikes_back = Episode.objects.create(
+    empire_strikes_back, _ = Episode.objects.get_or_create(
         id=2,
         name='The Empire Strikes Back',
         number=5
