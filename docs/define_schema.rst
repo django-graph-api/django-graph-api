@@ -99,6 +99,7 @@ When defining the object type of the related field, you can use:
 - The class of the object, e.g. ``appears_in = ManyRelatedField(Episode)``
 - A callable that returns the class of the object, e.g. ``characters = ManyRelatedField(lambda: Character)``
 - 'self', when you are referencing the current class, e.g. ``mother = RelatedField('self')``
+- The full path to the class of the object as a string, e.g., ``appears_in = ManyRelatedField('test_app.schema.Episode')``
 
 You can define any related field on the node (Object)
 that is also a **field** or **property** of the model
