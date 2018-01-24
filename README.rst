@@ -42,7 +42,7 @@ Contributing
 We welcome contributions to this project! 
 Check the `contribution guidelines`_ for detailed information on how to contribute, including how to get up and running and submitting your changes.
 
-.. _contribution guidelines: ./CONTRIBUTING.rst
+.. _contribution guidelines: ./docs/contribute.rst
 
 
 Code of conduct
