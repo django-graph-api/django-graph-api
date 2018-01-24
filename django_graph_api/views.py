@@ -22,7 +22,7 @@ class GraphQLView(View):
     ``POST`` accepts a body in the form of ``{'query': query, 'variables': null}`` and returns a JSON response with
     either a "data" or "error" object.
     """
-    graphiql_version = '0.11.3'
+    graphiql_version = '0.11.11'
     graphql_url = '/graphql'
     template_name = 'django_graph_api/graphiql.html'
     schema = None

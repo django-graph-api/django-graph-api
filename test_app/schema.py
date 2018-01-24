@@ -22,7 +22,7 @@ schema = Schema()
 
 
 class Episode(Object):
-    name = CharField()
+    name = CharField(description='The name of an episode')
     number = IntegerField()
     characters = ManyRelatedField('test_app.schema.Character', types=List(String))
     next = RelatedField('self')

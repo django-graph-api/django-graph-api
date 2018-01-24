@@ -1,4 +1,7 @@
 language: python
+env:
+- DJANGO=1.11.9
+- DJANGO=2.0.1
 python:
   - "2.7"
   - "3.5"
@@ -6,9 +9,14 @@ python:
 install:
   - pip install --no-deps -r requirements.txt
   - pip install --no-deps -r requirements-test.txt
-  - pip install --no-deps .
+  - pip install --no-deps . Django==$DJANGO
 before_script:
   - flake8 --version
   - flake8 django_graph_api
 script:
   - pytest .
+matrix:
+  exclude:
+  # Exclude running testing django 2.0 with python 2.7 because django 2.0 requires python 3.4+
+  - env: DJANGO=2.0.1
+    python: "2.7"

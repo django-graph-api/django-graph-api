@@ -17,6 +17,10 @@ If you are using pipenv_:
     cd django-graph-api
     pipenv install    # this will create your virtualenv and install the requirements
 
+(Note for Windows users: The py launcher cannot tell pipenv which Python version to use.
+The simplest fix is to add to your path only the desired Python folder and its Scripts subfolder,
+then use the commands as shown here without py.)
+
 Run the tests
 -------------
 
@@ -28,6 +32,7 @@ Run the tests
 
     pipenv shell
     pip install -r requirements-test.txt
+    pip install -r requirements.txt
     pytest
 
 Run the test project
@@ -48,8 +53,7 @@ in an active virtual environment:
     pip install .
     ./manage.py migrate
     ./manage.py shell
-    # Add some data
-    # django_graph_api/tests/conftest.py has some code you can copy and paste
+    ./manage.py create_test_data
     ./manage.py runserver
 
 You should be able to see the GraphiQL app and run queries
