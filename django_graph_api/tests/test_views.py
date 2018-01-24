@@ -48,7 +48,9 @@ def test_post_request_with_error():
     assert response.status_code == 200
     # this is not correct per graphql spec, but the goal is to just have a test
     # showing the json serialization of exceptions.
-    assert response.json() == {'error': 'Expecting value: line 1 column 1 (char 0)'}
+    # due to this being a passed along exception, the actual error text changes
+    # depending on Python version
+    assert 'error' in response.json()
 
 
 @modify_settings(MIDDLEWARE={'remove': 'django.middleware.csrf.CsrfViewMiddleware'})
