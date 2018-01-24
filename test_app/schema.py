@@ -24,7 +24,7 @@ schema = Schema()
 class Episode(Object):
     name = CharField()
     number = IntegerField()
-    characters = ManyRelatedField(lambda: Character, types=List(String))
+    characters = ManyRelatedField('test_app.schema.Character', types=List(String))
     next = RelatedField('self')
 
     def get_next(self):

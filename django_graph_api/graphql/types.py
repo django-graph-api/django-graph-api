@@ -385,11 +385,26 @@ class RelatedField(Field):
 
     @property
     def object_type(self):
+        def _str_to_class(s):
+            try:
+                module_name, class_name = s.rsplit('.', 1)
+            except ValueError:
+                return None
+            module = __import__(module_name, fromlist=(class_name,))
+            class_ = getattr(module, class_name)
+            if isclass(class_):
+                return class_
+            return None
+
         if not isclass(self._object_type):
             if callable(self._object_type):
                 self._object_type = self._object_type()
             if self._object_type == 'self':
                 self._object_type = self._self_object_type
+            elif isinstance(self._object_type, str):
+                object_type = _str_to_class(self._object_type)
+                if object_type is not None:
+                    self._object_type = object_type
         return self._object_type
 
     def _serialize_value(self, value):
