@@ -12,7 +12,6 @@ from django.views.decorators.csrf import (
 from django.views.generic import View
 
 
-@method_decorator([ensure_csrf_cookie, csrf_protect], name='dispatch')
 class GraphQLView(View):
     """
     Django view handles Graph API queries.
@@ -26,6 +25,11 @@ class GraphQLView(View):
     graphql_url = '/graphql'
     template_name = 'django_graph_api/graphiql.html'
     schema = None
+
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
+    def dispatch(self, *args, **kwargs):
+        return super(GraphQLView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         return TemplateResponse(
