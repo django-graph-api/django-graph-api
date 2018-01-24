@@ -20,7 +20,7 @@ def test_episode_name_field_description(starwars_data):
        }
      }
    }
- 
+
    fragment FullType on __Type {
      kind
      name
@@ -53,14 +53,14 @@ def test_episode_name_field_description(starwars_data):
        ...TypeRef
      }
    }
- 
+
    fragment InputValue on __InputValue {
      name
      description
      type { ...TypeRef }
      defaultValue
    }
- 
+
    fragment TypeRef on __Type {
      kind
      name
