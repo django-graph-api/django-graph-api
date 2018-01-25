@@ -69,7 +69,7 @@ def test_post_request_with_error():
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
     # actual error changes depending on Python version
-    assert 'error' in response.json()
+    assert 'error' in response.content.decode(response.charset)
 
 
 @modify_settings(MIDDLEWARE={'remove': 'django.middleware.csrf.CsrfViewMiddleware'})
