@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Django Graph API |travis| |slack| |rtd|
-============================================
+Django Graph API |travis| |slack| |rtd| |versions|
+==================================================
 
 .. |slack| image:: https://slack-djangographapi.now.sh/badge.svg
    :alt: Join us on slack at https://slack-djangographapi.now.sh
@@ -15,6 +15,10 @@ Django Graph API |travis| |slack| |rtd|
 .. |rtd| image:: https://readthedocs.org/projects/django-graph-api/badge/?version=latest
    :alt: Docs status on readthedocs
    :target: http://django-graph-api.readthedocs.io/
+.. |versions| image:: https://img.shields.io/pypi/pyversions/django-graph-api.svg
+   :alt: Python versions from PyPI
+   :target: https://pypi.python.org/pypi/django-graph-api
+
 
 **Django Graph API** lets you quickly build GraphQL_ APIs in Python_. It is designed to work with the Django_ web framework.
 
@@ -110,5 +114,4 @@ If you'd like to help contribute, read our `contributing guidelines`_ and chat w
    :caption: Developer Documentation
 
    contribute
-   start_developing
    features
