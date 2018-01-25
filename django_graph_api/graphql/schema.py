@@ -341,7 +341,7 @@ class Schema(object):
         self.query_root = QueryRoot
         return QueryRoot
 
-    def execute(self, document):
+    def execute(self, document, variables=None):
         """
         Queries the schema in python.
 
@@ -382,17 +382,26 @@ class Schema(object):
         ]
         assert len(queries) == 1, "Exactly one query must be defined"
 
+        query = queries[0]
+
         fragments = {
             definition.name: definition
             for definition in ast.definitions
             if isinstance(definition, FragmentDefinition)
         }
 
+        variable_definitions = {
+            definition.name: definition
+            for definition in query.variable_definitions
+        }
+
         return {
             'data': self.query_root(
-                ast=queries[0],
+                ast=query,
                 data=None,
                 fragments=fragments,
+                variable_definitions=variable_definitions,
+                variables=variables
             ).serialize(),
         }
 

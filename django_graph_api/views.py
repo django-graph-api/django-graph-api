@@ -18,7 +18,7 @@ class GraphQLView(View):
 
     ``GET`` returns the HTML for the GraphiQL API explorer.
 
-    ``POST`` accepts a body in the form of ``{'query': query, 'variables': null}`` and returns a JSON response with
+    ``POST`` accepts a body in the form of ``{'query': query, 'variables': variables}`` and returns a JSON response with
     either a "data" or "error" object.
     """
     graphiql_version = '0.11.11'
@@ -44,7 +44,7 @@ class GraphQLView(View):
     def post(self, request, *args, **kwargs):
         try:
             request_data = self.get_request_data()
-            response_data = self.schema.execute(request_data['query'])
+            response_data = self.schema.execute(request_data['query'], request_data.get('variables'))
             return JsonResponse(response_data)
         except Exception as e:
             error_data = {

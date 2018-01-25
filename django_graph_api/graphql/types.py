@@ -5,6 +5,8 @@ from collections import (
 from inspect import isclass
 import copy
 
+from graphql.ast import Variable
+
 from django.db.models import Manager
 from django.utils import six
 
@@ -96,6 +98,10 @@ class Field(object):
         for key, value in self.arguments.items():
             if key in arguments:
                 input_value = arguments[key]
+                if isinstance(input_value, Variable):
+                    variable_name = input_value.name
+                    default_value = self.obj.variable_definitions[variable_name].default_value
+                    input_value = self.obj.variables.get(variable_name, default_value)
                 try:
                     arg_value = value.coerce_input(input_value)
                 except TypeError:
@@ -256,10 +262,12 @@ class Object(six.with_metaclass(ObjectMetaclass)):
     """
     kind = OBJECT
 
-    def __init__(self, ast, data, fragments):
+    def __init__(self, ast, data, fragments, variable_definitions=None, variables=None):
         self.ast = ast
         self.data = data
         self.fragments = fragments
+        self.variable_definitions = variable_definitions or {}
+        self.variables = variables or {}
 
     @property
     def fields(self):
@@ -417,6 +425,8 @@ class RelatedField(Field):
             ast=self.selection,
             data=value,
             fragments=self.obj.fragments,
+            variable_definitions=self.obj.variable_definitions,
+            variables=self.obj.variables
         )
         return obj_instance.serialize()
 
