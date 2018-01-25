@@ -25,13 +25,11 @@ If you don't yet have it, check the link above for instructions on how to get it
 
 Create a ``pipenv`` virtual environment using Python 3.6.
 **Note: any code that you write should be compatible with Python 2.7, but we recommend that you develop in Python 3.6.**
-``pipenv`` install the ``requirements.txt``, then ``pipenv`` the requirements for testing.
 
 ::
 
-    $ pipenv install --python 3.6
-    $ pipenv install $(< requirements.txt)
-    $ pipenv install $(< requirements-test.txt)
+    $ pipenv install --python 3.6 # <-- Create virtualenv and install dependencies
+    $ pipenv install --dev # <-- Also install development-only dependencies
 
 Verify that the existing tests pass with ``pipenv run pytest``.
 Note that if you have already activated the environment, you can just run the ``pytest`` command on its own to run the tests.
@@ -86,11 +84,10 @@ Any change you make should correspond with a documentation update.
 
 ::
 
+    $ pipenv install
+    $ pipenv install --dev
     $ cd docs
-    $ pipenv install $(< requirements.txt) 
     $ make html
-
-Note that the ``requirements.txt`` in the ``docs`` directory are different from the ones in the repository root.
 
 View the docs by opening ``_build/html/index.html`` in your browser.
 
