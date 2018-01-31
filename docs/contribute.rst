@@ -73,18 +73,19 @@ Continue to verify that the tests that you write for your code (as well as the e
 .. _GraphQL documentation: http://graphql.org/learn/
 
 
-Rebuilding the Docs
--------------------
+Building the Documentation
+--------------------------
 
 Any change you make should correspond with a documentation update.
+To view your changes in HTML format, you can build the documentation on your computer as follows.
 
-1. Navigate to the ``docs`` directory
-#. Install the docs requirements
+1. Install the development requirements (if you haven't already)
+#. Navigate to the ``docs`` directory
 #. Build the docs files as html
 
 ::
 
-    $ pipenv install
+    $ pipenv install --python 3.6
     $ pipenv install --dev
     $ cd docs
     $ make html
