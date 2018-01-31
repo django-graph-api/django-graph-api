@@ -68,6 +68,7 @@ setup(
     )),
     include_package_data=True,
     install_requires=(
+        'django>=1.8',
         'graphql-py>=0.6',
     ),
     tests_require=(
@@ -83,6 +84,7 @@ setup(
         'Environment :: Web Environment',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Framework :: Django :: 1.11',
     ),

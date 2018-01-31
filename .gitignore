@@ -13,5 +13,3 @@ __pycache__
 .project
 .pydevproject
 db.sqlite3
-Pipfile
-Pipfile.lock
