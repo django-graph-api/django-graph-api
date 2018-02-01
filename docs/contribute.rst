@@ -32,7 +32,7 @@ Create a ``pipenv`` virtual environment using Python 3.6.
     $ pipenv install --dev # <-- Also install development-only dependencies
 
 Verify that the existing tests pass with ``pipenv run pytest``.
-Note that if you have already activated the environment, you can just run the ``pytest`` command on its own to run the tests.
+Note that if you have already activated the environment, you can run the ``pytest`` command on its own to run the tests.
 
 After you see that those tests pass, activate the virtual environment that pipenv set up for you and get to work!
 
@@ -68,7 +68,7 @@ Run the test server
 
 You should be able to see the GraphiQL app and run queries by navigating to ``localhost:8000/graphql`` in your browser.
 
-Continue to verify that the tests that you write for your code (as well as the existing tests) pass as you develop by simply typing ``pytest``.
+Continue to verify that the tests that you write for your code (as well as the existing tests) pass as you develop by running ``pytest``.
 
 .. _GraphQL documentation: http://graphql.org/learn/
 
