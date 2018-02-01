@@ -1,4 +1,0 @@
-Django==1.11.4
-graphql-py==0.6.0
-ply==3.10
-pytz==2017.2

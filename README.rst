@@ -39,7 +39,7 @@ In order to increase its usage amongst Python developers, we are trying to creat
 Contributing
 ------------
 
-We welcome contributions to this project! 
+We welcome contributions to this project!
 Check the `contribution guidelines`_ for detailed information on how to contribute, including how to get up and running and submitting your changes.
 
 .. _contribution guidelines: ./docs/contribute.rst
@@ -63,15 +63,3 @@ Documentation
 ^^^^^^^^^^^^^
 
 You can find the `full documentation <https://django-graph-api.readthedocs.io>`_ for Django Graph API on ReadTheDocs.
-
-To create the docs locally,
-navigate to the ``docs`` directory,
-install the docs requirements,
-then build the docs files as html:
-::
-
-   cd docs
-   pip install -r requirements.txt
-   make html
-
-The resulting ``index.html`` file will be in ``_build/html/``.
