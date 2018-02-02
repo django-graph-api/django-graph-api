@@ -30,7 +30,7 @@ def test_field_get_value_calls_coerce_result(coerce_result_mock):
 
 @patch('django_graph_api.graphql.types.Boolean.coerce_input')
 def test_field_get_resolver_args_calls_coerce_input(coerce_input_mock):
-    field = CharField(foo=Boolean())
+    field = CharField(arguments={'foo': Boolean()})
     selection = mock.MagicMock()
     argument = mock.Mock()
     argument.name = 'foo'

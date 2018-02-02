@@ -336,7 +336,10 @@ class Schema(object):
                 return None
         QueryRoot._declared_fields = copy.deepcopy(BaseQueryRoot._declared_fields)
         QueryRoot._declared_fields['__schema'] = RelatedField(SchemaObject)
-        QueryRoot._declared_fields['__type'] = RelatedField(TypeObject, name=String())
+        QueryRoot._declared_fields['__type'] = RelatedField(
+            TypeObject,
+            arguments={'name': String()},
+        )
 
         self.query_root = QueryRoot
         return QueryRoot

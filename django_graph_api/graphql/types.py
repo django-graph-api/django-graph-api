@@ -50,10 +50,9 @@ class Field(object):
     creation_counter = 0
     arguments = {}
 
-    def __init__(self, **kwargs):
-        self.arguments = kwargs
-        if 'description' in self.arguments:
-            self.description = self.arguments.pop('description')
+    def __init__(self, description=None, arguments=None):
+        self.arguments = arguments or {}
+        self.description = description
 
         # Increase the creation counter, and save our local copy.
         self.creation_counter = Field.creation_counter

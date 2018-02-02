@@ -24,7 +24,12 @@ schema = Schema()
 class Episode(Object):
     name = CharField(description='The name of an episode')
     number = IntegerField()
-    characters = ManyRelatedField('test_app.schema.Character', types=List(String))
+    characters = ManyRelatedField(
+        'test_app.schema.Character',
+        arguments={
+            'types': List(String),
+        },
+    )
     next = RelatedField('self')
 
     def get_next(self):
@@ -55,7 +60,7 @@ class Character(Object):
 class QueryRoot(Object):
     hero = RelatedField(Character)
     episodes = ManyRelatedField(Episode)
-    episode = RelatedField(Episode, number=Int())
+    episode = RelatedField(Episode, arguments={'number': Int()})
 
     def get_hero(self):
         return CharacterModel.objects.get(name='R2-D2')

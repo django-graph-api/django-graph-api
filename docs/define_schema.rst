@@ -48,14 +48,15 @@ that it represents.
 You can also define custom logic to get a field's value by adding a ``get_<field_name>`` method to the object.
 The current model instance will be available as ``self.data``.
 
-Arguments can be defined for fields by passing in ``<argname>=<graphql type instance>``.
-The value passed in a query will be available as a keyword argument to the field value method if there is one.
+Arguments can be defined for fields by passing in a dictionary like ``{'<argname>': <graphql type instance>}``.
+The value passed in a query will be available as a keyword argument to the object's ``get_<fieldname>`` method.
+
 ::
 
     from django_graph_api.graphql.types import Boolean
 
     class Character(Object):
-        name = CharField(upper=Boolean())
+        name = CharField(arguments={'upper': Boolean()})
 
         def get_name(self, upper=False):
             name = '{} {}'.format(
@@ -66,14 +67,13 @@ The value passed in a query will be available as a keyword argument to the field
                 return name.upper()
             return name
 
-You may also define descriptions for individual fields in the same way as the other keyword arguments.
+You may also define descriptions for fields as a keyword argument:
 ::
 
     class Character(Object):
         name = CharField(description="The name of a character.")
 
-The difference here is that if you're inspecting the schema in the GraphiQL front-end, the description for the field will appear under the name of the field.
-The query itself will not change in any other way.
+Descriptions defined on a field will appear under the field name in the GraphiQL interactive documentation.
 
 Scalar field types
 ^^^^^^^^^^^^^^^^^^
