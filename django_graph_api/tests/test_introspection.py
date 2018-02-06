@@ -258,13 +258,13 @@ def test_field__get_type_exceptions():
 def test_field__get_args():
     field_object = FieldObject(
         None,
-        ('characters', ManyRelatedField(Character, types=List(String))),
+        ('characters', ManyRelatedField(Character, arguments={'types': List(String)})),
         None,
     )
     assert field_object.get_args() == (('types', List(String)),)
     field_object = FieldObject(
         None,
-        ('characters', ManyRelatedField(Episode, types=Int())),
+        ('characters', ManyRelatedField(Episode, arguments={'types': Int()})),
         None,
     )
     assert field_object.get_args() == (('types', Int()),)
