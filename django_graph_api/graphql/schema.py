@@ -344,6 +344,15 @@ class Schema(object):
         self.query_root = QueryRoot
         return QueryRoot
 
+    def _extract_query(self, ast):
+        queries = [
+            definition for definition in ast.definitions
+            if isinstance(definition, Query)
+        ]
+        assert len(queries) == 1, "Exactly one query must be defined"
+        query = queries[0]
+        return query
+
     def execute(self, document, variables=None):
         """
         Queries the schema in python.
@@ -376,37 +385,59 @@ class Schema(object):
                 }
             }
         """
+        errors = []
+        ast = None
+        query = None
+        data = None
         parser = GraphQLParser()
-        ast = parser.parse(document)
+        try:
+            ast = parser.parse(document)
+        except Exception as e:
+            errors.append({'type': 'Parse error', 'error': e})
 
-        queries = [
-            definition for definition in ast.definitions
-            if isinstance(definition, Query)
-        ]
-        assert len(queries) == 1, "Exactly one query must be defined"
+        if ast:
+            try:
+                query = self._extract_query(ast)
+            except AssertionError as e:
+                errors.append({'type': 'Unsupported query error', 'error': e})
 
-        query = queries[0]
+        if query and ast:
+            fragments = {
+                definition.name: definition
+                for definition in ast.definitions
+                if isinstance(definition, FragmentDefinition)
+            }
 
-        fragments = {
-            definition.name: definition
-            for definition in ast.definitions
-            if isinstance(definition, FragmentDefinition)
-        }
+            variable_definitions = {
+                definition.name: definition
+                for definition in query.variable_definitions
+            }
 
-        variable_definitions = {
-            definition.name: definition
-            for definition in query.variable_definitions
-        }
+            try:
+                data = self.query_root(
+                    ast=query,
+                    data=None,
+                    fragments=fragments,
+                    variable_definitions=variable_definitions,
+                    variables=variables
+                ).serialize()
+            except Exception as e:
+                errors.append({'type': 'Query error', 'error': e})
 
-        return {
-            'data': self.query_root(
-                ast=query,
-                data=None,
-                fragments=fragments,
-                variable_definitions=variable_definitions,
-                variables=variables
-            ).serialize(),
-        }
+        result = {}
+        if data:
+            result['data'] = data
+
+        if len(errors) > 0:
+            result['errors'] = [
+                {
+                    'message': str(error['error']),
+                    'type': error['type'],
+                }
+                for error in errors
+            ]
+
+        return result
 
 
 schema = Schema()
