@@ -414,13 +414,15 @@ class Schema(object):
             }
 
             try:
-                data = self.query_root(
+                query = self.query_root(
                     ast=query,
                     data=None,
                     fragments=fragments,
                     variable_definitions=variable_definitions,
                     variables=variables
-                ).serialize()
+                )
+                data = query.serialize()
+                errors.extend(query.errors)
             except Exception as e:
                 errors.append({'type': 'Query error', 'error': e})
 

@@ -60,6 +60,7 @@ class Field(object):
         # This is so that a field can be introspected to see if it
         # has been bound.
         self._bound = False
+        self.errors = []
 
     def get_value(self):
         raw_value = self.get_raw_value()
@@ -247,7 +248,7 @@ class ObjectMetaclass(ObjectNameMetaclass):
             field._self_object_type = cls
 
         return cls
-
+import pdb
 
 class Object(six.with_metaclass(ObjectMetaclass)):
     """
@@ -267,6 +268,7 @@ class Object(six.with_metaclass(ObjectMetaclass)):
         self.fragments = fragments
         self.variable_definitions = variable_definitions or {}
         self.variables = variables or {}
+        self.errors = []
 
     @property
     def fields(self):
@@ -289,10 +291,20 @@ class Object(six.with_metaclass(ObjectMetaclass)):
         return self._fields
 
     def serialize(self):
-        return {
-            name: field.get_value()
-            for name, field in self.fields.items()
-        }
+        data = {}
+        for name, field in self.fields.items():
+            try:
+                value = field.get_value()
+                self.errors.extend(field.errors)
+            except Exception as e:
+                value = None
+                self.errors.append(
+                    {'type': 'Field error',
+                     'error': 'Error resolving {}: {}'.format(name, e)}
+                )
+            data[name] = value
+
+        return data
 
 
 class CharField(Field):
@@ -427,7 +439,9 @@ class RelatedField(Field):
             variable_definitions=self.obj.variable_definitions,
             variables=self.obj.variables
         )
-        return obj_instance.serialize()
+        data = obj_instance.serialize()
+        self.errors.extend(obj_instance.errors)
+        return data
 
     def get_value(self):
         value = super(RelatedField, self).get_value()
