@@ -25,6 +25,10 @@ from django_graph_api.graphql.types import (
     String,
     UNION,
 )
+from django_graph_api.graphql.utils import (
+    format_error,
+    GraphQLError
+)
 
 
 class DirectiveLocationEnum(Enum):
@@ -393,13 +397,13 @@ class Schema(object):
         try:
             ast = parser.parse(document)
         except Exception as e:
-            errors.append({'type': 'Parse error', 'error': e})
+            errors.append(GraphQLError('Parse error: {}'.format(e)))
 
         if ast:
             try:
                 query = self._extract_query(ast)
             except AssertionError as e:
-                errors.append({'type': 'Unsupported query error', 'error': e})
+                errors.append(GraphQLError('Document error: {}'.format(e)))
 
         if query and ast:
             fragments = {
@@ -424,20 +428,14 @@ class Schema(object):
                 data = query.serialize()
                 errors.extend(query.errors)
             except Exception as e:
-                errors.append({'type': 'Query error', 'error': e})
+                errors.append(GraphQLError('Unexpected query error: {}'.format(e)))
 
         result = {}
         if data:
             result['data'] = data
 
         if len(errors) > 0:
-            result['errors'] = [
-                {
-                    'message': str(error['error']),
-                    'type': error['type'],
-                }
-                for error in errors
-            ]
+            result['errors'] = [format_error(error) for error in errors]
 
         return result
 

@@ -1,7 +1,5 @@
-from traceback import format_exc
 import json
 
-from django.conf import settings
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -10,6 +8,11 @@ from django.views.decorators.csrf import (
     ensure_csrf_cookie,
 )
 from django.views.generic import View
+
+from django_graph_api.graphql.utils import (
+    format_error,
+    GraphQLError
+)
 
 
 class GraphQLView(View):
@@ -44,17 +47,14 @@ class GraphQLView(View):
     def post(self, request, *args, **kwargs):
         try:
             request_data = self.get_request_data()
-            response_data = self.schema.execute(request_data['query'], request_data.get('variables'))
-            return JsonResponse(response_data)
-        except Exception as e:
-            error_data = {
-                'error': str(e),
-            }
+            query = request_data['query']
+            variables = request_data.get('variables')
+        except Exception:
+            error = GraphQLError('Data must be json with a "query" key and optional "variables" key')
+            return JsonResponse({'errors': [(format_error(error))]})
 
-            if settings.DEBUG:
-                error_data['traceback'] = format_exc().split('\n')
-
-            return JsonResponse(error_data)
+        response_data = self.schema.execute(query, variables)
+        return JsonResponse(response_data)
 
     def get_request_data(self):
         """

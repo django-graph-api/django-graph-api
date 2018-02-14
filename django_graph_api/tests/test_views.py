@@ -58,7 +58,7 @@ def test_variables_sent_in_post(execute):
     execute.assert_called_once_with(query, {'level': 9001})
 
 
-def test_post_request_with_error():
+def test_post_request_not_json():
     client = Client()
     response = client.post(
         '/graphql',
@@ -68,8 +68,20 @@ def test_post_request_with_error():
     )
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
-    # actual error changes depending on Python version
-    assert 'error' in response.content.decode(response.charset)
+    assert 'data must be json' in response.json()['errors'][0]['message'].lower()
+
+
+def test_post_request_without_query():
+    client = Client()
+    response = client.post(
+        '/graphql',
+        '',
+        content_type='application/json',
+        HTTP_ACCEPT='application/json',
+    )
+    assert isinstance(response, JsonResponse)
+    assert response.status_code == 200
+    assert '"query" key' in response.json()['errors'][0]['message'].lower()
 
 
 @modify_settings(MIDDLEWARE={'remove': 'django.middleware.csrf.CsrfViewMiddleware'})

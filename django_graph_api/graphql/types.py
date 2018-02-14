@@ -10,8 +10,10 @@ from graphql.ast import Variable
 from django.db.models import Manager
 from django.utils import six
 
-from django_graph_api.graphql.utils import get_selections
-
+from django_graph_api.graphql.utils import (
+    get_selections,
+    GraphQLError
+)
 
 SCALAR = 'SCALAR'
 OBJECT = 'OBJECT'
@@ -106,7 +108,7 @@ class Field(object):
                     arg_value = value.coerce_input(input_value)
                 except TypeError:
                     error = 'Argument {} expected a {} but got a {}'.format(key, type(value), type(input_value))
-                    raise TypeError(error)
+                    raise GraphQLError(error)
                 resolver_args[key] = arg_value
             else:
                 resolver_args[key] = None
@@ -130,6 +132,12 @@ class Scalar(six.with_metaclass(ObjectNameMetaclass)):
     @property
     def name(self):
         return self.object_name
+
+
+class MockScalar(Scalar):
+    @classmethod
+    def coerce_result(cls, value):
+        return None
 
 
 class Int(Scalar):
@@ -248,7 +256,7 @@ class ObjectMetaclass(ObjectNameMetaclass):
             field._self_object_type = cls
 
         return cls
-import pdb
+
 
 class Object(six.with_metaclass(ObjectMetaclass)):
     """
@@ -284,8 +292,17 @@ class Object(six.with_metaclass(ObjectMetaclass)):
             # Copy the field instances so that obj instances have
             # isolated field instances that they can modify safely.
             # Only copy field instances that are selected.
+            # If the field doesn't exist, create a dummy field that returns None
             for selection in selections:
-                field = copy.deepcopy(self._declared_fields[selection.name])
+                try:
+                    field = copy.deepcopy(self._declared_fields[selection.name])
+                except KeyError:
+                    self.errors.append(
+                        GraphQLError('{} does not have field {}'.format(self.object_name, selection.name))
+                    )
+                    field = Field()
+                    field.type_ = MockScalar
+
                 self._fields[selection.name] = field
                 field.bind(selection=selection, obj=self)
         return self._fields
@@ -299,8 +316,7 @@ class Object(six.with_metaclass(ObjectMetaclass)):
             except Exception as e:
                 value = None
                 self.errors.append(
-                    {'type': 'Field error',
-                     'error': 'Error resolving {}: {}'.format(name, e)}
+                    GraphQLError('Error resolving {}: {}'.format(name, e))
                 )
             data[name] = value
 
