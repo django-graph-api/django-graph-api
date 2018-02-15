@@ -56,7 +56,7 @@ def test_non_existent_field(starwars_data):
     }
 
 
-def test_multiple_queries(starwars_data):
+def test_no_query(starwars_data):
     document = '''
         mutation MyMutation {
           episodes {
