@@ -6,8 +6,6 @@ from graphql.ast import (
     FragmentSpread,
     InlineFragment,
 )
-from graphql.error.format_error import format_error as graphql_core_format_error
-from graphql.error.base import GraphQLError as GraphQLCoreError
 
 
 def get_selections(selections, fragments, object_type, seen_fragments=None):
@@ -51,15 +49,18 @@ def get_selections(selections, fragments, object_type, seen_fragments=None):
 
 
 def format_error(error):
-    formatted_error = graphql_core_format_error(error)
+    formatted_error = {
+        'message': str(error),
+    }
 
     if settings.DEBUG:
         formatted_error['traceback'] = error.traceback
     return formatted_error
 
 
-class GraphQLError(GraphQLCoreError):
-    def __init__(self, *args, **kwargs):
-        super(GraphQLError, self).__init__(*args, **kwargs)
+class GraphQLError(Exception):
+    def __init__(self, message):
+        super(GraphQLError, self).__init__(message)
+        self.message = message
         if settings.DEBUG:
             self.traceback = format_exc().split('\n')
