@@ -68,7 +68,7 @@ def test_post_request_not_json():
     )
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
-    response_json = json.loads(response.content)
+    response_json = json.loads(response.content.decode('utf-8'))
     assert 'data must be json' in response_json['errors'][0]['message'].lower()
 
 
@@ -82,7 +82,7 @@ def test_post_request_without_query():
     )
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
-    response_json = json.loads(response.content)
+    response_json = json.loads(response.content.decode('utf-8'))
     assert '"query" key' in response_json['errors'][0]['message'].lower()
 
 
