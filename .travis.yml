@@ -22,3 +22,6 @@ matrix:
   # Exclude running testing django 2.0 with python 2.7 because django 2.0 requires python 3.4+
   - env: DJANGO=2.0.1
     python: "2.7"
+notifications:
+  slack:
+    secure: fXrQPaz0dFbmkEcsUEa1Uv1g4vFmbKzN/PeOYgQXmg3+MqYNpbypCqhGyelZ8KVYdYc+NK8+KzicYn1zOxBZZUG7c9ZD9+nnieidfDgWZofKnIW+60WxZGOezqqU5TZNsoBcVww05wZMgOROj3eePpt/NWmBiUm7SAUxnVJ8FdKFAzpgc2vGWxNp9S6UyKg6sBwGhwnsDi00fHvfybJKuhB7nZygC03zj9bXsGMGNtQ8YJ2Oni5HOLeifgETIn6rEM+Qj/azK+L6BzKv/F/eGlU8iah4db1qVBgUqBCIpSbOR7BbxijtYfxDr/rGEFDE834zdF8I0n5N/NqBLut3ypE3IeDLTsfuh2yOs1PqFYWfDmRndu/ypbivp8Fr7KY093FboX6nYbFOZyWgJBHClnyNKT9AUcWDdLgbFA1vzugVFqGGQ5caLXedm3BHzO11h67moSO/plS4AX2HYOvCkSl8XC0AWQMiUAlogK0AjNeS/BLSSvq+bgacHBbn1/8A2RLIJ5ljgbthua3GoxNnweAdv+lxdg53sucvAm4wTXD6gOTXJqCerxEQPX0G0YZyfP3OqB6Ehe01xFI9yjPCc2G59otm1AfF+cpcJ64o7UPNm2IXZf7EvRaiTGgmRYsCuKIJdRjlHzOOYMnbHW4Fj6/ctUXFtduIYBbqh/Cn4rs=
