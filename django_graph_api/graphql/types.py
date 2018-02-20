@@ -10,8 +10,10 @@ from graphql.ast import Variable
 from django.db.models import Manager
 from django.utils import six
 
-from django_graph_api.graphql.utils import get_selections
-
+from django_graph_api.graphql.utils import (
+    get_selections,
+    GraphQLError
+)
 
 SCALAR = 'SCALAR'
 OBJECT = 'OBJECT'
@@ -60,6 +62,7 @@ class Field(object):
         # This is so that a field can be introspected to see if it
         # has been bound.
         self._bound = False
+        self.errors = []
 
     def get_value(self):
         raw_value = self.get_raw_value()
@@ -105,7 +108,7 @@ class Field(object):
                     arg_value = value.coerce_input(input_value)
                 except TypeError:
                     error = 'Argument {} expected a {} but got a {}'.format(key, type(value), type(input_value))
-                    raise TypeError(error)
+                    raise GraphQLError(error)
                 resolver_args[key] = arg_value
             else:
                 resolver_args[key] = None
@@ -129,6 +132,12 @@ class Scalar(six.with_metaclass(ObjectNameMetaclass)):
     @property
     def name(self):
         return self.object_name
+
+
+class MockScalar(Scalar):
+    @classmethod
+    def coerce_result(cls, value):
+        return None
 
 
 class Int(Scalar):
@@ -267,6 +276,7 @@ class Object(six.with_metaclass(ObjectMetaclass)):
         self.fragments = fragments
         self.variable_definitions = variable_definitions or {}
         self.variables = variables or {}
+        self.errors = []
 
     @property
     def fields(self):
@@ -282,17 +292,35 @@ class Object(six.with_metaclass(ObjectMetaclass)):
             # Copy the field instances so that obj instances have
             # isolated field instances that they can modify safely.
             # Only copy field instances that are selected.
+            # If the field doesn't exist, create a dummy field that returns None
             for selection in selections:
-                field = copy.deepcopy(self._declared_fields[selection.name])
+                try:
+                    field = copy.deepcopy(self._declared_fields[selection.name])
+                except KeyError:
+                    self.errors.append(
+                        GraphQLError('{} does not have field {}'.format(self.object_name, selection.name))
+                    )
+                    field = Field()
+                    field.type_ = MockScalar
+
                 self._fields[selection.name] = field
                 field.bind(selection=selection, obj=self)
         return self._fields
 
     def serialize(self):
-        return {
-            name: field.get_value()
-            for name, field in self.fields.items()
-        }
+        data = {}
+        for name, field in self.fields.items():
+            try:
+                value = field.get_value()
+                self.errors.extend(field.errors)
+            except Exception as e:
+                value = None
+                self.errors.append(
+                    GraphQLError('Error resolving {}: {}'.format(name, e))
+                )
+            data[name] = value
+
+        return data
 
 
 class CharField(Field):
@@ -427,7 +455,9 @@ class RelatedField(Field):
             variable_definitions=self.obj.variable_definitions,
             variables=self.obj.variables
         )
-        return obj_instance.serialize()
+        data = obj_instance.serialize()
+        self.errors.extend(obj_instance.errors)
+        return data
 
     def get_value(self):
         value = super(RelatedField, self).get_value()

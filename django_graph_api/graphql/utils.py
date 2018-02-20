@@ -1,3 +1,6 @@
+from traceback import format_exc
+
+from django.conf import settings
 from graphql.ast import (
     Field,
     FragmentSpread,
@@ -43,3 +46,21 @@ def get_selections(selections, fragments, object_type, seen_fragments=None):
         )
 
     return _selections
+
+
+def format_error(error):
+    formatted_error = {
+        'message': str(error),
+    }
+
+    if settings.DEBUG:
+        formatted_error['traceback'] = error.traceback
+    return formatted_error
+
+
+class GraphQLError(Exception):
+    def __init__(self, message):
+        super(GraphQLError, self).__init__(message)
+        self.message = message
+        if settings.DEBUG:
+            self.traceback = format_exc().split('\n')
