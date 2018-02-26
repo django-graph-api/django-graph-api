@@ -13,7 +13,8 @@ from django_graph_api.graphql.types import (
     Int,
     List,
     String,
-    IntegerField)
+    IntegerField,
+)
 from django_graph_api.graphql.utils import GraphQLError
 
 

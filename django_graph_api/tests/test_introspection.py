@@ -18,7 +18,8 @@ from django_graph_api.graphql.types import (
     ManyRelatedField,
     RelatedField,
     String,
-    NonNull)
+    NonNull,
+)
 
 from test_app.schema import (
     Character,

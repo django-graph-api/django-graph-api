@@ -24,7 +24,8 @@ from django_graph_api.graphql.types import (
     SCALAR,
     String,
     UNION,
-    NonNull)
+    NonNull,
+)
 from django_graph_api.graphql.utils import (
     format_error,
     GraphQLError
