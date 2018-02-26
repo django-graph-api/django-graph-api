@@ -41,12 +41,12 @@ class Request(object):
         for definition in self.ast.definitions:
             if isinstance(definition, OperationDefinition):
                 if definition.name in self.operations:
-                    self._errors.append('Duplicate operation: {}'.format(definition.name))
+                    self._errors.append('Non-unique operation name: {}'.format(definition.name))
                 else:
                     self.operations[definition.name] = definition
             elif isinstance(definition, FragmentDefinition):
                 if definition.name in self.fragments:
-                    self._errors.append('Duplicate fragment: {}'.format(definition.name))
+                    self._errors.append('Non-unique fragment name: {}'.format(definition.name))
                 else:
                     self.fragments[definition.name] = definition
 

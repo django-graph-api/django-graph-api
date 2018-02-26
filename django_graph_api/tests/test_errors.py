@@ -61,21 +61,3 @@ def test_non_existent_field(starwars_data):
     assert errors == [
         GraphQLError('Episode does not have field other_field'),
     ]
-
-
-def test_no_operations(starwars_data):
-    document = '''
-        fragment heroIdFragment on Character {
-            id
-            ...heroNameFragment
-        }
-        '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    data, errors = request.execute()
-    assert data is None
-    assert errors == [
-        "At least one operation must be provided",
-    ]
