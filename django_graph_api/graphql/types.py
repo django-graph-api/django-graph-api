@@ -52,9 +52,10 @@ class Field(object):
     creation_counter = 0
     arguments = {}
 
-    def __init__(self, description=None, arguments=None):
+    def __init__(self, description=None, arguments=None, null=True):
         self.arguments = arguments or {}
         self.description = description
+        self.nullable = null
 
         # Increase the creation counter, and save our local copy.
         self.creation_counter = Field.creation_counter
@@ -64,13 +65,29 @@ class Field(object):
         self._bound = False
         self.errors = []
 
+    @property
+    def value(self):
+        value = self.get_value()
+        if value is None:
+            return self.return_null()
+        return value
+
+    def return_null(self):
+        if self.nullable:
+            return None
+        raise GraphQLError('Cannot be null')
+
     def get_value(self):
         raw_value = self.get_raw_value()
         if hasattr(self.type_, 'coerce_result'):
             try:
                 return self.type_.coerce_result(raw_value)
             except ValueError:
-                return None
+                raise GraphQLError('Cannot coerce {} ({}) to {}'.format(
+                    type(raw_value).__name__,
+                    raw_value,
+                    self.type_.object_name
+                ))
         return raw_value
 
     def get_raw_value(self):
@@ -106,8 +123,12 @@ class Field(object):
                     input_value = self.obj.variables.get(variable_name, default_value)
                 try:
                     arg_value = value.coerce_input(input_value)
-                except TypeError:
-                    error = 'Argument {} expected a {} but got a {}'.format(key, type(value), type(input_value))
+                except ValueError:
+                    error = 'Query error: Argument {} expected a {} but got a {}'.format(
+                        key,
+                        type(value),
+                        type(input_value)
+                    )
                     raise GraphQLError(error)
                 resolver_args[key] = arg_value
             else:
@@ -208,6 +229,13 @@ class Boolean(Scalar):
 class Enum(Scalar):
     kind = ENUM
     values = ()
+
+
+class NonNull(object):
+    kind = NON_NULL
+
+    def __init__(self, type_):
+        self.type_ = type_
 
 
 class List(object):
@@ -311,7 +339,7 @@ class Object(six.with_metaclass(ObjectMetaclass)):
         data = {}
         for name, field in self.fields.items():
             try:
-                value = field.get_value()
+                value = field.value
                 self.errors.extend(field.errors)
             except Exception as e:
                 value = None

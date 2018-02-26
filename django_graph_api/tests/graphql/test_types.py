@@ -12,7 +12,9 @@ from django_graph_api.graphql.types import (
     Float,
     Int,
     List,
-    String)
+    String,
+    IntegerField)
+from django_graph_api.graphql.utils import GraphQLError
 
 
 @patch('django_graph_api.graphql.types.Boolean.coerce_result')
@@ -41,6 +43,44 @@ def test_field_get_resolver_args_calls_coerce_input(coerce_input_mock):
 
     field.get_resolver_args()
     coerce_input_mock.assert_called_once_with('bar')
+
+
+def test_get_value_coercion_error():
+    field = IntegerField()
+    selection = mock.MagicMock()
+    selection.name = 'foo'
+    obj = mock.MagicMock()
+    obj.get_foo.return_value = 'bar'
+    field.bind(selection, obj)
+
+    with pytest.raises(GraphQLError):
+        field.get_value()
+
+
+def test_get_resolver_args_coercion_error():
+    field = CharField(arguments={'foo': Int()})
+    selection = mock.MagicMock()
+    argument = mock.Mock()
+    argument.name = 'foo'
+    argument.value = 'bar'
+    selection.arguments = [argument]
+    obj = mock.MagicMock()
+    field.bind(selection, obj)
+
+    with pytest.raises(GraphQLError):
+        field.get_resolver_args()
+
+
+def test_get_value_non_null():
+    field = IntegerField(null=False)
+    selection = mock.MagicMock()
+    selection.name = 'foo'
+    obj = mock.MagicMock()
+    obj.get_foo.return_value = None
+    field.bind(selection, obj)
+
+    with pytest.raises(GraphQLError):
+        field.value
 
 
 def test_int_coerce_result():

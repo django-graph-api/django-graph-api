@@ -24,7 +24,7 @@ from django_graph_api.graphql.types import (
     SCALAR,
     String,
     UNION,
-)
+    NonNull)
 from django_graph_api.graphql.utils import (
     format_error,
     GraphQLError
@@ -174,6 +174,10 @@ class FieldObject(Object):
             type_ = field.object_type
             if isinstance(field.type_, List):
                 type_ = List(type_)
+            elif not field.nullable:
+                type_ = NonNull(type_)
+        elif not field.nullable:
+            type_ = NonNull(field.type_)
         else:
             type_ = field.type_
         return type_
@@ -204,7 +208,7 @@ class TypeObject(Object):
     ofType = RelatedField('self')
 
     def get_name(self):
-        if self.data.kind == LIST:
+        if self.data.kind in [LIST, NON_NULL]:
             return None
         return self.data.object_name
 
@@ -241,7 +245,7 @@ class TypeObject(Object):
         return self.data.values
 
     def get_ofType(self):
-        if self.data.kind == LIST:
+        if self.data.kind in [LIST, NON_NULL]:
             return self.data.type_
         return None
 
@@ -269,8 +273,6 @@ class SchemaObject(Object):
                 if enum_type in types:
                     continue
                 types.add(enum_type)
-            elif isinstance(field.type_, List):
-                field = field.type_
             elif field.type_:
                 types.add(field.type_)
         return types

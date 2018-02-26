@@ -46,7 +46,7 @@ class Episode(Object):
 
 
 class Character(Object):
-    id = IntegerField()
+    id = IntegerField(null=False)
     name = CharField()
     friends = ManyRelatedField('self')
     best_friend = RelatedField('self')
@@ -58,9 +58,9 @@ class Character(Object):
 
 @schema.register_query_root
 class QueryRoot(Object):
-    hero = RelatedField(Character)
+    hero = RelatedField(Character, null=False)
     episodes = ManyRelatedField(Episode)
-    episode = RelatedField(Episode, arguments={'number': Int()})
+    episode = RelatedField(Episode, arguments={'number': Int()}, null=False)
 
     def get_hero(self):
         return CharacterModel.objects.get(name='R2-D2')
