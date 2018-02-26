@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.test import Client, modify_settings
 
+from test_app.schema import QueryRoot
+
 
 def test_get_request_graphiql():
     client = Client()
@@ -17,9 +19,12 @@ def test_get_request_graphiql():
     assert 'csrftoken' in response.cookies
 
 
-@mock.patch('test_project.urls.schema.execute')
-def test_post_request_executed(execute):
-    execute.return_value = {}
+@mock.patch('django_graph_api.views.Request')
+def test_post_request_executed(Request):
+    request = mock.MagicMock()
+    request.execute.return_value = {}
+    request.is_valid.return_value = True
+    Request.return_value = request
     query = 'this is totally a query'
     client = Client()
     response = client.post(
@@ -33,12 +38,21 @@ def test_post_request_executed(execute):
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
     assert response.content == b'{}'
-    execute.assert_called_once_with(query, None)
+    Request.assert_called_once_with(
+        document=query,
+        variables=None,
+        query_root_class=QueryRoot,
+        operation_name=None,
+    )
+    request.execute.assert_called_once_with()
 
 
-@mock.patch('test_project.urls.schema.execute')
-def test_variables_sent_in_post(execute):
-    execute.return_value = {}
+@mock.patch('django_graph_api.views.Request')
+def test_variables_sent_in_post(Request):
+    request = mock.MagicMock()
+    request.execute.return_value = {}
+    request.is_valid.return_value = True
+    Request.return_value = request
     query = 'this is totally a query'
     client = Client()
     response = client.post(
@@ -55,7 +69,13 @@ def test_variables_sent_in_post(execute):
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
     assert response.content == b'{}'
-    execute.assert_called_once_with(query, {'level': 9001})
+    Request.assert_called_once_with(
+        document=query,
+        variables={'level': 9001},
+        query_root_class=QueryRoot,
+        operation_name=None,
+    )
+    request.execute.assert_called_once_with()
 
 
 def test_post_request_not_json():
@@ -87,9 +107,8 @@ def test_post_request_without_query():
 
 
 @modify_settings(MIDDLEWARE={'remove': 'django.middleware.csrf.CsrfViewMiddleware'})
-@mock.patch('test_project.urls.schema.execute')
-def test_post__csrf_required(execute):
-    execute.return_value = {}
+@mock.patch('django_graph_api.views.Request')
+def test_post__csrf_required(Request):
     query = 'this is totally a query'
     client = Client(enforce_csrf_checks=True)
     response = client.post(
@@ -101,4 +120,4 @@ def test_post__csrf_required(execute):
         HTTP_ACCEPT='application/json',
     )
     assert response.status_code == 403
-    execute.assert_not_called()
+    Request.execute.assert_not_called()

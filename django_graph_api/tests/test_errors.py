@@ -1,15 +1,20 @@
-from test_app.schema import schema
+from django_graph_api.graphql.utils import GraphQLError
+from django_graph_api.graphql.request import Request
+
+from test_app.schema import QueryRoot
 
 
 def test_blank_query(starwars_data):
-    query = ''
-    assert schema.execute(query) == {
-        'errors': [
-            {
-                'message': 'Parse error: Unexpected end of input'
-            }
-        ]
-    }
+    document = ''
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data is None
+    assert errors == [
+        'Parse error: Unexpected end of input',
+    ]
 
 
 def test_non_existent_episode(starwars_data):
@@ -20,16 +25,17 @@ def test_non_existent_episode(starwars_data):
             }
         }
         '''
-    assert schema.execute(document) == {
-        "data": {
-            "episode": None
-        },
-        "errors": [
-            {
-                "message": "Error resolving episode: Episode matching query does not exist."
-            }
-        ]
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data == {
+        "episode": None
     }
+    assert errors == [
+        GraphQLError('Error resolving episode: Episode matching query does not exist.'),
+    ]
 
 
 def test_non_existent_field(starwars_data):
@@ -41,33 +47,35 @@ def test_non_existent_field(starwars_data):
             }
         }
         '''
-    assert schema.execute(document) == {
-        "data": {
-            "episode": {
-                "name": "A New Hope",
-                "other_field": None
-            }
-        },
-        "errors": [
-            {
-                "message": "Episode does not have field other_field"
-            }
-        ]
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data == {
+        "episode": {
+            "name": "A New Hope",
+            "other_field": None
+        }
     }
+    assert errors == [
+        GraphQLError('Episode does not have field other_field'),
+    ]
 
 
-def test_no_query(starwars_data):
+def test_no_operations(starwars_data):
     document = '''
-        mutation MyMutation {
-          episodes {
-            name
-          }
+        fragment heroIdFragment on Character {
+            id
+            ...heroNameFragment
         }
         '''
-    assert schema.execute(document) == {
-        "errors": [
-            {
-                "message": "Document error: Exactly one query must be defined"
-            }
-        ]
-    }
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data is None
+    assert errors == [
+        "At least one operation must be provided",
+    ]

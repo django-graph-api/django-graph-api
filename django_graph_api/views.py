@@ -9,6 +9,7 @@ from django.views.decorators.csrf import (
 )
 from django.views.generic import View
 
+from django_graph_api.graphql.request import Request
 from django_graph_api.graphql.utils import (
     format_error,
     GraphQLError
@@ -27,7 +28,7 @@ class GraphQLView(View):
     graphiql_version = '0.11.11'
     graphql_url = '/graphql'
     template_name = 'django_graph_api/graphiql.html'
-    schema = None
+    query_root_class = None
 
     @method_decorator(ensure_csrf_cookie)
     @method_decorator(csrf_protect)
@@ -47,18 +48,23 @@ class GraphQLView(View):
     def post(self, request, *args, **kwargs):
         try:
             request_data = self.get_request_data()
-            query = request_data['query']
-            variables = request_data.get('variables')
+            graphql_request = Request(
+                document=request_data['query'],
+                variables=request_data.get('variables'),
+                query_root_class=self.query_root_class,
+                operation_name=None,
+            )
         except Exception:
             error = GraphQLError('Data must be json with a "query" key and optional "variables" key')
             return JsonResponse({'errors': [(format_error(error))]})
 
-        try:
-            response_data = self.schema.execute(query, variables)
-            return JsonResponse(response_data)
-        except Exception as e:
-            error = GraphQLError('Execution error: {}'.format(str(e)))
-            return JsonResponse({'errors': [(format_error(error))]})
+        if graphql_request.is_valid():
+            response_data = graphql_request.execute()
+        else:
+            response_data = {
+                'errors': graphql_request.errors,
+            }
+        return JsonResponse(response_data)
 
     def get_request_data(self):
         """

@@ -259,18 +259,28 @@ class List(object):
 class ObjectMetaclass(ObjectNameMetaclass):
     def __new__(mcs, name, bases, attrs):
         # This fields implementation is similar to Django's form fields
-        # implementation. Currently we do not support inheritance of fields.
-        current_fields = []
+        # implementation. We also allow explicit introspection_fields
+        # declaration in order to get around python's munging of double
+        # underscores.
+        # current_fields = list(attrs.get('introspection_fields', {}).items())
+        declared_fields = OrderedDict()
+
+        if 'introspection_fields' in attrs:
+            declared_fields.update(copy.deepcopy(attrs['introspection_fields']))
+
+        parents = [b for b in bases if isinstance(b, ObjectMetaclass)]
+        for parent in reversed(parents):
+            declared_fields.update(copy.deepcopy(parent._declared_fields))
+
         for key, value in list(attrs.items()):
             if isinstance(value, Field):
-                current_fields.append((key, value))
-                attrs.pop(key)
-        current_fields.sort(key=lambda x: x[1].creation_counter)
-        attrs['_declared_fields'] = OrderedDict(current_fields)
+                declared_fields[key] = value
+                del attrs[key]
+        attrs['_declared_fields'] = declared_fields
 
         cls = super(ObjectMetaclass, mcs).__new__(mcs, name, bases, attrs)
 
-        for name, field in current_fields:
+        for name, field in declared_fields.items():
             field._self_object_type = cls
 
         return cls

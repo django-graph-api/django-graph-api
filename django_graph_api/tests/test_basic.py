@@ -1,4 +1,6 @@
-from test_app.schema import schema
+from django_graph_api.graphql.request import Request
+
+from test_app.schema import QueryRoot
 
 
 def test_hero_name(starwars_data):
@@ -9,13 +11,17 @@ def test_hero_name(starwars_data):
         }
     }
     '''
-    assert schema.execute(document) == {
-        'data': {
-            'hero': {
-                'name': 'R2-D2',
-            },
-        }
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data == {
+        'hero': {
+            'name': 'R2-D2',
+        },
     }
+    assert errors == []
 
 
 def test_hero_name_and_friends_names(starwars_data):
@@ -32,30 +38,34 @@ def test_hero_name_and_friends_names(starwars_data):
         }
     }
     '''
-    assert schema.execute(document) == {
-        'data': {
-            'hero': {
-                'name': 'R2-D2',
-                'friends': [
-                    {
-                        'name': 'Luke Skywalker',
-                    },
-                    {
-                        'name': 'Han Solo',
-                    },
-                    {
-                        'name': 'Leia Organa',
-                    },
-                    {
-                        'name': 'C-3PO',
-                    },
-                ],
-                'best_friend': {
-                    'name': 'Luke Skywalker'
-                }
-            },
-        }
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data == {
+        'hero': {
+            'name': 'R2-D2',
+            'friends': [
+                {
+                    'name': 'Luke Skywalker',
+                },
+                {
+                    'name': 'Han Solo',
+                },
+                {
+                    'name': 'Leia Organa',
+                },
+                {
+                    'name': 'C-3PO',
+                },
+            ],
+            'best_friend': {
+                'name': 'Luke Skywalker'
+            }
+        },
     }
+    assert errors == []
 
 
 def test_hero_name_and_episodes(starwars_data):
@@ -70,20 +80,24 @@ def test_hero_name_and_episodes(starwars_data):
         }
     }
     '''
-    assert schema.execute(document) == {
-        'data': {
-            'hero': {
-                'name': 'R2-D2',
-                'appears_in': [
-                    {
-                        'name': 'A New Hope',
-                        'number': 4
-                    },
-                    {
-                        'name': 'The Empire Strikes Back',
-                        'number': 5
-                    },
-                ]
-            },
-        }
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data == {
+        'hero': {
+            'name': 'R2-D2',
+            'appears_in': [
+                {
+                    'name': 'A New Hope',
+                    'number': 4
+                },
+                {
+                    'name': 'The Empire Strikes Back',
+                    'number': 5
+                },
+            ]
+        },
     }
+    assert errors == []

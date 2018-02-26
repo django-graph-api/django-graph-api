@@ -1,4 +1,6 @@
-from test_app.schema import schema
+from django_graph_api.graphql.request import Request
+
+from test_app.schema import QueryRoot
 
 
 def test_fragments(starwars_data):
@@ -22,24 +24,28 @@ def test_fragments(starwars_data):
         number
     }
     '''
-    assert schema.execute(document) == {
-        'data': {
-            'episodes': [
-                {
-                    'name': 'A New Hope',
-                    'number': 4,
-                },
-                {
-                    'name': 'The Empire Strikes Back',
-                    'number': 5,
-                },
-            ],
-            'hero': {
-                'name': 'R2-D2',
-                'id': 2001,
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data == {
+        'episodes': [
+            {
+                'name': 'A New Hope',
+                'number': 4,
             },
+            {
+                'name': 'The Empire Strikes Back',
+                'number': 5,
+            },
+        ],
+        'hero': {
+            'name': 'R2-D2',
+            'id': 2001,
         },
     }
+    assert errors == []
 
 
 def test_fragments__nested(starwars_data):
@@ -59,14 +65,18 @@ def test_fragments__nested(starwars_data):
         name
     }
     '''
-    assert schema.execute(document) == {
-        'data': {
-            'hero': {
-                'name': 'R2-D2',
-                'id': 2001,
-            },
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data == {
+        'hero': {
+            'name': 'R2-D2',
+            'id': 2001,
         },
     }
+    assert errors == []
 
 
 def test_fragments__recursive(starwars_data):
@@ -87,14 +97,18 @@ def test_fragments__recursive(starwars_data):
         ...heroIdFragment
     }
     '''
-    assert schema.execute(document) == {
-        'data': {
-            'hero': {
-                'name': 'R2-D2',
-                'id': 2001,
-            },
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data == {
+        'hero': {
+            'name': 'R2-D2',
+            'id': 2001,
         },
     }
+    assert errors == []
 
 
 def test_fragments__inline(starwars_data):
@@ -114,21 +128,25 @@ def test_fragments__inline(starwars_data):
         }
     }
     '''
-    assert schema.execute(document) == {
-        'data': {
-            'episodes': [
-                {
-                    'name': 'A New Hope',
-                    'number': 4,
-                },
-                {
-                    'name': 'The Empire Strikes Back',
-                    'number': 5,
-                },
-            ],
-            'hero': {
-                'name': 'R2-D2',
-                'id': 2001,
+    request = Request(
+        document=document,
+        query_root_class=QueryRoot,
+    )
+    data, errors = request.execute()
+    assert data == {
+        'episodes': [
+            {
+                'name': 'A New Hope',
+                'number': 4,
             },
+            {
+                'name': 'The Empire Strikes Back',
+                'number': 5,
+            },
+        ],
+        'hero': {
+            'name': 'R2-D2',
+            'id': 2001,
         },
     }
+    assert errors == []
