@@ -38,7 +38,7 @@ def test_post_request_executed(RequestMock):
     )
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
-    assert response.content == b'{"data": null, "errors": []}'
+    assert json.loads(response.content.decode('utf-8')) == {'data': None, 'errors': []}
     RequestMock.assert_called_once_with(
         document=query,
         variables=None,
@@ -68,7 +68,7 @@ def test_variables_sent_in_post(RequestMock):
     )
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
-    assert response.content == b'{"data": null, "errors": []}'
+    assert json.loads(response.content.decode('utf-8')) == {'data': None, 'errors': []}
     RequestMock.assert_called_once_with(
         document=query,
         variables={'level': 9001},
