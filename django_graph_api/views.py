@@ -58,13 +58,15 @@ class GraphQLView(View):
             error = GraphQLError('Data must be json with a "query" key and optional "variables" key')
             return JsonResponse({'errors': [(format_error(error))]})
 
-        if graphql_request.is_valid():
-            response_data = graphql_request.execute()
-        else:
-            response_data = {
-                'errors': graphql_request.errors,
-            }
-        return JsonResponse(response_data)
+        data, errors = graphql_request.execute()
+
+        return JsonResponse({
+            'data': data,
+            'errors': [
+                {'message': str(error)}
+                for error in errors
+            ],
+        })
 
     def get_request_data(self):
         """
