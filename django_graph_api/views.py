@@ -10,10 +10,6 @@ from django.views.decorators.csrf import (
 from django.views.generic import View
 
 from django_graph_api.graphql.request import Request
-from django_graph_api.graphql.utils import (
-    format_error,
-    GraphQLError
-)
 
 
 class GraphQLView(View):
@@ -55,8 +51,11 @@ class GraphQLView(View):
                 operation_name=None,
             )
         except Exception:
-            error = GraphQLError('Data must be json with a "query" key and optional "variables" key')
-            return JsonResponse({'errors': [(format_error(error))]})
+            return JsonResponse({
+                'errors': [
+                    {'message': 'Data must be json with a "query" key and optional "variables" key'},
+                ],
+            })
 
         data, errors = graphql_request.execute()
 

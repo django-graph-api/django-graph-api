@@ -1,6 +1,3 @@
-from django_graph_api.graphql.utils import (
-    GraphQLError
-)
 from graphql.ast import (
     FragmentDefinition,
     OperationDefinition,
