@@ -13,67 +13,78 @@ class Request(object):
         self.variables = variables or {}
         self.operation_name = operation_name
         self.query_root_class = query_root_class
+        self._validated = False
 
-    @property
-    def errors(self):
-        if not hasattr(self, '_errors'):
-            self.validate()
-        return self._errors
-
-    def validate(self):
-        self.operations = {}
-        self.operation = None
-        self.fragments = {}
-        self._errors = []
-
+        self.errors = []
         parser = GraphQLParser()
-
         try:
             self.ast = parser.parse(self.document)
         except Exception as e:
-            self._errors.append('Parse error: {}'.format(e))
+            self.ast = None
+            self.errors.append('Parse error: {}'.format(e))
             # Additional errors are meaningless if we couldn't parse the document
+            self._validated = True
+
+    def validate(self):
+        # Only validate once
+        if self._validated:
             return
+        self._validated = True
+
+        operations = {}
+        fragments = {}
 
         for definition in self.ast.definitions:
             if isinstance(definition, OperationDefinition):
-                if definition.name in self.operations:
-                    self._errors.append('Non-unique operation name: {}'.format(definition.name))
+                if definition.name in operations:
+                    self.errors.append('Non-unique operation name: {}'.format(definition.name))
                 else:
-                    self.operations[definition.name] = definition
+                    operations[definition.name] = definition
             elif isinstance(definition, FragmentDefinition):
-                if definition.name in self.fragments:
-                    self._errors.append('Non-unique fragment name: {}'.format(definition.name))
+                if definition.name in fragments:
+                    self.errors.append('Non-unique fragment name: {}'.format(definition.name))
                 else:
-                    self.fragments[definition.name] = definition
+                    fragments[definition.name] = definition
 
         if self.operation_name:
-            try:
-                self.operation = self.operations[self.operation_name]
-            except KeyError:
-                self._errors.append('No operation found called `{}`'.format(self.operration_name))
+            if self.operation_name not in operations:
+                self.errors.append('No operation found called `{}`'.format(self.operration_name))
         else:
-            if len(self.operations) > 1:
-                self._errors.append('Multiple operations provided but no operation name')
-            elif len(self.operations) == 0:
-                self._errors.append('At least one operation must be provided')
-            else:
-                self.operation = list(self.operations.values())[0]
+            if len(operations) > 1:
+                self.errors.append('Multiple operations provided but no operation name')
+            elif len(operations) == 0:
+                self.errors.append('At least one operation must be provided')
 
-        if self.operation:
-            self.variable_definitions = {
+    def get_operation(self):
+        # This is a bit duplicative, but allows us to fully separate execution
+        # from validation.
+        if self.ast is None:
+            raise Exception('get_operation called on an unparseable document')
+
+        operations = {}
+        fragments = {}
+
+        for definition in self.ast.definitions:
+            if isinstance(definition, OperationDefinition):
+                operations[definition.name] = definition
+            elif isinstance(definition, FragmentDefinition):
+                fragments[definition.name] = definition
+
+        if self.operation_name:
+            operation = operations[self.operation_name]
+        else:
+            operation = list(operations.values())[0]
+
+        if operation is None:
+            raise Exception('get_operation called on a document with no valid operation')
+
+        return self.query_root_class(
+            ast=operation,
+            data=None,
+            fragments=fragments,
+            variable_definitions={
                 definition.name: definition
-                for definition in self.operation.variable_definitions
-            }
-            self.query_root = self.query_root_class(
-                ast=self.operation,
-                data=None,
-                fragments=self.fragments,
-                variable_definitions=self.variable_definitions,
-                variables=self.variables,
-            )
-
-    def execute(self):
-        if self.errors:
-            return None, self.errors
-        return self.query_root.serialize(), self.query_root.errors
+                for definition in operation.variable_definitions
+            },
+            variables=self.variables,
+        )

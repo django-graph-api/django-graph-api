@@ -28,7 +28,8 @@ def test_fragments(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'episodes': [
             {
@@ -45,7 +46,7 @@ def test_fragments(starwars_data):
             'id': 2001,
         },
     }
-    assert errors == []
+    assert operation.errors == []
 
 
 def test_fragments__nested(starwars_data):
@@ -69,14 +70,15 @@ def test_fragments__nested(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'hero': {
             'name': 'R2-D2',
             'id': 2001,
         },
     }
-    assert errors == []
+    assert operation.errors == []
 
 
 def test_fragments__recursive(starwars_data):
@@ -101,14 +103,15 @@ def test_fragments__recursive(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'hero': {
             'name': 'R2-D2',
             'id': 2001,
         },
     }
-    assert errors == []
+    assert operation.errors == []
 
 
 def test_fragments__inline(starwars_data):
@@ -132,7 +135,8 @@ def test_fragments__inline(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'episodes': [
             {
@@ -149,4 +153,4 @@ def test_fragments__inline(starwars_data):
             'id': 2001,
         },
     }
-    assert errors == []
+    assert operation.errors == []

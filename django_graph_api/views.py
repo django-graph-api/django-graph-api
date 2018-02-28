@@ -57,7 +57,13 @@ class GraphQLView(View):
                 ],
             })
 
-        data, errors = graphql_request.execute()
+        graphql_request.validate()
+        data = None
+        errors = graphql_request.errors
+        if not graphql_request.errors:
+            operation = graphql_request.get_operation()
+            data = operation.serialize()
+            errors = operation.errors
 
         return JsonResponse({
             'data': data,

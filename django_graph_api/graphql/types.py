@@ -350,6 +350,9 @@ class Object(six.with_metaclass(ObjectMetaclass)):
 
         return data
 
+    def execute(self):
+        return self.serialize(), self.errors
+
 
 class CharField(Field):
     """

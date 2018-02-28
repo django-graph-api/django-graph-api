@@ -99,8 +99,9 @@ def test_episode_name_field_description(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
-    assert errors == []
+    operation = request.get_operation()
+    data = operation.serialize()
+    assert operation.errors == []
     types = data['__schema']['types']
     episodes = [type_ for type_ in types if type_['name'] == 'Episode'][0]
     name_field = [
@@ -126,7 +127,8 @@ def test_episode_and_characters(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'episode': {
             'name': 'The Empire Strikes Back',
@@ -141,7 +143,7 @@ def test_episode_and_characters(starwars_data):
             ]
         },
     }
-    assert errors == []
+    assert operation.errors == []
 
 
 def test_episodes_and_droids(starwars_data):
@@ -160,7 +162,8 @@ def test_episodes_and_droids(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'episodes': [
             {
@@ -181,4 +184,4 @@ def test_episodes_and_droids(starwars_data):
             },
         ]
     }
-    assert errors == []
+    assert operation.errors == []

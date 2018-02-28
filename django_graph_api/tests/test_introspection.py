@@ -346,7 +346,8 @@ def test_execute__filter_type():
     }
     '''
     request = Request(document, query_root_class=QueryRoot)
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         '__type': {
             'name': 'Character',
@@ -404,7 +405,7 @@ def test_execute__filter_type():
             ],
         },
     }
-    assert errors == []
+    assert operation.errors == []
 
 
 def test_execute__introspect_directives():
@@ -422,10 +423,11 @@ def test_execute__introspect_directives():
     }
     '''
     request = Request(document, query_root_class=QueryRoot)
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         '__schema': {
             'directives': [],
         },
     }
-    assert errors == []
+    assert operation.errors == []

@@ -15,13 +15,14 @@ def test_hero_name(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'hero': {
             'name': 'R2-D2',
         },
     }
-    assert errors == []
+    assert operation.errors == []
 
 
 def test_hero_name_and_friends_names(starwars_data):
@@ -42,7 +43,8 @@ def test_hero_name_and_friends_names(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'hero': {
             'name': 'R2-D2',
@@ -65,7 +67,7 @@ def test_hero_name_and_friends_names(starwars_data):
             }
         },
     }
-    assert errors == []
+    assert operation.errors == []
 
 
 def test_hero_name_and_episodes(starwars_data):
@@ -84,7 +86,8 @@ def test_hero_name_and_episodes(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'hero': {
             'name': 'R2-D2',
@@ -100,4 +103,4 @@ def test_hero_name_and_episodes(starwars_data):
             ]
         },
     }
-    assert errors == []
+    assert operation.errors == []

@@ -19,7 +19,8 @@ def test_query_default_episode_and_characters(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'episode': {
             'name': 'The Empire Strikes Back',
@@ -34,7 +35,7 @@ def test_query_default_episode_and_characters(starwars_data):
             ]
         },
     }
-    assert errors == []
+    assert operation.errors == []
 
 
 def test_query_missing_variable_no_default(starwars_data):
@@ -49,7 +50,8 @@ def test_query_missing_variable_no_default(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'episodes': [{
             'number': 4
@@ -57,7 +59,7 @@ def test_query_missing_variable_no_default(starwars_data):
             'number': 5
         }]
     }
-    assert errors == []
+    assert operation.errors == []
 
 
 def test_query_episodes_and_droids(starwars_data):
@@ -73,7 +75,8 @@ def test_query_episodes_and_droids(starwars_data):
         }
         '''
     request = Request(document, {'type': 'droid'}, QueryRoot)
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         'episodes': [
             {
@@ -94,4 +97,4 @@ def test_query_episodes_and_droids(starwars_data):
             },
         ]
     }
-    assert errors == []
+    assert operation.errors == []

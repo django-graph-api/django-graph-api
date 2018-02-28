@@ -4,19 +4,6 @@ from django_graph_api.graphql.request import Request
 from test_app.schema import QueryRoot
 
 
-def test_blank_query(starwars_data):
-    document = ''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    data, errors = request.execute()
-    assert data is None
-    assert errors == [
-        'Parse error: Unexpected end of input',
-    ]
-
-
 def test_non_existent_episode(starwars_data):
     document = '''
         {
@@ -29,11 +16,12 @@ def test_non_existent_episode(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         "episode": None
     }
-    assert errors == [
+    assert operation.errors == [
         GraphQLError('Error resolving episode: Episode matching query does not exist.'),
     ]
 
@@ -51,13 +39,14 @@ def test_non_existent_field(starwars_data):
         document=document,
         query_root_class=QueryRoot,
     )
-    data, errors = request.execute()
+    operation = request.get_operation()
+    data = operation.serialize()
     assert data == {
         "episode": {
             "name": "A New Hope",
             "other_field": None
         }
     }
-    assert errors == [
+    assert operation.errors == [
         GraphQLError('Episode does not have field other_field'),
     ]
