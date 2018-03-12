@@ -18,6 +18,7 @@ from django_graph_api.graphql.types import (
     ManyRelatedField,
     RelatedField,
     String,
+    NonNull,
 )
 
 from test_app.schema import (
@@ -77,6 +78,36 @@ def test_type__scalar__get_enumValues():
 def test_type__scalar__get_ofType():
     type_object = TypeObject(None, Boolean, None)
     assert type_object.get_ofType() is None
+
+
+def test_type__non_null__get_fields():
+    type_object = TypeObject(None, NonNull(Boolean), None)
+    assert type_object.get_fields() is None
+
+
+def test_type__non_null__get_inputFields():
+    type_object = TypeObject(None, NonNull(Boolean), None)
+    assert type_object.get_inputFields() is None
+
+
+def test_type__non_null__get_interfaces():
+    type_object = TypeObject(None, NonNull(Boolean), None)
+    assert type_object.get_interfaces() is None
+
+
+def test_type__non_null__get_possibleTypes():
+    type_object = TypeObject(None, NonNull(Boolean), None)
+    assert type_object.get_possibleTypes() is None
+
+
+def test_type__non_null__get_enumValues():
+    type_object = TypeObject(None, NonNull(Boolean), None)
+    assert type_object.get_enumValues() is None
+
+
+def test_type__non_null__get_ofType():
+    type_object = TypeObject(None, NonNull(Boolean), None)
+    assert type_object.get_ofType() is Boolean
 
 
 def test_type__object__get_name():
@@ -301,6 +332,14 @@ def test_execute__filter_type():
             kind
             fields {
                 name
+                type {
+                    name
+                    kind
+                    ofType {
+                        name
+                        kind
+                    }
+                }
             }
         }
     }
@@ -311,11 +350,55 @@ def test_execute__filter_type():
                 'name': 'Character',
                 'kind': 'OBJECT',
                 'fields': [
-                    {'name': 'appears_in'},
-                    {'name': 'best_friend'},
-                    {'name': 'friends'},
-                    {'name': 'id'},
-                    {'name': 'name'},
+                    {
+                        'name': 'appears_in',
+                        'type': {
+                            'name': None,
+                            'kind': 'LIST',
+                            'ofType': {
+                                'name': 'Episode',
+                                'kind': 'OBJECT'
+                            }
+                        },
+                    },
+                    {
+                        'name': 'best_friend',
+                        'type': {
+                            'name': 'Character',
+                            'kind': 'OBJECT',
+                            'ofType': None
+                        },
+                    },
+                    {
+                        'name': 'friends',
+                        'type': {
+                            'name': None,
+                            'kind': 'LIST',
+                            'ofType': {
+                                'name': 'Character',
+                                'kind': 'OBJECT'
+                            }
+                        },
+                    },
+                    {
+                        'name': 'id',
+                        'type': {
+                            'name': None,
+                            'kind': 'NON_NULL',
+                            'ofType': {
+                                'name': 'Int',
+                                'kind': 'SCALAR'
+                            }
+                        },
+                    },
+                    {
+                        'name': 'name',
+                        'type': {
+                            'name': 'String',
+                            'kind': 'SCALAR',
+                            'ofType': None
+                        },
+                    },
                 ],
             }
         }
