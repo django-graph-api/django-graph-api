@@ -55,7 +55,7 @@ class Field(object):
     def __init__(self, description=None, arguments=None, null=True):
         self.arguments = arguments or {}
         self.description = description
-        self.nullable = null
+        self.null = null
 
         # Increase the creation counter, and save our local copy.
         self.creation_counter = Field.creation_counter
@@ -65,20 +65,10 @@ class Field(object):
         self._bound = False
         self.errors = []
 
-    @property
-    def value(self):
-        value = self.get_value()
-        if value is None:
-            return self.return_null()
-        return value
-
-    def return_null(self):
-        if self.nullable:
-            return None
-        raise GraphQLError('Cannot be null')
-
     def get_value(self):
         raw_value = self.get_raw_value()
+        if not self.null and raw_value is None:
+            raise GraphQLError('Field {} returned null but is not nullable'.format(self.name))
         if hasattr(self.type_, 'coerce_result'):
             try:
                 return self.type_.coerce_result(raw_value)
@@ -339,7 +329,7 @@ class Object(six.with_metaclass(ObjectMetaclass)):
         data = {}
         for name, field in self.fields.items():
             try:
-                value = field.value
+                value = field.get_value()
                 self.errors.extend(field.errors)
             except Exception as e:
                 value = None

@@ -81,7 +81,7 @@ def test_get_value_non_null():
     field.bind(selection, obj)
 
     with pytest.raises(GraphQLError):
-        field.value
+        field.get_value()
 
 
 def test_int_coerce_result():
