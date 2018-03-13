@@ -43,6 +43,9 @@ class GraphQLView(View):
         )
 
     def post(self, request, *args, **kwargs):
+        # Python 2 json library raises ValueError; Python 3 raises more specific error.
+        JSONDecodeError = getattr(json, 'JSONDecodeError', ValueError)
+
         try:
             request_data = self.get_request_data()
             graphql_request = Request(
@@ -50,7 +53,7 @@ class GraphQLView(View):
                 variables=request_data.get('variables'),
                 operation_name=None,
             )
-        except (KeyError, json.JSONDecodeError):
+        except (KeyError, JSONDecodeError):
             return JsonResponse({
                 'errors': [
                     {'message': 'Data must be json with a "query" key and optional "variables" key'},
