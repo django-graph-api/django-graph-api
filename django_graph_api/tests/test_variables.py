@@ -1,4 +1,5 @@
 from django_graph_api.graphql.request import Request
+from django_graph_api.graphql.schema import Schema
 
 from test_app.schema import QueryRoot
 
@@ -15,12 +16,9 @@ def test_query_default_episode_and_characters(starwars_data):
             }
         }
         '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document=document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         'episode': {
             'name': 'The Empire Strikes Back',
@@ -32,10 +30,10 @@ def test_query_default_episode_and_characters(starwars_data):
                 {'name': 'Leia Organa'},
                 {'name': 'C-3PO'},
                 {'name': 'R2-D2'},
-            ]
+            ],
         },
     }
-    assert operation.errors == []
+    assert errors == []
 
 
 def test_query_missing_variable_no_default(starwars_data):
@@ -46,20 +44,17 @@ def test_query_missing_variable_no_default(starwars_data):
             }
         }
         '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document=document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         'episodes': [{
-            'number': 4
+            'number': 4,
         }, {
-            'number': 5
+            'number': 5,
         }]
     }
-    assert operation.errors == []
+    assert errors == []
 
 
 def test_query_episodes_and_droids(starwars_data):
@@ -74,9 +69,9 @@ def test_query_episodes_and_droids(starwars_data):
             }
         }
         '''
-    request = Request(document, {'type': 'droid'}, QueryRoot)
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document=document, variables={'type': 'droid'})
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         'episodes': [
             {
@@ -97,4 +92,4 @@ def test_query_episodes_and_droids(starwars_data):
             },
         ]
     }
-    assert operation.errors == []
+    assert errors == []

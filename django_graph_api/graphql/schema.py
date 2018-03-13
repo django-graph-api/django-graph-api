@@ -30,3 +30,21 @@ class BaseQueryRoot(Object):
             if type_.object_name == name:
                 return type_
         return None
+
+
+class Schema(object):
+    def __init__(self, query_root_class=BaseQueryRoot):
+        self.query_root_class = query_root_class
+
+    def execute(self, request):
+        query_root = self.query_root_class(
+            ast=request.operation,
+            data=None,
+            fragments=request.fragments,
+            variable_definitions={
+                definition.name: definition
+                for definition in request.operation.variable_definitions
+            },
+            variables=request.variables,
+        )
+        return query_root.execute()

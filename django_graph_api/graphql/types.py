@@ -335,7 +335,7 @@ class Object(six.with_metaclass(ObjectMetaclass)):
                 field.bind(selection=selection, obj=self)
         return self._fields
 
-    def serialize(self):
+    def execute(self):
         data = {}
         for name, field in self.fields.items():
             try:
@@ -348,10 +348,7 @@ class Object(six.with_metaclass(ObjectMetaclass)):
                 )
             data[name] = value
 
-        return data
-
-    def execute(self):
-        return self.serialize(), self.errors
+        return data, self.errors
 
 
 class CharField(Field):
@@ -478,7 +475,7 @@ class RelatedField(Field):
             )
         return self._object_type
 
-    def _serialize_value(self, value):
+    def _execute_related(self, value):
         obj_instance = self.object_type(
             ast=self.selection,
             data=value,
@@ -486,15 +483,15 @@ class RelatedField(Field):
             variable_definitions=self.obj.variable_definitions,
             variables=self.obj.variables
         )
-        data = obj_instance.serialize()
-        self.errors.extend(obj_instance.errors)
+        data, errors = obj_instance.execute()
+        self.errors.extend(errors)
         return data
 
     def get_value(self):
         value = super(RelatedField, self).get_value()
         if value is None:
             return None
-        return self._serialize_value(value)
+        return self._execute_related(value)
 
 
 class ManyRelatedField(RelatedField):
@@ -540,6 +537,6 @@ class ManyRelatedField(RelatedField):
         if isinstance(values, Manager):
             values = values.all()
         return [
-            self._serialize_value(value)
+            self._execute_related(value)
             for value in values
         ]

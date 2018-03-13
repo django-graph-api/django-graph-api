@@ -1,5 +1,6 @@
 from django_graph_api.graphql.utils import GraphQLError
 from django_graph_api.graphql.request import Request
+from django_graph_api.graphql.schema import Schema
 
 from test_app.schema import QueryRoot
 
@@ -12,16 +13,13 @@ def test_non_existent_episode(starwars_data):
             }
         }
         '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         "episode": None
     }
-    assert operation.errors == [
+    assert errors == [
         GraphQLError('Error resolving episode: Episode matching query does not exist.'),
     ]
 
@@ -35,18 +33,15 @@ def test_non_existent_field(starwars_data):
             }
         }
         '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         "episode": {
             "name": "A New Hope",
             "other_field": None
         }
     }
-    assert operation.errors == [
+    assert errors == [
         GraphQLError('Episode does not have field other_field'),
     ]

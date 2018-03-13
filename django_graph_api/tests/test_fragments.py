@@ -1,4 +1,5 @@
 from django_graph_api.graphql.request import Request
+from django_graph_api.graphql.schema import Schema
 
 from test_app.schema import QueryRoot
 
@@ -24,12 +25,9 @@ def test_fragments(starwars_data):
         number
     }
     '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         'episodes': [
             {
@@ -46,7 +44,7 @@ def test_fragments(starwars_data):
             'id': 2001,
         },
     }
-    assert operation.errors == []
+    assert errors == []
 
 
 def test_fragments__nested(starwars_data):
@@ -66,19 +64,16 @@ def test_fragments__nested(starwars_data):
         name
     }
     '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         'hero': {
             'name': 'R2-D2',
             'id': 2001,
         },
     }
-    assert operation.errors == []
+    assert errors == []
 
 
 def test_fragments__recursive(starwars_data):
@@ -99,19 +94,16 @@ def test_fragments__recursive(starwars_data):
         ...heroIdFragment
     }
     '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         'hero': {
             'name': 'R2-D2',
             'id': 2001,
         },
     }
-    assert operation.errors == []
+    assert errors == []
 
 
 def test_fragments__inline(starwars_data):
@@ -131,12 +123,9 @@ def test_fragments__inline(starwars_data):
         }
     }
     '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         'episodes': [
             {
@@ -153,4 +142,4 @@ def test_fragments__inline(starwars_data):
             'id': 2001,
         },
     }
-    assert operation.errors == []
+    assert errors == []

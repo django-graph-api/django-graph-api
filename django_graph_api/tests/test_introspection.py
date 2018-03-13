@@ -6,7 +6,7 @@ from django_graph_api.graphql.introspection import (
     EnumValue,
     Field,
     InputValue,
-    Schema,
+    Schema as SchemaIntrospector,
     Type,
     TypeKindEnum,
 )
@@ -21,6 +21,7 @@ from django_graph_api.graphql.types import (
     NonNull,
 )
 from django_graph_api.graphql.request import Request
+from django_graph_api.graphql.schema import Schema
 
 from test_app.schema import (
     Character,
@@ -30,7 +31,7 @@ from test_app.schema import (
 
 
 def test_schema__get_types():
-    schema_object = Schema(None, QueryRoot, None)
+    schema_object = SchemaIntrospector(None, QueryRoot, None)
 
     types = schema_object.get_types()
     assert types == [
@@ -42,7 +43,7 @@ def test_schema__get_types():
         EnumValue,
         Field,
         InputValue,
-        Schema,
+        SchemaIntrospector,
         Type,
         TypeKindEnum,
         Boolean,
@@ -345,9 +346,9 @@ def test_execute__filter_type():
         }
     }
     '''
-    request = Request(document, query_root_class=QueryRoot)
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         '__type': {
             'name': 'Character',
@@ -405,7 +406,7 @@ def test_execute__filter_type():
             ],
         },
     }
-    assert operation.errors == []
+    assert errors == []
 
 
 def test_execute__introspect_directives():
@@ -422,12 +423,12 @@ def test_execute__introspect_directives():
         }
     }
     '''
-    request = Request(document, query_root_class=QueryRoot)
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         '__schema': {
             'directives': [],
         },
     }
-    assert operation.errors == []
+    assert errors == []

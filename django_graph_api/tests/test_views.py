@@ -7,8 +7,6 @@ from django.test import Client, modify_settings
 
 from django_graph_api.graphql.request import Request
 
-from test_app.schema import QueryRoot
-
 
 def test_get_request_graphiql():
     client = Client()
@@ -42,7 +40,6 @@ def test_post_request_executed(RequestMock, starwars_data):
     RequestMock.assert_called_once_with(
         document=query,
         variables=None,
-        query_root_class=QueryRoot,
         operation_name=None,
     )
 
@@ -77,7 +74,6 @@ def test_variables_sent_in_post(RequestMock, starwars_data):
     RequestMock.assert_called_once_with(
         document=query,
         variables={'number': 4},
-        query_root_class=QueryRoot,
         operation_name=None,
     )
 

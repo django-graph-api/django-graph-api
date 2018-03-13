@@ -1,4 +1,5 @@
 from django_graph_api.graphql.request import Request
+from django_graph_api.graphql.schema import Schema
 
 from test_app.schema import QueryRoot
 
@@ -95,13 +96,10 @@ def test_episode_name_field_description(starwars_data):
         }
       }
     }"""
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
-    assert operation.errors == []
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
+    assert errors == []
     types = data['__schema']['types']
     episodes = [type_ for type_ in types if type_['name'] == 'Episode'][0]
     name_field = [
@@ -123,12 +121,9 @@ def test_episode_and_characters(starwars_data):
             }
         }
         '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         'episode': {
             'name': 'The Empire Strikes Back',
@@ -143,7 +138,7 @@ def test_episode_and_characters(starwars_data):
             ]
         },
     }
-    assert operation.errors == []
+    assert errors == []
 
 
 def test_episodes_and_droids(starwars_data):
@@ -158,12 +153,9 @@ def test_episodes_and_droids(starwars_data):
             }
         }
         '''
-    request = Request(
-        document=document,
-        query_root_class=QueryRoot,
-    )
-    operation = request.get_operation()
-    data = operation.serialize()
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
     assert data == {
         'episodes': [
             {
@@ -184,4 +176,4 @@ def test_episodes_and_droids(starwars_data):
             },
         ]
     }
-    assert operation.errors == []
+    assert errors == []
