@@ -177,7 +177,7 @@ class FieldObject(Object):
             type_ = field.object_type
             if isinstance(field.type_, List):
                 type_ = List(type_)
-            elif not field.null:
+            if not field.null:
                 type_ = NonNull(type_)
         elif not field.null:
             type_ = NonNull(field.type_)

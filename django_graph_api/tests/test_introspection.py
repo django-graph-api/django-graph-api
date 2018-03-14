@@ -273,7 +273,7 @@ def test_field__get_type():
         ('characters', ManyRelatedField(Character, null=False)),
         None,
     )
-    assert field_object.get_type() == NonNull(Character)
+    assert field_object.get_type() == NonNull(List(Character))
     field_object = FieldObject(
         None,
         ('id', IntegerField(null=False)),
