@@ -140,7 +140,9 @@ class InputValueObject(Object):
 
     def get_type(self):
         type_ = self.data[1]
-        if isinstance(type_, List):
+        if not type_.null:
+            return NonNull(type_)
+        elif isinstance(type_, List):
             return type_
         return type_.__class__
 
@@ -246,8 +248,12 @@ class TypeObject(Object):
         return self.data.values
 
     def get_ofType(self):
-        if self.data.kind in [LIST, NON_NULL]:
-            return self.data.type_
+        if self.data.kind in [NON_NULL, LIST]:
+            type_ = self.data.type_
+            # Don't return NonNull if self is already NonNull
+            if self.data.kind is not NON_NULL and not getattr(type_, 'null', True):
+                return NonNull(type_)
+            return type_
         return None
 
 

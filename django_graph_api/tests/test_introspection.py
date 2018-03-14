@@ -19,6 +19,7 @@ from django_graph_api.graphql.types import (
     RelatedField,
     String,
     NonNull,
+    IntegerField,
 )
 
 from test_app.schema import (
@@ -267,6 +268,18 @@ def test_field__get_type():
         None,
     )
     assert field_object.get_type() == List(Character)
+    field_object = FieldObject(
+        None,
+        ('characters', ManyRelatedField(Character, null=False)),
+        None,
+    )
+    assert field_object.get_type() == NonNull(Character)
+    field_object = FieldObject(
+        None,
+        ('id', IntegerField(null=False)),
+        None,
+    )
+    assert field_object.get_type() == NonNull(Int)
 
 
 def test_field__get_type_exceptions():
@@ -295,7 +308,7 @@ def test_field__get_args():
     assert field_object.get_args() == (('types', List(String)),)
     field_object = FieldObject(
         None,
-        ('characters', ManyRelatedField(Episode, arguments={'types': Int()})),
+        ('characters', ManyRelatedField(Character, arguments={'types': Int()})),
         None,
     )
     assert field_object.get_args() == (('types', Int()),)
@@ -323,6 +336,12 @@ def test_inputvalue__get_type():
         None,
     )
     assert inputvalue_object.get_type() == List(String)
+    inputvalue_object = InputValueObject(
+        None,
+        ('name', String(null=False)),
+        None,
+    )
+    assert inputvalue_object.get_type() == NonNull(String())
 
 
 def test_execute__filter_type():

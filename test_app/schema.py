@@ -59,14 +59,20 @@ class Character(Object):
 @schema.register_query_root
 class QueryRoot(Object):
     hero = RelatedField(Character, null=False)
-    episodes = ManyRelatedField(Episode)
-    episode = RelatedField(Episode, arguments={'number': Int()}, null=False)
+    episodes = ManyRelatedField(Episode, arguments={'number': List(Int(null=False))})
+    episode = RelatedField(Episode,
+                           arguments={'number': Int(null=False)},
+                           null=False
+                           )
 
     def get_hero(self):
         return CharacterModel.objects.get(name='R2-D2')
 
-    def get_episodes(self):
-        return EpisodeModel.objects.order_by('number')
+    def get_episodes(self, number):
+        episodes = EpisodeModel.objects.all()
+        if number:
+            episodes = episodes.filter(number__in=list(number))
+        return episodes.order_by('number')
 
     def get_episode(self, number):
         return EpisodeModel.objects.get(number=number)
