@@ -262,7 +262,6 @@ class ObjectMetaclass(ObjectNameMetaclass):
         # implementation. We also allow explicit introspection_fields
         # declaration in order to get around python's munging of double
         # underscores.
-        # current_fields = list(attrs.get('introspection_fields', {}).items())
         declared_fields = OrderedDict()
 
         if 'introspection_fields' in attrs:
