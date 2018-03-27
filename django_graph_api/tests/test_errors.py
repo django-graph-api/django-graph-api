@@ -1,15 +1,8 @@
-from test_app.schema import schema
+from django_graph_api.graphql.utils import GraphQLError
+from django_graph_api.graphql.request import Request
+from django_graph_api.graphql.schema import Schema
 
-
-def test_blank_query(starwars_data):
-    query = ''
-    assert schema.execute(query) == {
-        'errors': [
-            {
-                'message': 'Parse error: Unexpected end of input'
-            }
-        ]
-    }
+from test_app.schema import QueryRoot
 
 
 def test_non_existent_episode(starwars_data):
@@ -20,16 +13,15 @@ def test_non_existent_episode(starwars_data):
             }
         }
         '''
-    assert schema.execute(document) == {
-        "data": {
-            "episode": None
-        },
-        "errors": [
-            {
-                "message": "Error resolving episode: Episode matching query does not exist."
-            }
-        ]
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
+    assert data == {
+        "episode": None
     }
+    assert errors == [
+        GraphQLError('Error resolving episode: Episode matching query does not exist.'),
+    ]
 
 
 def test_non_existent_field(starwars_data):
@@ -41,33 +33,15 @@ def test_non_existent_field(starwars_data):
             }
         }
         '''
-    assert schema.execute(document) == {
-        "data": {
-            "episode": {
-                "name": "A New Hope",
-                "other_field": None
-            }
-        },
-        "errors": [
-            {
-                "message": "Episode does not have field other_field"
-            }
-        ]
-    }
-
-
-def test_no_query(starwars_data):
-    document = '''
-        mutation MyMutation {
-          episodes {
-            name
-          }
+    request = Request(document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
+    assert data == {
+        "episode": {
+            "name": "A New Hope",
+            "other_field": None
         }
-        '''
-    assert schema.execute(document) == {
-        "errors": [
-            {
-                "message": "Document error: Exactly one query must be defined"
-            }
-        ]
     }
+    assert errors == [
+        GraphQLError('Episode does not have field other_field'),
+    ]

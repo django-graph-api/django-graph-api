@@ -9,10 +9,8 @@ from django.views.decorators.csrf import (
 )
 from django.views.generic import View
 
-from django_graph_api.graphql.utils import (
-    format_error,
-    GraphQLError
-)
+from django_graph_api.graphql.request import Request
+from django_graph_api.graphql.schema import Schema
 
 
 class GraphQLView(View):
@@ -27,7 +25,7 @@ class GraphQLView(View):
     graphiql_version = '0.11.11'
     graphql_url = '/graphql'
     template_name = 'django_graph_api/graphiql.html'
-    schema = None
+    query_root_class = None
 
     @method_decorator(ensure_csrf_cookie)
     @method_decorator(csrf_protect)
@@ -45,20 +43,37 @@ class GraphQLView(View):
         )
 
     def post(self, request, *args, **kwargs):
-        try:
-            request_data = self.get_request_data()
-            query = request_data['query']
-            variables = request_data.get('variables')
-        except Exception:
-            error = GraphQLError('Data must be json with a "query" key and optional "variables" key')
-            return JsonResponse({'errors': [(format_error(error))]})
+        # Python 2 json library raises ValueError; Python 3 raises more specific error.
+        JSONDecodeError = getattr(json, 'JSONDecodeError', ValueError)
 
         try:
-            response_data = self.schema.execute(query, variables)
-            return JsonResponse(response_data)
-        except Exception as e:
-            error = GraphQLError('Execution error: {}'.format(str(e)))
-            return JsonResponse({'errors': [(format_error(error))]})
+            request_data = self.get_request_data()
+            graphql_request = Request(
+                document=request_data['query'],
+                variables=request_data.get('variables'),
+                operation_name=None,
+            )
+        except (KeyError, JSONDecodeError):
+            return JsonResponse({
+                'errors': [
+                    {'message': 'Data must be json with a "query" key and optional "variables" key'},
+                ],
+            })
+
+        graphql_request.validate()
+        data = None
+        errors = graphql_request.errors
+        if not graphql_request.errors:
+            schema = Schema(query_root_class=self.query_root_class)
+            data, errors = schema.execute(graphql_request)
+
+        return JsonResponse({
+            'data': data,
+            'errors': [
+                {'message': str(error)}
+                for error in errors
+            ],
+        })
 
     def get_request_data(self):
         """

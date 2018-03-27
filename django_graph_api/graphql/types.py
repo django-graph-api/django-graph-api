@@ -267,18 +267,27 @@ class List(object):
 class ObjectMetaclass(ObjectNameMetaclass):
     def __new__(mcs, name, bases, attrs):
         # This fields implementation is similar to Django's form fields
-        # implementation. Currently we do not support inheritance of fields.
-        current_fields = []
+        # implementation. We also allow explicit introspection_fields
+        # declaration in order to get around python's munging of double
+        # underscores.
+        declared_fields = OrderedDict()
+
+        if 'introspection_fields' in attrs:
+            declared_fields.update(copy.deepcopy(attrs['introspection_fields']))
+
+        parents = [b for b in bases if isinstance(b, ObjectMetaclass)]
+        for parent in reversed(parents):
+            declared_fields.update(copy.deepcopy(parent._declared_fields))
+
         for key, value in list(attrs.items()):
             if isinstance(value, Field):
-                current_fields.append((key, value))
-                attrs.pop(key)
-        current_fields.sort(key=lambda x: x[1].creation_counter)
-        attrs['_declared_fields'] = OrderedDict(current_fields)
+                declared_fields[key] = value
+                del attrs[key]
+        attrs['_declared_fields'] = declared_fields
 
         cls = super(ObjectMetaclass, mcs).__new__(mcs, name, bases, attrs)
 
-        for name, field in current_fields:
+        for name, field in declared_fields.items():
             field._self_object_type = cls
 
         return cls
@@ -333,7 +342,7 @@ class Object(six.with_metaclass(ObjectMetaclass)):
                 field.bind(selection=selection, obj=self)
         return self._fields
 
-    def serialize(self):
+    def execute(self):
         data = {}
         for name, field in self.fields.items():
             try:
@@ -346,7 +355,7 @@ class Object(six.with_metaclass(ObjectMetaclass)):
                 )
             data[name] = value
 
-        return data
+        return data, self.errors
 
 
 class CharField(Field):
@@ -473,7 +482,7 @@ class RelatedField(Field):
             )
         return self._object_type
 
-    def _serialize_value(self, value):
+    def _execute_related(self, value):
         obj_instance = self.object_type(
             ast=self.selection,
             data=value,
@@ -481,15 +490,15 @@ class RelatedField(Field):
             variable_definitions=self.obj.variable_definitions,
             variables=self.obj.variables
         )
-        data = obj_instance.serialize()
-        self.errors.extend(obj_instance.errors)
+        data, errors = obj_instance.execute()
+        self.errors.extend(errors)
         return data
 
     def get_value(self):
         value = super(RelatedField, self).get_value()
         if value is None:
             return None
-        return self._serialize_value(value)
+        return self._execute_related(value)
 
 
 class ManyRelatedField(RelatedField):
@@ -535,6 +544,6 @@ class ManyRelatedField(RelatedField):
         if isinstance(values, Manager):
             values = values.all()
         return [
-            self._serialize_value(value)
+            self._execute_related(value)
             for value in values
         ]

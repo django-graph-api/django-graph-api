@@ -1,6 +1,6 @@
 from django.db.models import Q
 
-from django_graph_api.graphql.schema import Schema
+from django_graph_api.graphql.schema import BaseQueryRoot
 from django_graph_api.graphql.types import (
     Object,
     CharField,
@@ -16,9 +16,6 @@ from .models import (
     Character as CharacterModel,
     Episode as EpisodeModel,
 )
-
-
-schema = Schema()
 
 
 class Episode(Object):
@@ -56,8 +53,7 @@ class Character(Object):
         return self.data.friends.order_by('pk').first()
 
 
-@schema.register_query_root
-class QueryRoot(Object):
+class QueryRoot(BaseQueryRoot):
     hero = RelatedField(Character, null=False)
     episodes = ManyRelatedField(Episode, arguments={'number': List(Int(null=False))})
     episode = RelatedField(Episode,
