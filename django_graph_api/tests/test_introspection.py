@@ -110,7 +110,9 @@ def test_type__non_null__get_enumValues():
 
 def test_type__non_null__get_ofType():
     type_object = Type(None, NonNull(Boolean), None)
-    assert type_object.get_ofType() is Boolean
+    assert type_object.get_ofType() == Boolean
+    type_object = Type(None, NonNull(List(Boolean)), None)
+    assert type_object.get_ofType() == List(Boolean)
 
 
 def test_type__object__get_name():
@@ -229,7 +231,9 @@ def test_type__list__get_enumValues():
 
 def test_type__list__get_ofType():
     type_object = Type(None, List(Character), None)
-    assert type_object.get_ofType() is Character
+    assert type_object.get_ofType() == Character
+    type_object = Type(None, List(Int(null=False)), None)
+    assert type_object.get_ofType() == NonNull(Int())
 
 
 def test_field__get_type():
