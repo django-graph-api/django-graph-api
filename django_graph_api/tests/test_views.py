@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.test import Client, modify_settings
 
+from django_graph_api.graphql.request import Request
+
 
 def test_get_request_graphiql():
     client = Client()
@@ -17,10 +19,9 @@ def test_get_request_graphiql():
     assert 'csrftoken' in response.cookies
 
 
-@mock.patch('test_project.urls.schema.execute')
-def test_post_request_executed(execute):
-    execute.return_value = {}
-    query = 'this is totally a query'
+@mock.patch('django_graph_api.views.Request', wraps=Request)
+def test_post_request_executed(RequestMock, starwars_data):
+    query = '{hero{name}}'
     client = Client()
     response = client.post(
         '/graphql',
@@ -32,30 +33,49 @@ def test_post_request_executed(execute):
     )
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
-    assert response.content == b'{}'
-    execute.assert_called_once_with(query, None)
+    assert json.loads(response.content.decode('utf-8')) == {
+        'data': {'hero': {'name': 'R2-D2'}},
+        'errors': [],
+    }
+    RequestMock.assert_called_once_with(
+        document=query,
+        variables=None,
+        operation_name=None,
+    )
 
 
-@mock.patch('test_project.urls.schema.execute')
-def test_variables_sent_in_post(execute):
-    execute.return_value = {}
-    query = 'this is totally a query'
+@mock.patch('django_graph_api.views.Request', wraps=Request)
+def test_variables_sent_in_post(RequestMock, starwars_data):
+    query = '''
+        query EpisodeName($number: Int) {
+            episode (number: $number) {
+                name
+            }
+        }
+    '''
     client = Client()
     response = client.post(
         '/graphql',
         json.dumps({
             'query': query,
             'variables': {
-                'level': 9001
-            }
+                'number': 4
+            },
         }),
         content_type='application/json',
         HTTP_ACCEPT='application/json',
     )
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
-    assert response.content == b'{}'
-    execute.assert_called_once_with(query, {'level': 9001})
+    assert json.loads(response.content.decode('utf-8')) == {
+        'data': {'episode': {'name': 'A New Hope'}},
+        'errors': [],
+    }
+    RequestMock.assert_called_once_with(
+        document=query,
+        variables={'number': 4},
+        operation_name=None,
+    )
 
 
 def test_post_request_not_json():
@@ -87,10 +107,9 @@ def test_post_request_without_query():
 
 
 @modify_settings(MIDDLEWARE={'remove': 'django.middleware.csrf.CsrfViewMiddleware'})
-@mock.patch('test_project.urls.schema.execute')
-def test_post__csrf_required(execute):
-    execute.return_value = {}
-    query = 'this is totally a query'
+@mock.patch('django_graph_api.views.Request')
+def test_post__csrf_required(RequestMock, starwars_data):
+    query = '{hero{name}}'
     client = Client(enforce_csrf_checks=True)
     response = client.post(
         '/graphql',
@@ -101,4 +120,4 @@ def test_post__csrf_required(execute):
         HTTP_ACCEPT='application/json',
     )
     assert response.status_code == 403
-    execute.assert_not_called()
+    RequestMock.execute.assert_not_called()

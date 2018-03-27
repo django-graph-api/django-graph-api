@@ -1,4 +1,7 @@
-from test_app.schema import schema
+from django_graph_api.graphql.request import Request
+from django_graph_api.graphql.schema import Schema
+
+from test_app.schema import QueryRoot
 
 
 def test_query_default_episode_and_characters(starwars_data):
@@ -13,22 +16,24 @@ def test_query_default_episode_and_characters(starwars_data):
             }
         }
         '''
-    assert schema.execute(document) == {
-        'data': {
-            'episode': {
-                'name': 'The Empire Strikes Back',
-                'number': 5,
-                'characters': [
-                    {'name': 'Luke Skywalker'},
-                    {'name': 'Darth Vader'},
-                    {'name': 'Han Solo'},
-                    {'name': 'Leia Organa'},
-                    {'name': 'C-3PO'},
-                    {'name': 'R2-D2'},
-                ]
-            },
-        }
+    request = Request(document=document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
+    assert data == {
+        'episode': {
+            'name': 'The Empire Strikes Back',
+            'number': 5,
+            'characters': [
+                {'name': 'Luke Skywalker'},
+                {'name': 'Darth Vader'},
+                {'name': 'Han Solo'},
+                {'name': 'Leia Organa'},
+                {'name': 'C-3PO'},
+                {'name': 'R2-D2'},
+            ],
+        },
     }
+    assert errors == []
 
 
 def test_query_missing_variable_no_default(starwars_data):
@@ -39,15 +44,17 @@ def test_query_missing_variable_no_default(starwars_data):
             }
         }
         '''
-    assert schema.execute(document) == {
-        'data': {
-            'episodes': [{
-                'number': 4
-            }, {
-                'number': 5
-            }]
-        }
+    request = Request(document=document)
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
+    assert data == {
+        'episodes': [{
+            'number': 4,
+        }, {
+            'number': 5,
+        }]
     }
+    assert errors == []
 
 
 def test_query_episodes_and_droids(starwars_data):
@@ -62,25 +69,27 @@ def test_query_episodes_and_droids(starwars_data):
             }
         }
         '''
-    assert schema.execute(document, {"type": "droid"}) == {
-        'data': {
-            'episodes': [
-                {
-                    'name': 'A New Hope',
-                    'number': 4,
-                    'characters': [
-                        {'name': 'C-3PO'},
-                        {'name': 'R2-D2'},
-                    ]
-                },
-                {
-                    'name': 'The Empire Strikes Back',
-                    'number': 5,
-                    'characters': [
-                        {'name': 'C-3PO'},
-                        {'name': 'R2-D2'},
-                    ]
-                },
-            ]
-        }
+    request = Request(document=document, variables={'type': 'droid'})
+    schema = Schema(query_root_class=QueryRoot)
+    data, errors = schema.execute(request)
+    assert data == {
+        'episodes': [
+            {
+                'name': 'A New Hope',
+                'number': 4,
+                'characters': [
+                    {'name': 'C-3PO'},
+                    {'name': 'R2-D2'},
+                ]
+            },
+            {
+                'name': 'The Empire Strikes Back',
+                'number': 5,
+                'characters': [
+                    {'name': 'C-3PO'},
+                    {'name': 'R2-D2'},
+                ]
+            },
+        ]
     }
+    assert errors == []
