@@ -135,6 +135,9 @@ class Field(object):
 class Scalar(six.with_metaclass(ObjectNameMetaclass)):
     kind = SCALAR
 
+    def __init__(self, null=True):
+        self.null = null
+
     def __eq__(self, other):
         if self.__class__ == other.__class__:
             return True
@@ -223,16 +226,21 @@ class Enum(Scalar):
 
 class NonNull(object):
     kind = NON_NULL
+    null = True
 
     def __init__(self, type_):
         self.type_ = type_
+
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and self.type_ == other.type_
 
 
 class List(object):
     kind = LIST
 
-    def __init__(self, type_):
+    def __init__(self, type_, null=True):
         self.type_ = type_
+        self.null = null
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.type_ == other.type_

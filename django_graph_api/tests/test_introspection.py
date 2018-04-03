@@ -19,6 +19,7 @@ from django_graph_api.graphql.types import (
     RelatedField,
     String,
     NonNull,
+    IntegerField,
 )
 from django_graph_api.graphql.request import Request
 from django_graph_api.graphql.schema import Schema
@@ -109,7 +110,9 @@ def test_type__non_null__get_enumValues():
 
 def test_type__non_null__get_ofType():
     type_object = Type(None, NonNull(Boolean), None)
-    assert type_object.get_ofType() is Boolean
+    assert type_object.get_ofType() == Boolean
+    type_object = Type(None, NonNull(List(Boolean)), None)
+    assert type_object.get_ofType() == List(Boolean)
 
 
 def test_type__object__get_name():
@@ -228,7 +231,9 @@ def test_type__list__get_enumValues():
 
 def test_type__list__get_ofType():
     type_object = Type(None, List(Character), None)
-    assert type_object.get_ofType() is Character
+    assert type_object.get_ofType() == Character
+    type_object = Type(None, List(Int(null=False)), None)
+    assert type_object.get_ofType() == NonNull(Int())
 
 
 def test_field__get_type():
@@ -269,6 +274,18 @@ def test_field__get_type():
         None,
     )
     assert field_object.get_type() == List(Character)
+    field_object = Field(
+        None,
+        ('characters', ManyRelatedField(Character, null=False)),
+        None,
+    )
+    assert field_object.get_type() == NonNull(List(Character))
+    field_object = Field(
+        None,
+        ('id', IntegerField(null=False)),
+        None,
+    )
+    assert field_object.get_type() == NonNull(Int)
 
 
 def test_field__get_type_exceptions():
@@ -297,7 +314,7 @@ def test_field__get_args():
     assert field_object.get_args() == (('types', List(String)),)
     field_object = Field(
         None,
-        ('characters', ManyRelatedField(Episode, arguments={'types': Int()})),
+        ('characters', ManyRelatedField(Character, arguments={'types': Int()})),
         None,
     )
     assert field_object.get_args() == (('types', Int()),)
@@ -325,6 +342,12 @@ def test_inputvalue__get_type():
         None,
     )
     assert inputvalue_object.get_type() == List(String)
+    inputvalue_object = InputValue(
+        None,
+        ('name', String(null=False)),
+        None,
+    )
+    assert inputvalue_object.get_type() == NonNull(String())
 
 
 def test_execute__filter_type():
