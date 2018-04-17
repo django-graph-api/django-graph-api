@@ -208,15 +208,22 @@ class Id(String):
 class Boolean(Scalar):
     @classmethod
     def coerce_result(cls, value):
+        if isinstance(value, six.text_type):
+            if value in ('False', 'false', 'f', 'F', '0'):
+                return False
         return None if value is None else bool(value)
 
     @classmethod
     def coerce_input(cls, value):
         if value is None:
             return None
-        if not isinstance(value, bool):
-            raise ValueError('Expected a bool type, got {}'.format(type(value)))
-        return value
+        if value == 'true' or value is True:
+            return True
+        elif value == 'false' or value is False:
+            return False
+        raise ValueError(
+            "Could not coerce {} of type {} to boolean. Must be 'true' or 'false'".format(value, type(value).__name__)
+        )
 
 
 class Enum(Scalar):
@@ -500,6 +507,19 @@ class RelatedField(Field):
             return None
         return self._execute_related(value)
 
+    def get_object(self):
+        value = super(RelatedField, self).get_value()
+        if value is None:
+            return None
+        obj_instance = self.object_type(
+            ast=self.selection,
+            data=value,
+            fragments=self.obj.fragments,
+            variable_definitions=self.obj.variable_definitions,
+            variables=self.obj.variables
+        )
+        return obj_instance
+
 
 class ManyRelatedField(RelatedField):
     """
@@ -545,5 +565,22 @@ class ManyRelatedField(RelatedField):
             values = values.all()
         return [
             self._execute_related(value)
+            for value in values
+        ]
+
+    def get_objects(self):
+        values = super(RelatedField, self).get_value()
+        if values is None:
+            return None
+        if isinstance(values, Manager):
+            values = values.all()
+        return [
+            self.object_type(
+                ast=self.selection,
+                data=value,
+                fragments=self.obj.fragments,
+                variable_definitions=self.obj.variable_definitions,
+                variables=self.obj.variables
+            )
             for value in values
         ]

@@ -1,3 +1,4 @@
+# coding: utf-8
 from collections import OrderedDict
 
 from django_graph_api.graphql import introspection
@@ -6,6 +7,7 @@ from django_graph_api.graphql.types import (
     RelatedField,
     String,
 )
+from django_graph_api.graphql.utils import GraphQLError
 
 
 class BaseQueryRoot(Object):
@@ -47,4 +49,27 @@ class Schema(object):
             },
             variables=request.variables,
         )
+
+        errors = self.validate(request)
+        if errors:
+            return None, errors
+
         return query_root.execute()
+
+    def validate(self, request):
+        query_root = self.query_root_class(
+            ast=request.operation,
+            data=None,
+            fragments=request.fragments,
+            variable_definitions={
+                definition.name: definition
+                for definition in request.operation.variable_definitions
+            },
+            variables=request.variables,
+        )
+
+        try:
+            from django_graph_api.graphql.validation import validate_args
+            validate_args(query_root)
+        except (GraphQLError, ValueError) as e:
+            return [e]

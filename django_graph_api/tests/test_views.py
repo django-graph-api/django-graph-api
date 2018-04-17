@@ -35,7 +35,6 @@ def test_post_request_executed(RequestMock, starwars_data):
     assert response.status_code == 200
     assert json.loads(response.content.decode('utf-8')) == {
         'data': {'hero': {'name': 'R2-D2'}},
-        'errors': [],
     }
     RequestMock.assert_called_once_with(
         document=query,
@@ -69,7 +68,6 @@ def test_variables_sent_in_post(RequestMock, starwars_data):
     assert response.status_code == 200
     assert json.loads(response.content.decode('utf-8')) == {
         'data': {'episode': {'name': 'A New Hope'}},
-        'errors': [],
     }
     RequestMock.assert_called_once_with(
         document=query,

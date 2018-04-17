@@ -65,9 +65,11 @@ class Request(object):
             return
         self._validated = True
 
+        self.perform_operation_validation()
+
+    def perform_operation_validation(self):
         operations = {}
         fragments = {}
-
         for definition in self.ast.definitions:
             if isinstance(definition, OperationDefinition):
                 if definition.name in operations:
@@ -82,7 +84,7 @@ class Request(object):
 
         if self.operation_name:
             if self.operation_name not in operations:
-                self.errors.append('No operation found called `{}`'.format(self.operration_name))
+                self.errors.append('No operation found called `{}`'.format(self.operation_name))
         else:
             if len(operations) > 1:
                 self.errors.append('Multiple operations provided but no operation name')
