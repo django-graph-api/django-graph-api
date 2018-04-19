@@ -13,21 +13,29 @@ from django_graph_api.graphql.types import (
 class CombinedQueryRoot(Object):
     def __init__(self, query_root_classes=None, *args, **kwargs):
         super(CombinedQueryRoot, self).__init__(*args, **kwargs)
-        self.query_roots = []
-        for cls in query_root_classes:
-            query_root = cls(*args, **kwargs)
-            self.query_roots.append(query_root)
+        self.query_roots = [
+            cls(*args, **kwargs)
+            for cls in (query_root_classes or [])
+        ]
 
-    def execute(self, request):
-        data = {}
-        errors = []
+    def __getattr__(self, attr):
+        # Delegate resolvers to the class that defined the field if they aren't
+        # overridden on this class.
+        if attr[:4] == 'get_':
+            field_name = attr[4:]
+            for query_root in self.query_roots:
+                if field_name in query_root._declared_fields:
+                    return getattr(query_root, attr)
+        raise AttributeError('{} not found on {} or its query_root_classes'.format(
+            attr,
+            self.__class__.__name__,
+        ))
 
+    def get_declared_fields(self):
+        _declared_fields = {}
         for query_root in self.query_roots:
-            partial_data, partial_errors = query_root.execute()
-            data.update(partial_data)
-            errors += partial_errors
-
-        return data, errors
+            _declared_fields.update(query_root.get_declared_fields())
+        return _declared_fields
 
 
 class IntrospectionQueryRoot(Object):

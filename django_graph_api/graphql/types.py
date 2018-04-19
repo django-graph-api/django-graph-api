@@ -313,6 +313,9 @@ class Object(six.with_metaclass(ObjectMetaclass)):
         self.variables = variables or {}
         self.errors = []
 
+    def get_declared_fields(self):
+        return self._declared_fields
+
     @property
     def fields(self):
         if not hasattr(self, '_fields'):
@@ -324,13 +327,15 @@ class Object(six.with_metaclass(ObjectMetaclass)):
                 object_type=self.__class__,
             )
 
+            declared_fields = self.get_declared_fields()
+
             # Copy the field instances so that obj instances have
             # isolated field instances that they can modify safely.
             # Only copy field instances that are selected.
             # If the field doesn't exist, create a dummy field that returns None
             for selection in selections:
                 try:
-                    field = copy.deepcopy(self._declared_fields[selection.name])
+                    field = copy.deepcopy(declared_fields[selection.name])
                 except KeyError:
                     self.errors.append(
                         GraphQLError('{} does not have field {}'.format(self.object_name, selection.name))
