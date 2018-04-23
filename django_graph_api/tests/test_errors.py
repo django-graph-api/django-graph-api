@@ -14,7 +14,7 @@ def test_non_existent_episode(starwars_data):
         }
         '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         "episode": None
@@ -34,7 +34,7 @@ def test_non_existent_field(starwars_data):
         }
         '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         "episode": {

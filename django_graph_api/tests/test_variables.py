@@ -17,7 +17,7 @@ def test_query_default_episode_and_characters(starwars_data):
         }
         '''
     request = Request(document=document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         'episode': {
@@ -45,7 +45,7 @@ def test_query_missing_variable_no_default(starwars_data):
         }
         '''
     request = Request(document=document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         'episodes': [{
@@ -70,7 +70,7 @@ def test_query_episodes_and_droids(starwars_data):
         }
         '''
     request = Request(document=document, variables={'type': 'droid'})
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         'episodes': [

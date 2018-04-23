@@ -370,7 +370,7 @@ def test_execute__filter_type():
     }
     '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         '__type': {
@@ -447,7 +447,7 @@ def test_execute__introspect_directives():
     }
     '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         '__schema': {
