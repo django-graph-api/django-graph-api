@@ -25,16 +25,22 @@ class ThoughtQueryRoot(Object):
 
 def test_instrospection_always_enabled():
     schema = Schema()
-    assert schema.query_root_classes == [IntrospectionQueryRoot]
+    assert '__schema' in schema.query_root_class._declared_fields
+    assert '__type' in schema.query_root_class._declared_fields
 
 
 def test_accepts_multiple_query_roots():
     schema = Schema([NameQueryRootOne, ThoughtQueryRoot])
-    assert schema.query_root_classes == [
+    assert schema.query_root_class.query_root_classes == [
         IntrospectionQueryRoot,
         NameQueryRootOne,
         ThoughtQueryRoot,
     ]
+    assert set(schema.query_root_class._declared_fields) == (
+        set(IntrospectionQueryRoot._declared_fields) |
+        set(NameQueryRootOne._declared_fields) |
+        set(ThoughtQueryRoot._declared_fields)
+    )
 
 
 def test_schema_detects_duplicate_fields():
