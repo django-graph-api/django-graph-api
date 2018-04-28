@@ -98,7 +98,12 @@ class Schema(object):
     def __init__(self, query_root_classes=None):
         all_query_root_classes = [
             IntrospectionQueryRoot,
-        ] + (query_root_classes or [])
+        ]
+        if query_root_classes:
+            try:
+                all_query_root_classes.extend(query_root_classes)
+            except TypeError:
+                all_query_root_classes.append(query_root_classes)
 
         class QueryRoot(CombinedQueryRoot):
             query_root_classes = all_query_root_classes

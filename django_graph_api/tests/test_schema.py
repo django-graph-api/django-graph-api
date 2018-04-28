@@ -29,8 +29,37 @@ def test_instrospection_always_enabled():
     assert '__type' in schema.query_root_class._declared_fields
 
 
+def test_accepts_single_query_root():
+    schema = Schema(NameQueryRootOne)
+    assert schema.query_root_class.query_root_classes == [
+        IntrospectionQueryRoot,
+        NameQueryRootOne,
+    ]
+    assert set(schema.query_root_class._declared_fields) == (
+        set(IntrospectionQueryRoot._declared_fields) |
+        set(NameQueryRootOne._declared_fields)
+    )
+
+
 def test_accepts_multiple_query_roots():
     schema = Schema([NameQueryRootOne, ThoughtQueryRoot])
+    assert schema.query_root_class.query_root_classes == [
+        IntrospectionQueryRoot,
+        NameQueryRootOne,
+        ThoughtQueryRoot,
+    ]
+    assert set(schema.query_root_class._declared_fields) == (
+        set(IntrospectionQueryRoot._declared_fields) |
+        set(NameQueryRootOne._declared_fields) |
+        set(ThoughtQueryRoot._declared_fields)
+    )
+
+
+def test_accepts_iterable():
+    schema = Schema(
+        query_root
+        for query_root in [NameQueryRootOne, ThoughtQueryRoot]
+    )
     assert schema.query_root_class.query_root_classes == [
         IntrospectionQueryRoot,
         NameQueryRootOne,
