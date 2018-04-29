@@ -173,18 +173,31 @@ Defining query roots
 --------------------
 
 By defining query roots, you can control how the user can access the schema.
+You can pass a single query root or an iterable of query roots to a schema on instantiation.
+Passing multiple query roots is the recommended method for setting up decoupled apps within a project.
 ::
 
     from django_graph_api import RelatedField
     from .models import Character as CharacterModel
     from .models import Episode as EpisodeModel
 
-    @schema.register_query_root
     class QueryRoot(Object):
         hero = RelatedField(Character)
 
         def get_hero(self):
             return CharacterModel.objects.get(name='R2-D2')
+
+    schema = Schema(QueryRoot)
+
+    # Or:
+
+    schema = Schema([EmailQueryRoot, BlogQueryRoot])
+
+
+.. note::
+    Field names on query roots must be unique within a schema instance.
+    A query root that declares a particular field will also be responsible for resolving it.
+
 
 Sample queries
 --------------

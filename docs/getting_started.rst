@@ -33,14 +33,13 @@ In a new file named ``schema.py``:
     from django_graph_api import Schema
     from django_graph_api import CharField
 
-    schema = Schema()
-
-    @schema.register_query_root
     class QueryRoot(Object):
         hello = CharField()
 
         def get_hello(self):
             return 'world'
+
+    schema = Schema(QueryRoot)
 
 Set up a url to access the schema
 ---------------------------------
