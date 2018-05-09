@@ -64,9 +64,13 @@ class CombinedQueryRoot(six.with_metaclass(CombinedQueryRootMetaclass, Object)):
             for query_root in self.query_roots:
                 if field_name in query_root._declared_fields:
                     return getattr(query_root, attr)
-        raise AttributeError('{} not found on {} or its query_root_classes'.format(
-            attr,
+            raise AttributeError('{} resolver not found on {} or its query_root_classes'.format(
+                attr,
+                self.__class__.__name__,
+            ))
+        raise AttributeError("{} instance has no attribute '{}'".format(
             self.__class__.__name__,
+            attr,
         ))
 
 

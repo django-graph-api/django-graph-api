@@ -2,6 +2,7 @@ from django.core.exceptions import ImproperlyConfigured
 import pytest
 
 from django_graph_api.graphql.schema import (
+    CombinedQueryRoot,
     IntrospectionQueryRoot,
     Schema,
 )
@@ -13,6 +14,9 @@ from django_graph_api.graphql.types import (
 
 class NameQueryRootOne(Object):
     name = CharField()
+
+    def get_name(self):
+        pass
 
 
 class NameQueryRootTwo(Object):
@@ -75,3 +79,43 @@ def test_accepts_iterable():
 def test_schema_detects_duplicate_fields():
     with pytest.raises(ImproperlyConfigured):
         Schema([NameQueryRootOne, NameQueryRootTwo])
+
+
+def test_combined_query_root_delegates_resolver():
+    class QueryRoot(CombinedQueryRoot):
+        query_root_classes = [NameQueryRootOne]
+
+    query_root = QueryRoot(None, None, None)
+    name_query_root = query_root.query_roots[0]
+
+    assert query_root.get_name == name_query_root.get_name
+
+
+def test_combined_query_root_delegates_resolver__nonexistant_field():
+    class QueryRoot(CombinedQueryRoot):
+        query_root_classes = [NameQueryRootOne]
+
+    query_root = QueryRoot(None, None, None)
+
+    with pytest.raises(AttributeError):
+        query_root.get_thought
+
+
+def test_combined_query_root_delegates_resolver__nonexistant_resolver():
+    class QueryRoot(CombinedQueryRoot):
+        query_root_classes = [NameQueryRootTwo]
+
+    query_root = QueryRoot(None, None, None)
+
+    with pytest.raises(AttributeError):
+        query_root.get_name
+
+
+def test_combined_query_root_accessing_missing_attribute():
+    class QueryRoot(CombinedQueryRoot):
+        query_root_classes = [NameQueryRootTwo]
+
+    query_root = QueryRoot(None, None, None)
+
+    with pytest.raises(AttributeError):
+        query_root.missing_attribute
