@@ -97,7 +97,7 @@ def test_episode_name_field_description(starwars_data):
       }
     }"""
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert errors == []
     types = data['__schema']['types']
@@ -122,7 +122,7 @@ def test_episode_and_characters(starwars_data):
         }
         '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         'episode': {
@@ -154,7 +154,7 @@ def test_episodes_and_droids(starwars_data):
         }
         '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         'episodes': [

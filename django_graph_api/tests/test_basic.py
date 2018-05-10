@@ -13,7 +13,7 @@ def test_hero_name(starwars_data):
     }
     '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         'hero': {
@@ -38,7 +38,7 @@ def test_hero_name_and_friends_names(starwars_data):
     }
     '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         'hero': {
@@ -78,7 +78,7 @@ def test_hero_name_and_episodes(starwars_data):
     }
     '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         'hero': {
