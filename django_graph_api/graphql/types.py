@@ -208,7 +208,7 @@ class Id(String):
 class Boolean(Scalar):
     @classmethod
     def coerce_result(cls, value):
-        if isinstance(value, six.text_type):
+        if isinstance(value, six.string_types):
             if value in ('False', 'false', 'f', 'F', '0'):
                 return False
         return None if value is None else bool(value)
