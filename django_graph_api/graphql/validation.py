@@ -25,6 +25,8 @@ def get_arg_value(arg_name, field):
             variable_name = value.name
             default_value = field.obj.variable_definitions[variable_name].default_value
             value = field.obj.variables.get(variable_name, default_value)
+        if value == 'null':
+            value = None
         if isinstance(value, list):
             return [resolve_variables(item) for item in value]
         return value
@@ -47,6 +49,7 @@ def validate_arg(arg_name, arg, field_name, field):
 
 
 def is_arg_valid(arg, arg_value):
+    print(arg_value)
     if not arg.null and arg_value is None:
         return False
     elif arg_value is None:

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9cbc12b2dd6b7ac722e4adf4dcc455da09a6d725fb71194c5506875d0cb0bcd0"
+            "sha256": "433251320dbdea9e94ad517dd64815773e637c985d9f0ae66ab4f7951b80203b"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -35,8 +35,10 @@
             "version": "==1.11.4"
         },
         "graphql-py": {
-            "git": "https://github.com/ariannedee/graphql-py.git",
-            "ref": "master"
+            "hashes": [
+                "sha256:c4d7cbfdda0d6389b639dc981fa87716c41a7b1196a47ba275471e70e9997f80"
+            ],
+            "version": "==0.6.1"
         },
         "ply": {
             "hashes": [
@@ -175,9 +177,7 @@
         },
         "pycodestyle": {
             "hashes": [
-                "sha256:5ff2fbcbab997895ba9ead77e1b38b3ebc2e5c3b8a6194ef918666e4c790a00e",
                 "sha256:6c4245ade1edfad79c3446fadfc96b0de2759662dc29d07d80a6f27ad1ca6ba9",
-                "sha256:1ec08a51c901dfe44921576ed6e4c1f5b7ecbad403f871397feedb5eb8e4fa14",
                 "sha256:682256a5b318149ca0d2a9185d365d8864a768a28db66a84a2ea946bcc426766"
             ],
             "version": "==2.3.1"
@@ -258,17 +258,17 @@
         },
         "sphinx": {
             "hashes": [
-                "sha256:3aded1a355f662547b8a948131f3faecbc3dea8951847fe0ee4c59689f8220b2",
-                "sha256:9495a1f78c13d0a725ab8104e923e9663519ecc04552aa4a8f684c2da355443d"
+                "sha256:2e7ad92e96eff1b2006cf9f0cdb2743dacbae63755458594e9e8238b0c3dc60b",
+                "sha256:e9b1a75a3eae05dded19c80eb17325be675e0698975baae976df603b6ed1eb10"
             ],
-            "version": "==1.7.3"
+            "version": "==1.7.4"
         },
         "sphinx-rtd-theme": {
             "hashes": [
-                "sha256:220dbf14814001c6475f0c6c25ac4129a18fb5e3681251a7c6ffb1646da5cc30",
-                "sha256:665135dfbdf8f1d218442458a18cf266444354b8c98eed93d1543f7e701cfdba"
+                "sha256:32424dac2779f0840b4788fbccb032ba2496c1ca47a439ad2510c8b1e55dfd33",
+                "sha256:6d0481532b5f441b075127a2d755f430f1f8410a50112b1af6b069518548381d"
             ],
-            "version": "==0.3.0"
+            "version": "==0.3.1"
         },
         "sphinxcontrib-websupport": {
             "hashes": [

@@ -10,8 +10,7 @@ name = "pypi"
 django = "==1.11.4"
 ply = "==3.10"
 pytz = "==2017.2"
-"graphql-py" = {git = "https://github.com/ariannedee/graphql-py.git", ref = "master"}
-
+"graphql-py" = "==0.6.1"
 
 [dev-packages]
 
