@@ -1,19 +1,16 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 django = "==1.11.4"
 ply = "==3.10"
 pytz = "==2017.2"
 "graphql-py" = "==0.6.1"
+six = "*"
 
 [dev-packages]
-
 "backports.unittest-mock" = "==1.2"
 configparser = "==3.5.0"
 "enum34" = "==1.1.6"

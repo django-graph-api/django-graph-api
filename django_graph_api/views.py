@@ -10,7 +10,6 @@ from django.views.decorators.csrf import (
 from django.views.generic import View
 
 from django_graph_api.graphql.request import Request
-from django_graph_api.graphql.schema import Schema
 
 
 class GraphQLView(View):
@@ -25,7 +24,7 @@ class GraphQLView(View):
     graphiql_version = '0.11.11'
     graphql_url = '/graphql'
     template_name = 'django_graph_api/graphiql.html'
-    query_root_class = None
+    schema = None
 
     @method_decorator(ensure_csrf_cookie)
     @method_decorator(csrf_protect)
@@ -64,8 +63,7 @@ class GraphQLView(View):
         data = None
         errors = graphql_request.errors
         if not graphql_request.errors:
-            schema = Schema(query_root_class=self.query_root_class)
-            data, errors = schema.execute(graphql_request)
+            data, errors = self.schema.execute(graphql_request)
 
         response = {}
         if data:

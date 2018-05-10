@@ -284,11 +284,11 @@ class Schema(Object):
         )
 
     def get_types(self):
-        types = self._collect_types(self.data)
+        types = self._collect_types(self.data.query_root_class)
         return sorted(types, key=self._type_key)
 
     def get_queryType(self):
-        return self.data
+        return self.data.query_root_class
 
     def get_mutationType(self):
         return None

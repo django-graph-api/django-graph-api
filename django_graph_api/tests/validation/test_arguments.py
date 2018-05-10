@@ -1,12 +1,10 @@
 from django_graph_api.graphql.request import Request
-from django_graph_api.graphql.schema import (
-    Schema,
-    BaseQueryRoot,
-)
+from django_graph_api.graphql.schema import Schema
 from django_graph_api.graphql.types import (
     CharField,
-    List,
     Int,
+    List,
+    Object,
 )
 from django_graph_api.graphql.utils import GraphQLError
 from test_app.schema import QueryRoot
@@ -81,7 +79,7 @@ def test_related_object_args():
     ]
 
 
-class QueryRootWithNestedArgs(BaseQueryRoot):
+class QueryRootWithNestedArgs(Object):
     nested = CharField(arguments={'arg': List(List(Int(null=False), null=False), null=False)})
 
     def get_nested(self, arg):

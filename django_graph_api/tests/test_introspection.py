@@ -32,13 +32,14 @@ from test_app.schema import (
 
 
 def test_schema__get_types():
-    schema_object = SchemaIntrospector(None, QueryRoot, None)
+    schema = Schema([QueryRoot])
+    schema_object = SchemaIntrospector(None, schema, None)
 
     types = schema_object.get_types()
     assert types == [
         Character,
         Episode,
-        QueryRoot,
+        schema.query_root_class,
         Directive,
         DirectiveLocationEnum,
         EnumValue,
@@ -370,7 +371,7 @@ def test_execute__filter_type():
     }
     '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         '__type': {
@@ -444,7 +445,7 @@ def test_execute__introspect_directives():
     }
     '''
     request = Request(document)
-    schema = Schema(query_root_class=QueryRoot)
+    schema = Schema(query_root_classes=[QueryRoot])
     data, errors = schema.execute(request)
     assert data == {
         '__schema': {
