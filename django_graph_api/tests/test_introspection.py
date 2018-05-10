@@ -439,9 +439,6 @@ def test_execute__introspect_directives():
                 name
                 description
                 locations
-                args {
-                    ...InputValue
-                }
             }
         }
     }

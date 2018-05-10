@@ -490,13 +490,7 @@ class RelatedField(Field):
         return self._object_type
 
     def _execute_related(self, value):
-        obj_instance = self.object_type(
-            ast=self.selection,
-            data=value,
-            fragments=self.obj.fragments,
-            variable_definitions=self.obj.variable_definitions,
-            variables=self.obj.variables
-        )
+        obj_instance = self.get_object_instance(value)
         data, errors = obj_instance.execute()
         self.errors.extend(errors)
         return data
@@ -507,18 +501,14 @@ class RelatedField(Field):
             return None
         return self._execute_related(value)
 
-    def get_object(self):
-        value = super(RelatedField, self).get_value()
-        if value is None:
-            return None
-        obj_instance = self.object_type(
+    def get_object_instance(self, value=None):
+        return self.object_type(
             ast=self.selection,
             data=value,
             fragments=self.obj.fragments,
             variable_definitions=self.obj.variable_definitions,
             variables=self.obj.variables
         )
-        return obj_instance
 
 
 class ManyRelatedField(RelatedField):
@@ -565,22 +555,5 @@ class ManyRelatedField(RelatedField):
             values = values.all()
         return [
             self._execute_related(value)
-            for value in values
-        ]
-
-    def get_objects(self):
-        values = super(RelatedField, self).get_value()
-        if values is None:
-            return None
-        if isinstance(values, Manager):
-            values = values.all()
-        return [
-            self.object_type(
-                ast=self.selection,
-                data=value,
-                fragments=self.obj.fragments,
-                variable_definitions=self.obj.variable_definitions,
-                variables=self.obj.variables
-            )
             for value in values
         ]
