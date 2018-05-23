@@ -142,7 +142,7 @@ class Schema(object):
             query_root = self.get_query_root(request)
 
         try:
-            from django_graph_api.graphql.validation import validate_args
-            validate_args(query_root)
+            from django_graph_api.graphql.validation import validate_object_arguments
+            validate_object_arguments(query_root)
         except (GraphQLError, ValueError) as e:
             return [e]
