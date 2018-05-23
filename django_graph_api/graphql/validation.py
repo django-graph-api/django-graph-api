@@ -25,7 +25,7 @@ def validate_non_null_args(field_name, field):
 
         arg_value = field.selection_arguments.get(arg_name)
         if not non_null_arg_provided(arg_type, arg_value):
-            raise GraphQLError("Required non-null argument '{}' on '{}' is null".format(arg_name, field_name))
+            raise GraphQLError("Non-null argument '{}' on '{}' is null".format(arg_name, field_name))
 
 
 def non_null_arg_provided(arg_type, value):
