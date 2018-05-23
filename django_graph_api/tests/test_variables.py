@@ -10,7 +10,7 @@ def test_query_default_episode_and_characters(starwars_data):
             episode(number: $episode) {
                 name
                 number
-                characters (type: ["human", "droid"]) {
+                characters (types: ["human", "droid"]) {
                     name
                 }
             }

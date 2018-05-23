@@ -116,8 +116,8 @@ class Schema(object):
 
         self.query_root_class = QueryRoot
 
-    def execute(self, request):
-        query_root = self.query_root_class(
+    def get_query_root(self, request):
+        return self.query_root_class(
             ast=request.operation,
             data=self,
             fragments=request.fragments,
@@ -128,23 +128,18 @@ class Schema(object):
             variables=request.variables,
         )
 
-        errors = self.validate(request)
+    def execute(self, request):
+        query_root = self.get_query_root(request)
+
+        errors = self.validate(request, query_root)
         if errors:
             return None, errors
 
         return query_root.execute()
 
-    def validate(self, request):
-        query_root = self.query_root_class(
-            ast=request.operation,
-            data=None,
-            fragments=request.fragments,
-            variable_definitions={
-                definition.name: definition
-                for definition in request.operation.variable_definitions
-            },
-            variables=request.variables,
-        )
+    def validate(self, request, query_root=None):
+        if not query_root:
+            query_root = self.get_query_root(request)
 
         try:
             from django_graph_api.graphql.validation import validate_args

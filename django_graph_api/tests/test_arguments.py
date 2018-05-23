@@ -115,7 +115,7 @@ def test_episode_and_characters(starwars_data):
             episode(number: 5) {
                 name
                 number
-                characters (type: ["human", "droid"]) {
+                characters (types: ["human", "droid"]) {
                     name
                 }
             }
