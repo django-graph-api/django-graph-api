@@ -92,7 +92,7 @@ def test_post_request_not_json():
     assert 'data must be json' in response_json['errors'][0]['message'].lower()
 
 
-def test_post_request_without_query():
+def test_post_empty_string():
     client = Client()
     response = client.post(
         '/graphql',
@@ -104,6 +104,20 @@ def test_post_request_without_query():
     assert response.status_code == 200
     response_json = json.loads(response.content.decode('utf-8'))
     assert '"query" key' in response_json['errors'][0]['message'].lower()
+
+
+def test_post_empty_query():
+    client = Client()
+    response = client.post(
+        '/graphql',
+        '{"query": ""}',
+        content_type='application/json',
+        HTTP_ACCEPT='application/json',
+    )
+    assert isinstance(response, JsonResponse)
+    assert response.status_code == 200
+    response_json = json.loads(response.content.decode('utf-8'))
+    assert response_json['errors'][0]['message'] == 'Must provide query string.'
 
 
 @modify_settings(MIDDLEWARE={'remove': 'django.middleware.csrf.CsrfViewMiddleware'})
