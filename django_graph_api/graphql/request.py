@@ -14,12 +14,18 @@ class Request(object):
 
         self.errors = []
         parser = GraphQLParser()
-        try:
-            self.ast = parser.parse(self.document)
-        except Exception as e:
-            self.ast = None
-            self.errors.append('Parse error: {}'.format(e))
-            # Additional errors are meaningless if we couldn't parse the document
+
+        if not self.document:
+            self.errors.append('Must provide query string.')
+        else:
+            try:
+                self.ast = parser.parse(self.document)
+            except Exception as e:
+                self.ast = None
+                self.errors.append('Parse error: {}'.format(e))
+
+        # Additional errors are meaningless if we couldn't parse the document
+        if self.errors:
             self._validated = True
 
     @property
