@@ -4,29 +4,40 @@ from graphql.ast import (
 )
 from graphql.parser import GraphQLParser
 
+from django_graph_api.graphql.utils import GraphQLError
+from .validation import Validation
+
 
 class Request(object):
-    def __init__(self, document, variables=None, operation_name=None):
+    def __init__(self, document, schema, variables=None, operation_name=None):
         self.document = document
         self.variables = variables or {}
         self.operation_name = operation_name
+        self.schema = schema
         self._validated = False
-
-        self.errors = []
+        self._errors = []
         parser = GraphQLParser()
 
         if not self.document:
-            self.errors.append('Must provide query string.')
+            self._errors.append(GraphQLError('Must provide query string.'))
         else:
             try:
                 self.ast = parser.parse(self.document)
             except Exception as e:
                 self.ast = None
-                self.errors.append('Parse error: {}'.format(e))
+                self._errors.append(GraphQLError('Parse error: {}'.format(e)))
 
         # Additional errors are meaningless if we couldn't parse the document
-        if self.errors:
+        if self._errors:
             self._validated = True
+
+    @property
+    def errors(self):
+        if self._validated:
+            return self._errors
+
+        self.validate()
+        return self._errors
 
     @property
     def operation(self):
@@ -66,33 +77,16 @@ class Request(object):
             self._operation = None
 
     def validate(self):
-        # Only validate once
         if self._validated:
             return
+
         self._validated = True
+        validation = Validation(self, self.schema)
+        validation.validate()
+        self._errors.extend(validation.errors)
 
-        self.perform_operation_validation()
-
-    def perform_operation_validation(self):
-        operations = {}
-        fragments = {}
-        for definition in self.ast.definitions:
-            if isinstance(definition, OperationDefinition):
-                if definition.name in operations:
-                    self.errors.append('Non-unique operation name: {}'.format(definition.name))
-                else:
-                    operations[definition.name] = definition
-            elif isinstance(definition, FragmentDefinition):
-                if definition.name in fragments:
-                    self.errors.append('Non-unique fragment name: {}'.format(definition.name))
-                else:
-                    fragments[definition.name] = definition
-
-        if self.operation_name:
-            if self.operation_name not in operations:
-                self.errors.append('No operation found called `{}`'.format(self.operation_name))
-        else:
-            if len(operations) > 1:
-                self.errors.append('Multiple operations provided but no operation name')
-            elif len(operations) == 0:
-                self.errors.append('At least one operation must be provided')
+    def execute(self):
+        query_root = self.schema.get_query_root(self)
+        data, errors = query_root.execute()
+        self._errors.extend(errors)
+        return data, errors

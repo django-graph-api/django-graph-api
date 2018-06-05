@@ -51,6 +51,7 @@ class GraphQLView(View):
                 document=request_data['query'],
                 variables=request_data.get('variables'),
                 operation_name=request_data.get('operationName'),
+                schema=self.schema
             )
         except (KeyError, JSONDecodeError):
             return JsonResponse({
@@ -62,15 +63,15 @@ class GraphQLView(View):
         graphql_request.validate()
         data = None
         errors = graphql_request.errors
-        if not graphql_request.errors:
-            data, errors = self.schema.execute(graphql_request)
+        if not errors:
+            data, errors = graphql_request.execute()
 
         response = {}
         if data:
             response['data'] = data
 
         if errors:
-            response['errors'] = [{'message': str(error)} for error in errors]
+            response['errors'] = [str(error) for error in errors]
         return JsonResponse(response)
 
     def get_request_data(self):

@@ -6,6 +6,7 @@ from django.template.response import TemplateResponse
 from django.test import Client, modify_settings
 
 from django_graph_api.graphql.request import Request
+from test_app.schema import schema
 
 
 def test_get_request_graphiql():
@@ -40,6 +41,7 @@ def test_post_request_executed(RequestMock, starwars_data):
         document=query,
         variables=None,
         operation_name=None,
+        schema=schema,
     )
 
 
@@ -73,6 +75,7 @@ def test_variables_sent_in_post(RequestMock, starwars_data):
         document=query,
         variables={'number': 4},
         operation_name=None,
+        schema=schema,
     )
 
 

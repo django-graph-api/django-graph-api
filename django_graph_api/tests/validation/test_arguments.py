@@ -7,7 +7,7 @@ from django_graph_api.graphql.types import (
     Object,
 )
 from django_graph_api.graphql.utils import GraphQLError
-from test_app.schema import QueryRoot
+from test_app.schema import schema
 
 
 def test_null_scalar():
@@ -18,10 +18,9 @@ def test_null_scalar():
         }
     }
     '''
-    request = Request(document)
-    schema = Schema(QueryRoot)
-    errors = schema.validate(request)
-    assert errors == [
+    request = Request(document, schema)
+    request.validate()
+    assert request.errors == [
         GraphQLError("Non-null argument 'number' on 'episode' is null"),
     ]
 
@@ -34,10 +33,9 @@ def test_missing_scalar():
         }
     }
     '''
-    request = Request(document)
-    schema = Schema(QueryRoot)
-    errors = schema.validate(request)
-    assert errors == [
+    request = Request(document, schema)
+    request.validate()
+    assert request.errors == [
         GraphQLError("Required argument 'number' on 'episode' is missing"),
     ]
 
@@ -52,10 +50,9 @@ def test_related_object_args():
         }
     }
     '''
-    request = Request(document)
-    schema = Schema(QueryRoot)
-    errors = schema.validate(request)
-    assert errors == [
+    request = Request(document, schema)
+    request.validate()
+    assert request.errors == [
         GraphQLError("Non-null argument 'types' on 'characters' is null"),
     ]
 
@@ -72,9 +69,9 @@ def test_related_object_args():
         }
     }
     '''
-    request = Request(document)
-    errors = schema.validate(request)
-    assert errors == [
+    request = Request(document, schema)
+    request.validate()
+    assert request.errors == [
         GraphQLError("Non-null argument 'types' on 'characters' is null"),
     ]
 
@@ -86,16 +83,18 @@ class QueryRootWithNestedArgs(Object):
         return 1
 
 
+test_schema = Schema(QueryRootWithNestedArgs)
+
+
 def test_missing_arg():
     document = '''
     {
         nested
     }
     '''
-    request = Request(document)
-    schema = Schema(QueryRootWithNestedArgs)
-    errors = schema.validate(request)
-    assert errors == [
+    request = Request(document, test_schema)
+    request.validate()
+    assert request.errors == [
         GraphQLError("Required argument 'arg' on 'nested' is missing")
     ]
 
@@ -106,10 +105,9 @@ def test_empty_list():
         nested(arg: [])
     }
     '''
-    request = Request(document)
-    schema = Schema(QueryRootWithNestedArgs)
-    errors = schema.validate(request)
-    assert errors == [
+    request = Request(document, test_schema)
+    request.validate()
+    assert request.errors == [
         GraphQLError("Non-null argument 'arg' on 'nested' is null")
     ]
 
@@ -120,10 +118,9 @@ def test_null_list_item():
         nested(arg: [null])
     }
     '''
-    request = Request(document)
-    schema = Schema(QueryRootWithNestedArgs)
-    errors = schema.validate(request)
-    assert errors == [
+    request = Request(document, test_schema)
+    request.validate()
+    assert request.errors == [
         GraphQLError("Non-null argument 'arg' on 'nested' is null"),
     ]
 
@@ -134,10 +131,9 @@ def test_missing_int():
         nested(arg: [[]])
     }
     '''
-    request = Request(document)
-    schema = Schema(QueryRootWithNestedArgs)
-    errors = schema.validate(request)
-    assert errors == [
+    request = Request(document, test_schema)
+    request.validate()
+    assert request.errors == [
         GraphQLError("Non-null argument 'arg' on 'nested' is null"),
     ]
 
@@ -148,10 +144,9 @@ def test_null_int():
         nested(arg: [[null]])
     }
     '''
-    request = Request(document)
-    schema = Schema(QueryRootWithNestedArgs)
-    errors = schema.validate(request)
-    assert errors == [
+    request = Request(document, test_schema)
+    request.validate()
+    assert request.errors == [
         GraphQLError("Non-null argument 'arg' on 'nested' is null"),
     ]
 
@@ -162,9 +157,9 @@ def test_null_int():
     '''
     variables = {'int': None}
 
-    request = Request(document, variables)
-    errors = schema.validate(request)
-    assert errors == [
+    request = Request(document, test_schema, variables=variables)
+    request.validate()
+    assert request.errors == [
         GraphQLError("Non-null argument 'arg' on 'nested' is null"),
     ]
 
@@ -175,7 +170,6 @@ def test_valid_input():
         nested(arg: [[1]])
     }
     '''
-    request = Request(document)
-    schema = Schema(QueryRootWithNestedArgs)
-    errors = schema.validate(request)
+    request = Request(document, test_schema)
+    errors = request.validate()
     assert errors is None

@@ -1,4 +1,8 @@
 # coding: utf-8
+from graphql.ast import (
+    FragmentDefinition,
+    OperationDefinition,
+)
 
 from django_graph_api import RelatedField
 from django_graph_api.graphql.utils import GraphQLError
@@ -42,3 +46,59 @@ def non_null_arg_provided(arg_type, value):
                 if not non_null_arg_provided(arg_type.type_, item):
                     return False
     return True
+
+
+def perform_operation_validation(request):
+    errors = []
+    operations = {}
+    fragments = {}
+    for definition in request.ast.definitions:
+        if isinstance(definition, OperationDefinition):
+            if definition.name in operations:
+                errors.append(GraphQLError('Non-unique operation name: {}'.format(definition.name)))
+            else:
+                operations[definition.name] = definition
+        elif isinstance(definition, FragmentDefinition):
+            if definition.name in fragments:
+                errors.append(GraphQLError('Non-unique fragment name: {}'.format(definition.name)))
+            else:
+                fragments[definition.name] = definition
+
+    if request.operation_name:
+        if request.operation_name not in operations:
+            errors.append(GraphQLError('No operation found called `{}`'.format(request.operation_name)))
+    else:
+        if len(operations) > 1:
+            errors.append(GraphQLError('Multiple operations provided but no operation name'))
+        elif len(operations) == 0:
+            errors.append(GraphQLError('At least one operation must be provided'))
+
+    return errors
+
+
+def perform_argument_validation(query_root):
+    validate_object_arguments(query_root)
+
+
+class Validation(object):
+    def __init__(self, request, schema):
+        self.request = request
+        self.schema = schema
+        self.errors = []
+        self._validated = False
+
+    def validate(self):
+        if self._validated:
+            return
+        self._validated = True
+
+        try:
+            self.errors.extend(perform_operation_validation(self.request))
+
+            query_root = self.schema.get_query_root(self.request)
+            perform_argument_validation(query_root)
+
+        except Exception as e:
+            if not isinstance(e, GraphQLError):
+                e = GraphQLError(e)
+            self.errors.append(e)
