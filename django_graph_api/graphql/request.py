@@ -5,7 +5,10 @@ from graphql.ast import (
 from graphql.parser import GraphQLParser
 
 from django_graph_api.graphql.utils import GraphQLError
-from .validation import Validation
+from .validation import (
+    perform_operation_validation,
+    perform_argument_validation
+)
 
 
 class Request(object):
@@ -16,6 +19,7 @@ class Request(object):
         self.schema = schema
         self._validated = False
         self._errors = []
+        self.query_root = None
         parser = GraphQLParser()
 
         if not self.document:
@@ -81,9 +85,19 @@ class Request(object):
             return
 
         self._validated = True
-        validation = Validation(self, self.schema)
-        validation.validate()
-        self._errors.extend(validation.errors)
+
+        try:
+            self._errors.extend(perform_operation_validation(self))
+            if self._errors:  # If the request is invalid, stop validation
+                return
+
+            self.query_root = self.schema.get_query_root(self)
+            self._errors.extend(perform_argument_validation(self.query_root))
+
+        except Exception as e:
+            if not isinstance(e, GraphQLError):
+                e = GraphQLError(e)
+            self.errors.append(e)
 
     def execute(self):
         query_root = self.schema.get_query_root(self)

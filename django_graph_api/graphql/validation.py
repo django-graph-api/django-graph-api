@@ -9,27 +9,32 @@ from django_graph_api.graphql.utils import GraphQLError
 
 
 def validate_object_arguments(obj):
+    errors = []
     if obj is None:
         return
     for field_name, field in obj.fields.items():
-        validate_non_null_args(field_name, field)
+        errors.extend(validate_non_null_args(field_name, field))
 
         if isinstance(field, RelatedField):
             obj_instance = field.get_object_instance()
-            validate_object_arguments(obj_instance)
+            errors.extend(validate_object_arguments(obj_instance))
+    return errors
 
 
 def validate_non_null_args(field_name, field):
     """
     NonNull arguments are required and cannot be null
     """
+    errors = []
     for arg_name, arg_type in field.arguments.items():
         if not arg_type.null and arg_name not in field.selection_arguments:
-            raise GraphQLError("Required argument '{}' on '{}' is missing".format(arg_name, field_name))
+            errors.append(GraphQLError("Required argument '{}' on '{}' is missing".format(arg_name, field_name)))
+            continue
 
         arg_value = field.selection_arguments.get(arg_name)
         if not non_null_arg_provided(arg_type, arg_value):
-            raise GraphQLError("Non-null argument '{}' on '{}' is null".format(arg_name, field_name))
+            errors.append(GraphQLError("Non-null argument '{}' on '{}' is null".format(arg_name, field_name)))
+    return errors
 
 
 def non_null_arg_provided(arg_type, value):
@@ -77,28 +82,4 @@ def perform_operation_validation(request):
 
 
 def perform_argument_validation(query_root):
-    validate_object_arguments(query_root)
-
-
-class Validation(object):
-    def __init__(self, request, schema):
-        self.request = request
-        self.schema = schema
-        self.errors = []
-        self._validated = False
-
-    def validate(self):
-        if self._validated:
-            return
-        self._validated = True
-
-        try:
-            self.errors.extend(perform_operation_validation(self.request))
-
-            query_root = self.schema.get_query_root(self.request)
-            perform_argument_validation(query_root)
-
-        except Exception as e:
-            if not isinstance(e, GraphQLError):
-                e = GraphQLError(e)
-            self.errors.append(e)
+    return validate_object_arguments(query_root)

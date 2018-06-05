@@ -111,7 +111,7 @@ class Field(object):
         for name, value in self.selection_arguments.items():
             arg_type = self.arguments.get(name)
             if not arg_type:
-                break
+                continue
             try:
                 arg_value = arg_type.coerce_input(value)
                 resolver_args[name] = arg_value
