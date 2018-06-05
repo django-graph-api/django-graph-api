@@ -11,6 +11,9 @@ class GraphQLError(Exception):
         if settings.DEBUG:
             print(format_exc().split('/n'))
 
+    def format(self):
+        return {'message': self.message}
+
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.message == other.message
 

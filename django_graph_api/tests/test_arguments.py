@@ -1,7 +1,6 @@
 from django_graph_api.graphql.request import Request
-from django_graph_api.graphql.schema import Schema
 
-from test_app.schema import QueryRoot, schema
+from test_app.schema import schema
 
 
 def test_episode_name_field_description(starwars_data):

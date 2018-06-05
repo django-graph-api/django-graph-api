@@ -71,7 +71,7 @@ class GraphQLView(View):
             response['data'] = data
 
         if errors:
-            response['errors'] = [str(error) for error in errors]
+            response['errors'] = [error.format() for error in errors]
         return JsonResponse(response)
 
     def get_request_data(self):

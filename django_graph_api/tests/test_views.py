@@ -118,6 +118,7 @@ def test_post_empty_query():
     assert isinstance(response, JsonResponse)
     assert response.status_code == 200
     response_json = json.loads(response.content.decode('utf-8'))
+    print(response_json)
     assert response_json['errors'][0]['message'] == 'Must provide query string.'
 
 

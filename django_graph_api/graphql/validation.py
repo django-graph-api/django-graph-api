@@ -55,23 +55,23 @@ def perform_operation_validation(request):
     for definition in request.ast.definitions:
         if isinstance(definition, OperationDefinition):
             if definition.name in operations:
-                errors.append(GraphQLError('Non-unique operation name: {}'.format(definition.name)))
+                raise GraphQLError('Non-unique operation name: {}'.format(definition.name))
             else:
                 operations[definition.name] = definition
         elif isinstance(definition, FragmentDefinition):
             if definition.name in fragments:
-                errors.append(GraphQLError('Non-unique fragment name: {}'.format(definition.name)))
+                raise GraphQLError('Non-unique fragment name: {}'.format(definition.name))
             else:
                 fragments[definition.name] = definition
 
     if request.operation_name:
         if request.operation_name not in operations:
-            errors.append(GraphQLError('No operation found called `{}`'.format(request.operation_name)))
+            raise GraphQLError('No operation found called `{}`'.format(request.operation_name))
     else:
         if len(operations) > 1:
-            errors.append(GraphQLError('Multiple operations provided but no operation name'))
+            raise GraphQLError('Multiple operations provided but no operation name')
         elif len(operations) == 0:
-            errors.append(GraphQLError('At least one operation must be provided'))
+            raise GraphQLError('At least one operation must be provided')
 
     return errors
 

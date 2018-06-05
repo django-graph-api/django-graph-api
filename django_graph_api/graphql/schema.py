@@ -12,7 +12,6 @@ from django_graph_api.graphql.types import (
     RelatedField,
     String,
 )
-from django_graph_api.graphql.utils import GraphQLError
 
 
 class CombinedQueryRootMetaclass(ObjectMetaclass):

@@ -12,7 +12,7 @@ def test_hero_name(starwars_data):
     }
     '''
     request = Request(document, schema)
-    data, errors = schema.execute(request)
+    data, errors = request.execute()
     assert data == {
         'hero': {
             'name': 'R2-D2',
@@ -75,7 +75,7 @@ def test_hero_name_and_episodes(starwars_data):
     }
     '''
     request = Request(document, schema)
-    data, errors = schema.execute(request)
+    data, errors = request.execute()
     assert data == {
         'hero': {
             'name': 'R2-D2',
