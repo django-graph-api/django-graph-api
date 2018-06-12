@@ -7,9 +7,8 @@ class GraphQLError(Exception):
     def __init__(self, message):
         super(GraphQLError, self).__init__(message)
         self.message = message
-        self.location = {'line': 0, 'column': 0}
         if settings.DEBUG:
-            print(format_exc().split('/n'))
+            self.traceback = format_exc().split('\n')
 
     def format(self):
         return {'message': self.message}
