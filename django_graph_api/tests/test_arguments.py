@@ -1,7 +1,6 @@
 from django_graph_api.graphql.request import Request
-from django_graph_api.graphql.schema import Schema
 
-from test_app.schema import QueryRoot
+from test_app.schema import schema
 
 
 def test_episode_name_field_description(starwars_data):
@@ -96,9 +95,8 @@ def test_episode_name_field_description(starwars_data):
         }
       }
     }"""
-    request = Request(document)
-    schema = Schema(query_root_classes=[QueryRoot])
-    data, errors = schema.execute(request)
+    request = Request(document, schema)
+    data, errors = request.execute()
     assert errors == []
     types = data['__schema']['types']
     episodes = [type_ for type_ in types if type_['name'] == 'Episode'][0]
@@ -115,15 +113,14 @@ def test_episode_and_characters(starwars_data):
             episode(number: 5) {
                 name
                 number
-                characters (type: ["human", "droid"]) {
+                characters (types: ["human", "droid"]) {
                     name
                 }
             }
         }
         '''
-    request = Request(document)
-    schema = Schema(query_root_classes=[QueryRoot])
-    data, errors = schema.execute(request)
+    request = Request(document, schema)
+    data, errors = request.execute()
     assert data == {
         'episode': {
             'name': 'The Empire Strikes Back',
@@ -153,9 +150,8 @@ def test_episodes_and_droids(starwars_data):
             }
         }
         '''
-    request = Request(document)
-    schema = Schema(query_root_classes=[QueryRoot])
-    data, errors = schema.execute(request)
+    request = Request(document, schema)
+    data, errors = request.execute()
     assert data == {
         'episodes': [
             {

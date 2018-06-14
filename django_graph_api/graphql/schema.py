@@ -1,3 +1,4 @@
+# coding: utf-8
 from collections import OrderedDict
 import copy
 
@@ -114,8 +115,8 @@ class Schema(object):
 
         self.query_root_class = QueryRoot
 
-    def execute(self, request):
-        query_root = self.query_root_class(
+    def get_query_root(self, request):
+        return self.query_root_class(
             ast=request.operation,
             data=self,
             fragments=request.fragments,
@@ -125,4 +126,3 @@ class Schema(object):
             },
             variables=request.variables,
         )
-        return query_root.execute()

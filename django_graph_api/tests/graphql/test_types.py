@@ -160,7 +160,7 @@ def test_string_coerce_input():
 def test_boolean_coerce_result():
     assert Boolean.coerce_result(5) is True
     assert Boolean.coerce_result(1.3892) is True
-    assert Boolean.coerce_result('hello') is True
+    assert Boolean.coerce_result('False') is True
     assert Boolean.coerce_result('') is False
     assert Boolean.coerce_result(0) is False
     assert Boolean.coerce_result(None) is None

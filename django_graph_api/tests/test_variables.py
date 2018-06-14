@@ -1,7 +1,6 @@
 from django_graph_api.graphql.request import Request
-from django_graph_api.graphql.schema import Schema
 
-from test_app.schema import QueryRoot
+from test_app.schema import schema
 
 
 def test_query_default_episode_and_characters(starwars_data):
@@ -10,15 +9,14 @@ def test_query_default_episode_and_characters(starwars_data):
             episode(number: $episode) {
                 name
                 number
-                characters (type: ["human", "droid"]) {
+                characters (types: ["human", "droid"]) {
                     name
                 }
             }
         }
         '''
-    request = Request(document=document)
-    schema = Schema(query_root_classes=[QueryRoot])
-    data, errors = schema.execute(request)
+    request = Request(document, schema)
+    data, errors = request.execute()
     assert data == {
         'episode': {
             'name': 'The Empire Strikes Back',
@@ -44,9 +42,8 @@ def test_query_missing_variable_no_default(starwars_data):
             }
         }
         '''
-    request = Request(document=document)
-    schema = Schema(query_root_classes=[QueryRoot])
-    data, errors = schema.execute(request)
+    request = Request(document, schema)
+    data, errors = request.execute()
     assert data == {
         'episodes': [{
             'number': 4,
@@ -69,9 +66,8 @@ def test_query_episodes_and_droids(starwars_data):
             }
         }
         '''
-    request = Request(document=document, variables={'type': 'droid'})
-    schema = Schema(query_root_classes=[QueryRoot])
-    data, errors = schema.execute(request)
+    request = Request(document=document, variables={'type': 'droid'}, schema=schema)
+    data, errors = request.execute()
     assert data == {
         'episodes': [
             {

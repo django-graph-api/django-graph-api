@@ -22,17 +22,16 @@ from django_graph_api.graphql.types import (
     IntegerField,
 )
 from django_graph_api.graphql.request import Request
-from django_graph_api.graphql.schema import Schema
 
 from test_app.schema import (
     Character,
     Episode,
     QueryRoot,
+    schema,
 )
 
 
 def test_schema__get_types():
-    schema = Schema([QueryRoot])
     schema_object = SchemaIntrospector(None, schema, None)
 
     types = schema_object.get_types()
@@ -370,9 +369,8 @@ def test_execute__filter_type():
         }
     }
     '''
-    request = Request(document)
-    schema = Schema(query_root_classes=[QueryRoot])
-    data, errors = schema.execute(request)
+    request = Request(document, schema)
+    data, errors = request.execute()
     assert data == {
         '__type': {
             'name': 'Character',
@@ -440,16 +438,12 @@ def test_execute__introspect_directives():
                 name
                 description
                 locations
-                args {
-                    ...InputValue
-                }
             }
         }
     }
     '''
-    request = Request(document)
-    schema = Schema(query_root_classes=[QueryRoot])
-    data, errors = schema.execute(request)
+    request = Request(document, schema)
+    data, errors = request.execute()
     assert data == {
         '__schema': {
             'directives': [],

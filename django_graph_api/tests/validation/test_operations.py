@@ -1,4 +1,6 @@
 from django_graph_api.graphql.request import Request
+from django_graph_api.graphql.utils import GraphQLError
+from test_app.schema import schema
 
 
 def test_min_one_operation():
@@ -8,10 +10,10 @@ def test_min_one_operation():
         ...heroNameFragment
     }
     '''
-    request = Request(document)
+    request = Request(document, schema)
     request.validate()
     assert request.errors == [
-        "At least one operation must be provided",
+        GraphQLError("At least one operation must be provided"),
     ]
 
 
@@ -31,7 +33,7 @@ def test_named_operation__valid_document():
       }
     }
     '''
-    request = Request(document, operation_name='getDogName')
+    request = Request(document, schema, operation_name='getDogName')
     request.validate()
     assert request.errors == []
 
@@ -52,10 +54,10 @@ def test_named_operation__uniqueness():
       }
     }
     '''
-    request = Request(document, operation_name='getName')
+    request = Request(document, schema, operation_name='getName')
     request.validate()
     assert request.errors == [
-        'Non-unique operation name: getName',
+        GraphQLError('Non-unique operation name: getName'),
     ]
 
 
@@ -73,10 +75,10 @@ def test_named_operation__uniqueness__different_types():
       }
     }
     '''
-    request = Request(document, operation_name='dogOperation')
+    request = Request(document, schema, operation_name='dogOperation')
     request.validate()
     assert request.errors == [
-        'Non-unique operation name: dogOperation',
+        GraphQLError('Non-unique operation name: dogOperation'),
     ]
 
 
@@ -88,7 +90,7 @@ def test_anonymous_operation__valid_document():
       }
     }
     '''
-    request = Request(document)
+    request = Request(document, schema)
     request.validate()
     assert request.errors == []
 
@@ -106,10 +108,10 @@ def test_anonymous_operation__max_one_anonymous_operation():
       }
     }
     '''
-    request = Request(document)
+    request = Request(document, schema)
     request.validate()
     assert request.errors == [
-        "Parse error: Line 7, col 5: Syntax error at '{'",
+        GraphQLError("Parse error: Line 7, col 5: Syntax error at '{'"),
     ]
 
 
@@ -129,8 +131,8 @@ def test_anonymous_operation__no_named_operations():
       }
     }
     '''
-    request = Request(document)
+    request = Request(document, schema)
     request.validate()
     assert request.errors == [
-        "Parse error: Line 8: Syntax error at 'query'",
+        GraphQLError("Parse error: Line 8: Syntax error at 'query'"),
     ]

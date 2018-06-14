@@ -8,7 +8,7 @@ from django_graph_api.graphql.types import (
     ManyRelatedField,
     Int,
     List,
-    String
+    String,
 )
 from django_graph_api.graphql.schema import Schema
 
@@ -24,7 +24,7 @@ class Episode(Object):
     characters = ManyRelatedField(
         'test_app.schema.Character',
         arguments={
-            'types': List(String),
+            'types': List(String(null=False)),
         },
     )
     next = RelatedField('self')

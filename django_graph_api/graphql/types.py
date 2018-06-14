@@ -5,14 +5,15 @@ from collections import (
 from inspect import isclass
 import copy
 
-from graphql.ast import Variable
-
 from django.db.models import Manager
 from django.utils import six
 
 from django_graph_api.graphql.utils import (
-    get_selections,
     GraphQLError
+)
+from django_graph_api.graphql.ast_helpers import (
+    get_input_value,
+    get_selections
 )
 
 SCALAR = 'SCALAR'
@@ -102,27 +103,25 @@ class Field(object):
         return None
 
     def get_resolver_args(self):
-        arguments = {arg.name: arg.value for arg in self.selection.arguments}
-        resolver_args = {}
-        for key, value in self.arguments.items():
-            if key in arguments:
-                input_value = arguments[key]
-                if isinstance(input_value, Variable):
-                    variable_name = input_value.name
-                    default_value = self.obj.variable_definitions[variable_name].default_value
-                    input_value = self.obj.variables.get(variable_name, default_value)
-                try:
-                    arg_value = value.coerce_input(input_value)
-                except ValueError:
-                    error = 'Query error: Argument {} expected a {} but got a {}'.format(
-                        key,
-                        type(value),
-                        type(input_value)
-                    )
-                    raise GraphQLError(error)
-                resolver_args[key] = arg_value
-            else:
-                resolver_args[key] = None
+        if not self._bound:
+            raise GraphQLError('Usage exception: must bind Field to a selection and object first')
+
+        resolver_args = {name: None for name in self.arguments}
+
+        for name, value in self.selection_arguments.items():
+            arg_type = self.arguments.get(name)
+            if not arg_type:
+                continue
+            try:
+                arg_value = arg_type.coerce_input(value)
+                resolver_args[name] = arg_value
+            except ValueError:
+                error = 'Query error: Argument {} expected a {} but got a {}'.format(
+                    name,
+                    type(arg_type),
+                    type(value)
+                )
+                raise GraphQLError(error)
         return resolver_args
 
     def bind(self, selection, obj):
@@ -130,6 +129,10 @@ class Field(object):
         self.name = selection.name
         self.obj = obj
         self._bound = True
+        self.selection_arguments = {
+            arg.name: get_input_value(arg.value, obj.variables, obj.variable_definitions)
+            for arg in self.selection.arguments
+        }
 
 
 class Scalar(six.with_metaclass(ObjectNameMetaclass)):
@@ -214,9 +217,13 @@ class Boolean(Scalar):
     def coerce_input(cls, value):
         if value is None:
             return None
-        if not isinstance(value, bool):
-            raise ValueError('Expected a bool type, got {}'.format(type(value)))
-        return value
+        if value == 'true' or value is True:
+            return True
+        elif value == 'false' or value is False:
+            return False
+        raise ValueError(
+            "Could not coerce {} of type {} to boolean. Must be 'true' or 'false'".format(value, type(value).__name__)
+        )
 
 
 class Enum(Scalar):
@@ -483,13 +490,7 @@ class RelatedField(Field):
         return self._object_type
 
     def _execute_related(self, value):
-        obj_instance = self.object_type(
-            ast=self.selection,
-            data=value,
-            fragments=self.obj.fragments,
-            variable_definitions=self.obj.variable_definitions,
-            variables=self.obj.variables
-        )
+        obj_instance = self.get_object_instance(value)
         data, errors = obj_instance.execute()
         self.errors.extend(errors)
         return data
@@ -499,6 +500,15 @@ class RelatedField(Field):
         if value is None:
             return None
         return self._execute_related(value)
+
+    def get_object_instance(self, value=None):
+        return self.object_type(
+            ast=self.selection,
+            data=value,
+            fragments=self.obj.fragments,
+            variable_definitions=self.obj.variable_definitions,
+            variables=self.obj.variables
+        )
 
 
 class ManyRelatedField(RelatedField):

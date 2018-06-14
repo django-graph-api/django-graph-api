@@ -1,8 +1,7 @@
 from django_graph_api.graphql.utils import GraphQLError
 from django_graph_api.graphql.request import Request
-from django_graph_api.graphql.schema import Schema
 
-from test_app.schema import QueryRoot
+from test_app.schema import schema
 
 
 def test_non_existent_episode(starwars_data):
@@ -13,9 +12,8 @@ def test_non_existent_episode(starwars_data):
             }
         }
         '''
-    request = Request(document)
-    schema = Schema(query_root_classes=[QueryRoot])
-    data, errors = schema.execute(request)
+    request = Request(document, schema)
+    data, errors = request.execute()
     assert data == {
         "episode": None
     }
@@ -33,9 +31,8 @@ def test_non_existent_field(starwars_data):
             }
         }
         '''
-    request = Request(document)
-    schema = Schema(query_root_classes=[QueryRoot])
-    data, errors = schema.execute(request)
+    request = Request(document, schema)
+    data, errors = request.execute()
     assert data == {
         "episode": {
             "name": "A New Hope",
