@@ -4,9 +4,13 @@ from django.conf import settings
 
 
 class GraphQLError(Exception):
-    def __init__(self, message):
+    def __init__(self, message, line=None, column=None):
         super(GraphQLError, self).__init__(message)
+
         self.message = message
+        self.line = line
+        self.column = column
+
         if settings.DEBUG:
             self.traceback = format_exc().split('\n')
 
@@ -14,6 +18,12 @@ class GraphQLError(Exception):
         serialized = {
             'message': self.message,
         }
+
+        if self.line:
+            serialized['line'] = self.line
+
+            if self.column:
+                serialized['column'] = self.column
 
         if settings.DEBUG:
             serialized['traceback'] = self.traceback

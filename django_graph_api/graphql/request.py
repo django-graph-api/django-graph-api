@@ -2,6 +2,7 @@ from graphql.ast import (
     FragmentDefinition,
     OperationDefinition,
 )
+from graphql import exceptions as graphql_exceptions
 from graphql.parser import GraphQLParser
 
 from django_graph_api.graphql.utils import GraphQLError
@@ -27,9 +28,13 @@ class Request(object):
         else:
             try:
                 self.ast = parser.parse(self.document)
-            except Exception as e:
+            except (graphql_exceptions.LexerError, graphql_exceptions.SyntaxError) as e:
                 self.ast = None
-                self._errors.append(GraphQLError('Parse error: {}'.format(e)))
+                self._errors.append(GraphQLError(
+                    'Parse error: {}'.format(e),
+                    line=e.line,
+                    column=e.column,
+                ))
 
         # Additional errors are meaningless if we couldn't parse the document
         if self._errors:
