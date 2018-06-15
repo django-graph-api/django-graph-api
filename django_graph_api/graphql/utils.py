@@ -10,7 +10,7 @@ class GraphQLError(Exception):
         if settings.DEBUG:
             self.traceback = format_exc().split('\n')
 
-    def format(self):
+    def serialize(self):
         return {'message': self.message}
 
     def __eq__(self, other):
