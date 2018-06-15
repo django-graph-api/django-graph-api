@@ -11,7 +11,14 @@ class GraphQLError(Exception):
             self.traceback = format_exc().split('\n')
 
     def serialize(self):
-        return {'message': self.message}
+        serialized = {
+            'message': self.message,
+        }
+
+        if settings.DEBUG:
+            serialized['traceback'] = self.traceback
+
+        return serialized
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.message == other.message
