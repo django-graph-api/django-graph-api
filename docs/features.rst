@@ -20,12 +20,21 @@ Types
 - enums
 - inputs (for arguments)
 - lists
+- non-null
 
 Querying
 ^^^^^^^^
 - introspection
 - arguments
 - fragments
+- variables
+- operation name
+
+Validation
+^^^^^^^^^^
+- required arguments
+- operation uniqueness
+
 
 Unsupported 🚫
 --------------
@@ -34,17 +43,22 @@ Operations
 ^^^^^^^^^^
 - mutations (writing data: POST, DELETE, PUT)
 - subscriptions (push notifications, websockets)
+- directives
 
 Types
 ^^^^^
 - interfaces
 - unions
-- non-null
 - inputs (for mutations)
 - scalar fields: datetime
 
 Querying
 ^^^^^^^^
-- variables
 - aliases
 - pagination
+
+Validation
+^^^^^^^^^^
+- fragment usage, uniqueness, type, non-cyclical
+- argument type
+- variable uniqueness, usage, type

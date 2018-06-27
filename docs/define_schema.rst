@@ -205,17 +205,18 @@ Sample queries
 You should now be able to create more complicated queries
 and make use of GraphQL's nested objects feature.
 ::
-
-    {
-        hero {
-            friends {
-                name
-            }
-            appears_in {
-                name
-                number
-            }
+  {
+    episode(number: 4) {
+      name
+      number
+      characters {
+        name
+        friends {
+          name
         }
+      }
     }
+  }
+
 
 .. _documentation: http://graphql.org/learn/

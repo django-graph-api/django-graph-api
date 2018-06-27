@@ -4,14 +4,14 @@ Getting started
 Install
 -------
 
-Download or clone the repo_ and navigate to the directory.
+Use ``pip`` (or your favorite dependency management solution) to install django-graph-api.
 ::
 
     pip install django-graph-api
 
 .. _repo: https://github.com/melinath/django-graph-api
 
-In `settings.py`, add it to INSTALLED_APPS:
+In ``settings.py``, add it to INSTALLED_APPS:
 ::
 
    INSTALLED_APPS = [
@@ -70,18 +70,48 @@ GraphQL queries have a JSON-like structure and return JSON.
 You should now be able to run the following query:
 ::
 
-   {
-      hello
-   }
+  {
+    hello
+  }
 
-And receive the following response:
+And receive the following JSON response:
 ::
 
-   {
-      "data": {
-         "hello": "world"
+  {
+    "data": {
+      "hello": "world"
+    }
+  }
+
+If a query was unsuccessful, the response will include an ``errors`` key
+that will include a list of returned errors.
+
+For example, if you run the following query:
+::
+  {
+    foo
+  }
+
+It will result in the following response:
+::
+  {
+    "data": {
+      "foo": null
+    },
+    "errors": [
+      {
+        "message": "QueryRoot does not have field foo",
+        "traceback": [
+         ...
+        ]
       }
-   }
+    ]
+  }
+
+.. note::
+    If the Django settings have ``DEBUG=True``,
+    a traceback of where the error occurred
+    will be included in the error object.
 
 Using GraphiQL
 ^^^^^^^^^^^^^^
@@ -100,7 +130,5 @@ go to ``localhost:8000/graphql`` to view it.
 Using AJAX
 ^^^^^^^^^^
 
-You can also query the schema
-by sending a POST request
-to the endpoint ``localhost:8000/graphql``
-with the GraphQL query as the body.
+You can also query the schema by sending a POST request to the endpoint ``localhost:8000/graphql``.
+The body of the request should be JSON with the format: ``{"query": <query>, "variables": <variables>}``
