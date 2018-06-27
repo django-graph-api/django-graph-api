@@ -84,7 +84,7 @@ def test_named_operation__uniqueness__different_types():
 
 def test_anonymous_operation__valid_document():
     document = '''
-    {
+    query {
       dog {
         name
       }

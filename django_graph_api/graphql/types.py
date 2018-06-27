@@ -217,12 +217,10 @@ class Boolean(Scalar):
     def coerce_input(cls, value):
         if value is None:
             return None
-        if value == 'true' or value is True:
-            return True
-        elif value == 'false' or value is False:
-            return False
+        if isinstance(value, bool):
+            return value
         raise ValueError(
-            "Could not coerce {} of type {} to boolean. Must be 'true' or 'false'".format(value, type(value).__name__)
+            "Could not coerce {} of type {} to boolean. Must be true or false".format(value, type(value).__name__)
         )
 
 
