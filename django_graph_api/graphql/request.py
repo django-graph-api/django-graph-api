@@ -14,6 +14,18 @@ from .validation import (
 
 class Request(object):
     def __init__(self, document, schema, variables=None, operation_name=None):
+        """
+        Creates a Request object that can be validated and executed.
+
+        :param document: The query string to execute.
+
+            e.g. ``"query episodeNames { episodes { name } }"``
+
+        :param schema: A Schema object to run the query against
+        :param variables: A ``dict`` of variables to pass to the query (optional)
+        :param operation_name: If the document contains multiple named queries,
+            the name of the query to execute (optional)
+        """
         self.document = document
         self.variables = variables or {}
         self.operation_name = operation_name
@@ -86,6 +98,14 @@ class Request(object):
             self._operation = None
 
     def validate(self):
+        """
+        Used to perform validation of a query before execution.
+        Errors produced from validation can be accessed
+        from ``request.errors``.
+
+        If a Request object has been validated once,
+        additional calls will not re-run validation.
+        """
         if self._validated:
             return
 
@@ -105,6 +125,9 @@ class Request(object):
             self.errors.append(e)
 
     def execute(self):
+        """
+        :return: data, errors
+        """
         query_root = self.schema.get_query_root(self)
         data, errors = query_root.execute()
         self._errors.extend(errors)

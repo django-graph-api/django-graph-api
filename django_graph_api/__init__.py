@@ -10,16 +10,20 @@ from .graphql.types import (
     Object,
     RelatedField,
 )
+from .graphql.request import Request
+from .graphql.schema import Schema
 from .views import GraphQLView
 
 __all__ = (
     'BooleanField',
     'CharField',
     'FloatField',
+    'GraphQLView',
     'IdField',
     'IntegerField',
     'ManyRelatedField',
     'Object',
     'RelatedField',
-    'GraphQLView',
+    'Request'
+    'Schema',
 )

@@ -9,7 +9,7 @@ Schema
 Request
 -------
 .. autoclass:: django_graph_api.Request
-   :members: execute, validate
+   :members: __init__, validate, execute
 
 Types
 -----

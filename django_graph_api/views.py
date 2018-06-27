@@ -18,8 +18,8 @@ class GraphQLView(View):
 
     ``GET`` returns the HTML for the GraphiQL API explorer.
 
-    ``POST`` accepts a body in the form of ``{'query': query, 'variables': variables}`` and returns a JSON response with
-    either a "data" or "error" object.
+    ``POST`` accepts a body in the form of ``{'query': query, 'variables': variables}``
+    and returns a JSON response with a "data" and/or "error" object.
     """
     graphiql_version = '0.11.11'
     graphql_url = '/graphql'
