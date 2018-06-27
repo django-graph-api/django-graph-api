@@ -10,8 +10,6 @@ from .graphql.types import (
     Object,
     RelatedField,
 )
-from .graphql.request import Request
-from .graphql.schema import Schema
 from .views import GraphQLView
 
 __all__ = (
