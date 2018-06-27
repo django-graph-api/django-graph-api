@@ -58,7 +58,7 @@ setup(
     author='Stephen Burrows',
     author_email='stephen.r.burrows@gmail.com',
     url='http://django-graph-api.readthedocs.io/',
-    download_url='https://github.com/melinath/django-graph-api',
+    download_url='https://github.com/django-graph-api/django-graph-api',
     zip_safe=False,
     packages=find_packages(exclude=(
         'test_app',

@@ -6,8 +6,8 @@ If you want to lend a hand, check out the current project and choose one of the 
 If there's `a particular issue`_ you would like to work on and it isn't already assigned, leave a comment on that issue indicating your desire to work on it.
 Then, start working!
 
-.. _Github projects: https://github.com/melinath/django-graph-api/projects/4
-.. _a particular issue: https://github.com/melinath/django-graph-api/issues
+.. _Github projects: https://github.com/django-graph-api/django-graph-api/projects/4
+.. _a particular issue: https://github.com/django-graph-api/django-graph-api/issues
 
 Start Developing
 ----------------
@@ -28,7 +28,7 @@ Define a remote repository called ``upstream`` that points to the original djang
 
 ::
 
-    git remote add upstream https://github.com/melinath/django-graph-api.git
+    git remote add upstream https://github.com/django-graph-api/django-graph-api.git
 
 We're using `pipenv`_ as the package and environment manager for this project.
 If you don't yet have it, check the link just given for instructions on how to get it on your machine.
@@ -44,7 +44,7 @@ Create a ``pipenv`` virtual environment using Python 3.6.
 
     pipenv --python 3.6
 
-    
+
 Install production dependencies, and also install development-only dependencies:
 
 ::

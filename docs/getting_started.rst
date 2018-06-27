@@ -9,7 +9,7 @@ Use ``pip`` (or your favorite dependency management solution) to install django-
 
     pip install django-graph-api
 
-.. _repo: https://github.com/melinath/django-graph-api
+.. _repo: https://github.com/django-graph-api/django-graph-api
 
 In ``settings.py``, add it to INSTALLED_APPS:
 ::
