@@ -18,7 +18,13 @@ class GraphQLView(View):
 
     ``GET`` returns the HTML for the GraphiQL API explorer.
 
-    ``POST`` accepts a body in the form of ``{'query': query, 'variables': variables}``
+    ``POST`` accepts a JSON body in the form of::
+
+        {
+            "query": <query>,
+            "variables": <variables>
+        }
+
     and returns a JSON response with a "data" and/or "error" object.
     """
     graphiql_version = '0.11.11'
@@ -78,7 +84,7 @@ class GraphQLView(View):
         """
         Takes an incoming request and parses it into a dictionary containing
         query and variables. For now we only support json dictionaries in
-        the style of GraphiQL, i.e. {'query': query, 'variables': null}
+        the style of GraphiQL, i.e. {"query": query, "variables": null}
         """
         body = self.request.body.decode('utf-8')
         return json.loads(body)

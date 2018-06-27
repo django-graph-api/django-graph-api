@@ -4,14 +4,14 @@ Getting started
 Install
 -------
 
-Download or clone the repo_ and navigate to the directory.
+Use ``pip`` (or your favorite dependency management solution) to install django-graph-api.
 ::
 
     pip install django-graph-api
 
 .. _repo: https://github.com/django-graph-api/django-graph-api
 
-In `settings.py`, add it to INSTALLED_APPS:
+In ``settings.py``, add it to INSTALLED_APPS:
 ::
 
    INSTALLED_APPS = [
@@ -130,7 +130,5 @@ go to ``localhost:8000/graphql`` to view it.
 Using AJAX
 ^^^^^^^^^^
 
-You can also query the schema
-by sending a POST request
-to the endpoint ``localhost:8000/graphql``
-with the GraphQL query as the body.
+You can also query the schema by sending a POST request to the endpoint ``localhost:8000/graphql``.
+The body of the request should be JSON with the format: ``{"query": <query>, "variables": <variables>}``

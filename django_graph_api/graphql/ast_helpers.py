@@ -11,8 +11,6 @@ def get_input_value(value, variables, variable_definitions):
         variable_name = value.name
         default_value = variable_definitions[variable_name].default_value
         value = variables.get(variable_name, default_value)
-    if value == 'null':
-        value = None
     if isinstance(value, list):
         return [get_input_value(item, variables, variable_definitions) for item in value]
     return value

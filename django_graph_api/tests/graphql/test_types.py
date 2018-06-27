@@ -174,9 +174,9 @@ def test_boolean_coerce_input():
     with pytest.raises(ValueError):
         Boolean.coerce_input(0)
     with pytest.raises(ValueError):
-        Boolean.coerce_input('True')
+        Boolean.coerce_input('true')
     with pytest.raises(ValueError):
-        Boolean.coerce_input(1.0)
+        Boolean.coerce_input('False')
 
 
 def test_list_coerce_result():

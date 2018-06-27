@@ -1,5 +1,5 @@
 # Requirements for readthedocs until they add pipfile support
 django==1.11.4
-graphql-py==0.6
+graphql-py==0.7.1
 ply==3.10
 pytz==2017.2
