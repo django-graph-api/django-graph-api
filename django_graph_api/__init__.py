@@ -16,10 +16,12 @@ __all__ = (
     'BooleanField',
     'CharField',
     'FloatField',
+    'GraphQLView',
     'IdField',
     'IntegerField',
     'ManyRelatedField',
     'Object',
     'RelatedField',
-    'GraphQLView',
+    'Request'
+    'Schema',
 )

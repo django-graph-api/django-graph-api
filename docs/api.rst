@@ -4,7 +4,12 @@ API reference
 Schema
 ------
 .. autoclass:: django_graph_api.Schema
-   :members: execute
+   :members: __init__
+
+Request
+-------
+.. autoclass:: django_graph_api.Request
+   :members: __init__, validate, execute
 
 Types
 -----

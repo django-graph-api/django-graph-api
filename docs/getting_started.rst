@@ -70,18 +70,48 @@ GraphQL queries have a JSON-like structure and return JSON.
 You should now be able to run the following query:
 ::
 
-   {
-      hello
-   }
+  {
+    hello
+  }
 
-And receive the following response:
+And receive the following JSON response:
 ::
 
-   {
-      "data": {
-         "hello": "world"
+  {
+    "data": {
+      "hello": "world"
+    }
+  }
+
+If a query was unsuccessful, the response will include an ``errors`` key
+that will include a list of returned errors.
+
+For example, if you run the following query:
+::
+  {
+    foo
+  }
+
+It will result in the following response:
+::
+  {
+    "data": {
+      "foo": null
+    },
+    "errors": [
+      {
+        "message": "QueryRoot does not have field foo",
+        "traceback": [
+         ...
+        ]
       }
-   }
+    ]
+  }
+
+.. note::
+    If the Django settings have ``DEBUG=True``,
+    a traceback of where the error occurred
+    will be included in the error object.
 
 Using GraphiQL
 ^^^^^^^^^^^^^^

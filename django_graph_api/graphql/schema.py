@@ -101,6 +101,14 @@ class IntrospectionQueryRoot(Object):
 
 class Schema(object):
     def __init__(self, query_root_classes=None):
+        """
+        Creates a schema that supports introspection.
+
+        If multiple query root objects are passed in,
+        their fields will be combined into the schema's root query.
+
+        :param query_root_classes: an individual or list of query root objects
+        """
         all_query_root_classes = [
             IntrospectionQueryRoot,
         ]
