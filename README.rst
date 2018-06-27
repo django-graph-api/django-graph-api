@@ -5,9 +5,9 @@ Django Graph API |travis| |slack| |rtd| |versions|
    :alt: Join us on slack at https://slack-djangographapi.now.sh
    :target: https://slack-djangographapi.now.sh
 
-.. |travis| image:: https://travis-ci.org/melinath/django-graph-api.svg?branch=master
+.. |travis| image:: https://travis-ci.org/django-graph-api/django-graph-api.svg?branch=master
    :alt: Build status on travis-ci
-   :target: https://travis-ci.org/melinath/django-graph-api
+   :target: https://travis-ci.org/django-graph-api/django-graph-api
 
 .. |rtd| image:: https://readthedocs.org/projects/django-graph-api/badge/?version=latest
    :alt: Docs status on readthedocs
